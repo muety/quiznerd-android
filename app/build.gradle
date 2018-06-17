@@ -33,6 +33,10 @@ ext {
     okHttpVersion = '3.10.0'
     picassoVersion = '2.5.2'
     gsonVersion = '2.8.2'
+    firebaseCoreVersion = '16.0.0'
+    firebaseFirestoreVersion = '17.0.1'
+    firebaseAuthVersion = '16.0.1'
+    firebaseUiVersion = '4.0.0'
 }
 
 dependencies {
@@ -42,6 +46,10 @@ dependencies {
     implementation "com.android.support:support-v13:$androidSupportVersion"
     implementation "com.android.support:design:$androidSupportVersion"
     implementation "com.android.support.constraint:constraint-layout:1.1.2"
+    implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
+    implementation "com.firebaseui:firebase-ui-auth:$firebaseUiVersion"
+    implementation "com.google.firebase:firebase-firestore:$firebaseFirestoreVersion"
+    implementation "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
@@ -53,3 +61,5 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }
+
+apply plugin: 'com.google.gms.google-services'
