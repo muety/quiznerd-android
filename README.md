@@ -1,6 +1,7 @@
 # quiznerd-android
 ## Developer's information
 * Firebase project information and `google-services.json` [>> LINK](https://console.firebase.google.com/project/quiznerd-49e4f/settings/general/android:com.github.n1try.quiznerd)
+* [Generate SHA-1 fingerprint](https://developers.google.com/android/guides/client-auth) for Google Auth (Key alias is `ferdinand muetsch`)
 
 ## To Do
 * [Add sign-in](https://firebase.google.com/docs/auth/android/firebaseui?authuser=0#sign_in)
