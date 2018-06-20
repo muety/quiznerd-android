@@ -2,10 +2,10 @@ package com.github.n1try.quiznerd.service;
 
 import android.support.annotation.NonNull;
 
+import com.github.n1try.quiznerd.model.FirestoreQuizMatchResult;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.User;
-import com.github.n1try.quiznerd.model.firestore.FirestoreQuizMatchResult;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

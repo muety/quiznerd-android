@@ -20,8 +20,8 @@ public class QuizMatch {
     private boolean active;
     private Date updated;
     private List<QuizQuestion> questions = new ArrayList<>();
-    private List<QuizUserAnswer> answers1 = new ArrayList<>();
-    private List<QuizUserAnswer> answers2 = new ArrayList<>();
+    private List<Integer> answers1 = new ArrayList<>();
+    private List<Integer> answers2 = new ArrayList<>();
 
     public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated) {
         this.id = id;

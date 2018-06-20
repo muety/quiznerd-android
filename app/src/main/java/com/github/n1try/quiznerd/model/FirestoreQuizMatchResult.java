@@ -1,7 +1,5 @@
-package com.github.n1try.quiznerd.model.firestore;
+package com.github.n1try.quiznerd.model;
 
-import com.github.n1try.quiznerd.model.QuizCategory;
-import com.github.n1try.quiznerd.model.QuizMatch;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.Date;
