@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.service.FirestoreService;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         mScoreTv.setText(winRatio);
 
         UserUtils.loadUserAvatar(this, mUser, mAvatarIv);
+        FirestoreService.getInstance().fetchMatch();
     }
 
     @Override
