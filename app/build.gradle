@@ -31,7 +31,6 @@ ext {
     butterknifeVersion = '8.8.1'
     lombokVersion = '1.18.0'
     okHttpVersion = '3.10.0'
-    picassoVersion = '2.5.2'
     gsonVersion = '2.8.2'
     firebaseCoreVersion = '16.0.0'
     firebaseFirestoreVersion = '17.0.1'
@@ -54,7 +53,6 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
-    implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation ("com.github.bumptech.glide:glide:$glideVersion") {
         exclude group: "com.android.support"

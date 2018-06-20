@@ -1,6 +1,7 @@
 package com.github.n1try.quiznerd;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     @BindView(R.id.main_avatar_iv) ImageView mAvatarIv;
     @BindView(R.id.main_username_tv) TextView mUsernameTv;
     @BindView(R.id.main_score_tv) TextView mScoreTv;
+    @BindView(R.id.main_new_fab) FloatingActionButton mNewQuizFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
