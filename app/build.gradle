@@ -37,6 +37,8 @@ ext {
     firebaseFirestoreVersion = '17.0.1'
     firebaseAuthVersion = '16.0.1'
     firebaseUiVersion = '4.0.0'
+    androidSvgVersion = '1.2.1'
+    glideVersion = '4.7.1'
 }
 
 dependencies {
@@ -54,12 +56,18 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation ("com.github.bumptech.glide:glide:$glideVersion") {
+        exclude group: "com.android.support"
+    }
+    implementation "com.caverock:androidsvg:$androidSvgVersion"
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     testImplementation "junit:junit:4.12"
     androidTestImplementation "com.android.support.test:runner:1.0.2"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'

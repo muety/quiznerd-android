@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +49,6 @@ public class StartActivity extends AppCompatActivity {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
 
                 if (resultCode == RESULT_OK) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     launchMain();
                 } else {
                     Log.e(TAG, response.getError().getMessage());

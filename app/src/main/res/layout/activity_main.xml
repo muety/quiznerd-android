@@ -19,15 +19,39 @@
             android:background="@android:color/transparent"
             android:elevation="@dimen/app_bar_elevation"
             app:theme="@style/AppTheme.ToolbarStyle"
-            app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/extended_actionbar_height">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
 
-            </FrameLayout>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/main_avatar_iv"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="8dp"
+                app:civ_border_color="@android:color/white"
+                app:civ_border_width="3dp"
+                app:civ_circle_background_color="@color/colorBackground" />
+
+            <TextView
+                android:id="@+id/main_username_tv"
+                style="@style/AppTheme.Text.Light.TitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/main_score_tv"
+                style="@style/AppTheme.Text.Light.BaseText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>
 
