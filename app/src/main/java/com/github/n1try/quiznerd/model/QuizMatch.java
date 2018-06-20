@@ -1,5 +1,6 @@
 package com.github.n1try.quiznerd.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,15 @@ public class QuizMatch {
     private int round;
     private boolean active;
     private Date updated;
-    private List<QuizQuestion> questions;
-    private List<QuizUserAnswer> answers1;
-    private List<QuizUserAnswer> answers2;
+    private List<QuizQuestion> questions = new ArrayList<>();
+    private List<QuizUserAnswer> answers1 = new ArrayList<>();
+    private List<QuizUserAnswer> answers2 = new ArrayList<>();
+
+    public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated) {
+        this.id = id;
+        this.quizCategory = quizCategory;
+        this.round = round;
+        this.active = active;
+        this.updated = updated;
+    }
 }

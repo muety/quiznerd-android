@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         mScoreTv.setText(winRatio);
 
         UserUtils.loadUserAvatar(this, mUser, mAvatarIv);
-        FirestoreService.getInstance().fetchMatch();
+        FirestoreService.getInstance().fetchMatches();
     }
 
     @Override
