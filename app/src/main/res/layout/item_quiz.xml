@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/quiz_category_iv"
-        android:layout_width="24dp"
+        android:layout_width="32dp"
         android:layout_height="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,8 +16,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/quiz_avatar_iv"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:civ_border_color="@android:color/white"
         app:civ_border_width="3dp"
         app:civ_circle_background_color="@color/colorBackground"
@@ -30,7 +30,8 @@
         style="@style/AppTheme.Text.Dark.SubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:maxLength="36"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/quiz_avatar_iv"

@@ -11,4 +11,5 @@ public class QuizUser {
     private String id;
     private String displayName;
     private String email;
+    private String authentication;
 }

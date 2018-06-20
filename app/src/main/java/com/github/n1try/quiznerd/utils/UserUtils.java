@@ -11,8 +11,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class UserUtils {
     public static final String AVATAR_URL_TEMPLATE = "https://avatars.dicebear.com/v2/%s/%s.svg";
 
-    public static void loadUserAvatar(Context context, FirebaseUser user, ImageView target) {
-        String userNick = user.getDisplayName().replace(" ", "").toLowerCase();
+    public static void loadUserAvatar(Context context, String username, ImageView target) {
+        String userNick = username.replace(" ", "").toLowerCase();
         userNick = userNick.substring(0, Math.min(userNick.length() - 1, 10));
 
         GlideApp.with(context)

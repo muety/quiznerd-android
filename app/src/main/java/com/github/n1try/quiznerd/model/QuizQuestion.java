@@ -16,4 +16,11 @@ public class QuizQuestion {
     private QuizCategory category;
     private String creatorId;
     private List<QuizAnswer> answers;
+
+    public QuizAnswer getCorrectAnswer() {
+        for (QuizAnswer answer : answers) {
+            if (answer.isCorrect()) return answer;
+        }
+        return null;
+    }
 }

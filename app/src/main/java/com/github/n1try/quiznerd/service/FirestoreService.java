@@ -1,11 +1,13 @@
 package com.github.n1try.quiznerd.service;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.github.n1try.quiznerd.model.FirestoreQuizMatchResult;
 import com.github.n1try.quiznerd.model.QuizCategory;
+import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
-import com.github.n1try.quiznerd.model.User;
+import com.github.n1try.quiznerd.model.QuizUser;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,21 +38,28 @@ public class FirestoreService {
         mFirestore = FirebaseFirestore.getInstance();
     }
 
-    public void fetchMatches() {
+    public interface FirestoreCallbacks {
+        void onMatchesFetched(List<QuizMatch> matches);
+        void onError();
+    }
+
+    public void fetchMatches(final FirestoreCallbacks callback) {
         mFirestore.collection(COLL_MATCHES).get()
                 .continueWith(new CreateQuizMatches())
                 .continueWithTask(new FetchPlayers())
                 .continueWithTask(new FetchQuestions())
-                .addOnSuccessListener(new OnSuccessListener<List<FirestoreQuizMatchResult>>() {
+                .continueWith(new Cast())
+                .addOnSuccessListener(new OnSuccessListener<List<QuizMatch>>() {
                     @Override
-                    public void onSuccess(List<FirestoreQuizMatchResult> firestoreQuizMatchResults) {
-                        System.out.println(1);
+                    public void onSuccess(List<QuizMatch> firestoreQuizMatchResults) {
+                        callback.onMatchesFetched(firestoreQuizMatchResults);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        System.out.println(1);
+                        Log.e(TAG, e.getMessage());
+                        callback.onError();
                     }
                 });
     }
@@ -69,6 +78,8 @@ public class FirestoreService {
                         .round(doc.getLong("round").intValue())
                         .active(doc.getBoolean("active"))
                         .updated(doc.getDate("updated"))
+                        .answers1((List<Long>) doc.get("answers1"))
+                        .answers2((List<Long>) doc.get("answers2"))
                         .build());
             }
             return matches;
@@ -78,13 +89,11 @@ public class FirestoreService {
     private class FetchQuestions implements Continuation<List<FirestoreQuizMatchResult>, Task<List<FirestoreQuizMatchResult>>> {
         @Override
         public Task<List<FirestoreQuizMatchResult>> then(@NonNull Task<List<FirestoreQuizMatchResult>> task) throws Exception {
-            List<Task<?>> tasks = new ArrayList<>();
+            List<Task<FirestoreQuizMatchResult>> tasks = new ArrayList<>();
             for (FirestoreQuizMatchResult match : task.getResult()) {
-                List<Task<?>> subtasks = new ArrayList<>();
                 for (DocumentReference question : match.getQuestionsReference()) {
-                    subtasks.add(question.get().continueWith(new AddQuestion(match)));
+                    tasks.add(question.get().continueWith(new AddQuestion(match)));
                 }
-                tasks.add(Tasks.whenAllSuccess(subtasks));
             }
             return Tasks.whenAllSuccess(tasks);
         }
@@ -93,17 +102,17 @@ public class FirestoreService {
     private class FetchPlayers implements Continuation<List<FirestoreQuizMatchResult>, Task<List<FirestoreQuizMatchResult>>> {
         @Override
         public Task<List<FirestoreQuizMatchResult>> then(@NonNull Task<List<FirestoreQuizMatchResult>> task) throws Exception {
-            List<Task<?>> tasks = new ArrayList<>();
+            List<Task<FirestoreQuizMatchResult>> tasks = new ArrayList<>();
             for (FirestoreQuizMatchResult match : task.getResult()) {
                 Task<DocumentSnapshot> t1 = match.getPlayer1Reference().get();
                 Task<DocumentSnapshot> t2 = match.getPlayer2Reference().get();
-                tasks.add(Tasks.whenAllComplete(t1, t2).continueWith(new AddPlayers(match)));
+                tasks.add(Tasks.<DocumentSnapshot>whenAllSuccess(t1, t2).continueWith(new AddPlayers(match)));
             }
             return Tasks.whenAllSuccess(tasks);
         }
     }
 
-    private class AddPlayers implements Continuation<List<Task<?>>, FirestoreQuizMatchResult> {
+    private class AddPlayers implements Continuation<List<DocumentSnapshot>, FirestoreQuizMatchResult> {
         private FirestoreQuizMatchResult match;
 
         public AddPlayers(FirestoreQuizMatchResult match) {
@@ -111,16 +120,15 @@ public class FirestoreService {
         }
 
         @Override
-        public FirestoreQuizMatchResult then(@NonNull Task<List<Task<?>>> task) throws Exception {
-            List<Task<?>> subtasks = task.getResult();
-            DocumentSnapshot ref1 = ((DocumentSnapshot) subtasks.get(0).getResult());
-            DocumentSnapshot ref2 = ((DocumentSnapshot) subtasks.get(0).getResult());
-            User player1 = ref1.toObject(User.class);
-            User player2 = ref2.toObject(User.class);
-            player1.setId(ref1.getId());
-            player2.setId(ref2.getId());
+        public FirestoreQuizMatchResult then(@NonNull Task<List<DocumentSnapshot>> task) throws Exception {
+            List<DocumentSnapshot> docs = task.getResult();
+            QuizUser player1 = docs.get(0).toObject(QuizUser.class);
+            QuizUser player2 = docs.get(1).toObject(QuizUser.class);
+            player1.setId(docs.get(0).getId());
+            player2.setId(docs.get(1).getId());
             match.setPlayer1(player1);
             match.setPlayer2(player2);
+
             return match;
         }
     }
@@ -139,6 +147,17 @@ public class FirestoreService {
             question.setId(ref.getId());
             match.getQuestions().add(question);
             return match;
+        }
+    }
+
+    private class Cast implements Continuation<List<FirestoreQuizMatchResult>, List<QuizMatch>> {
+        @Override
+        public List<QuizMatch> then(@NonNull Task<List<FirestoreQuizMatchResult>> task) throws Exception {
+            List<QuizMatch> matches = new ArrayList<>();
+            for (FirestoreQuizMatchResult match : task.getResult()) {
+                matches.add(match);
+            }
+            return matches;
         }
     }
 }
