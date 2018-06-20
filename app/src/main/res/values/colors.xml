@@ -7,4 +7,15 @@
     <color name="textColorPrimary">#090909</color>
     <color name="textColorSecondary">#727272</color>
     <color name="colorBackground">#eeeeee</color>
+
+    <color name="categoryAndroid">#A4C439</color>
+    <color name="categoryJava">#B07219</color>
+    <color name="categoryPython">#3572A5</color>
+    <color name="categoryCsharp">#178600</color>
+    <color name="categoryCpp">#F34B7D</color>
+    <color name="categoryJs">#F1E05A</color>
+    <color name="categoryHtml">#E34C26</color>
+    <color name="categoryPhp">#4F5D95</color>
+    <color name="categorySwift">#FFAC45</color>
+
 </resources>

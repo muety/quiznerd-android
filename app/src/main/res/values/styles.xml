@@ -21,11 +21,23 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="AppTheme.Text.Dark.BaseText" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Text.Medium.BaseText" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/textColorSecondary</item>
+    </style>
+
     <style name="AppTheme.Text.Light.TitleText" parent="AppTheme.Text.Light.BaseText">
         <item name="android:textSize">24sp</item>
     </style>
 
-    <style name="AppTheme.Text.Light.SubTitle" parent="AppTheme.Text.Light.BaseText">
+    <style name="AppTheme.Text.Light.LabelText" parent="AppTheme.Text.Light.BaseText">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="AppTheme.Text.Dark.SubTitle" parent="AppTheme.Text.Dark.BaseText">
         <item name="android:textSize">16sp</item>
     </style>
 </resources>

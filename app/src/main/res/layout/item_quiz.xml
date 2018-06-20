@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/quiz_category_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_cat_android" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/quiz_avatar_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:civ_border_color="@android:color/white"
+        app:civ_border_width="3dp"
+        app:civ_circle_background_color="@color/colorBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/quiz_username_tv"
+        style="@style/AppTheme.Text.Dark.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:maxLength="36"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/quiz_avatar_iv"
+        app:layout_constraintTop_toTopOf="@+id/quiz_avatar_iv" />
+
+    <TextView
+        android:id="@+id/quiz_round_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/quiz_username_tv"
+        app:layout_constraintTop_toBottomOf="@+id/quiz_username_tv" />
+
+    <TextView
+        android:id="@+id/quiz_turn_tv"
+        style="@style/AppTheme.Text.Light.LabelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:background="@color/colorPrimary"
+        android:paddingBottom="2dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:paddingTop="2dp"
+        android:text="@string/your_turn"
+        app:layout_constraintBottom_toBottomOf="@+id/quiz_category_iv"
+        app:layout_constraintEnd_toStartOf="@+id/quiz_category_iv"
+        app:layout_constraintTop_toTopOf="@+id/quiz_category_iv" />
+
+</android.support.constraint.ConstraintLayout>
