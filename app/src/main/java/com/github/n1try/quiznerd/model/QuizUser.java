@@ -12,4 +12,5 @@ public class QuizUser {
     private String displayName;
     private String email;
     private String authentication;
+    private GenderType gender = GenderType.MALE;
 }

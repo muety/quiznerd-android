@@ -1,5 +1,6 @@
 package com.github.n1try.quiznerd.service;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,10 +22,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FirestoreService {
     public static final String COLL_MATCHES = "matches";
+    public static final String COLL_USERS = "users";
 
     private static final String TAG = "FirestoreService";
     private static final FirestoreService ourInstance = new FirestoreService();
@@ -40,11 +44,35 @@ public class FirestoreService {
 
     public interface FirestoreCallbacks {
         void onMatchesFetched(List<QuizMatch> matches);
-        void onError();
+
+        void onUsersFetched(List<QuizUser> users);
+
+        void onError(Exception e);
     }
 
-    public void fetchMatches(final FirestoreCallbacks callback) {
-        mFirestore.collection(COLL_MATCHES).get()
+    public void fetchOwnUser(FirebaseUser me, final FirestoreCallbacks callback) {
+        mFirestore.collection(COLL_USERS).whereEqualTo("authentication", me.getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                        if (docs.size() != 1)
+                            callback.onError(new Resources.NotFoundException("Couldn't fetch user."));
+                        QuizUser user = docs.get(0).toObject(QuizUser.class);
+                        user.setId(docs.get(0).getId());
+                        callback.onUsersFetched(Arrays.asList(user));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onError(e);
+                    }
+                });
+    }
+
+    public void fetchActiveMatches(final FirestoreCallbacks callback) {
+        mFirestore.collection(COLL_MATCHES).whereEqualTo("active", true).get()
                 .continueWith(new CreateQuizMatches())
                 .continueWithTask(new FetchPlayers())
                 .continueWithTask(new FetchQuestions())
@@ -59,7 +87,7 @@ public class FirestoreService {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, e.getMessage());
-                        callback.onError();
+                        callback.onError(e);
                     }
                 });
     }

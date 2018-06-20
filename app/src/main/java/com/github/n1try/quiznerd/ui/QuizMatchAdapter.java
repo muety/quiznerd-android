@@ -12,10 +12,9 @@ import android.widget.TextView;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
+import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -31,12 +30,12 @@ public class QuizMatchAdapter extends ArrayAdapter<QuizMatch> {
     @BindView(R.id.quiz_turn_tv) TextView turnTv;
 
     private Context context;
-    private FirebaseUser mUser;
+    private QuizUser mUser;
 
-    public QuizMatchAdapter(@NonNull Context context, List<QuizMatch> objects) {
+    public QuizMatchAdapter(@NonNull Context context, List<QuizMatch> objects, QuizUser user) {
         super(context, 0, objects);
         this.context = context;
-        this.mUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.mUser = user;
     }
 
     @NonNull
@@ -50,7 +49,7 @@ public class QuizMatchAdapter extends ArrayAdapter<QuizMatch> {
         final QuizMatch match = getItem(position);
         int[] scores = match.getScores();
         usernameTv.setText(match.getOpponent(mUser).getDisplayName());
-        UserUtils.loadUserAvatar(context, match.getOpponent(mUser).getDisplayName(), avatarIv);
+        UserUtils.loadUserAvatar(context, match.getOpponent(mUser), avatarIv);
         roundTv.setText(context.getString(R.string.round_template, match.getRound(), scores[0], scores[1]));
         categoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, match.getQuizCategory()));
         if (!match.isMyTurn(mUser)) turnTv.setVisibility(View.GONE);

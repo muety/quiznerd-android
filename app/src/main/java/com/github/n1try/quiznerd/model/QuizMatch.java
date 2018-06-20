@@ -1,7 +1,5 @@
 package com.github.n1try.quiznerd.model;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,16 +33,16 @@ public class QuizMatch {
         this.answers2 = answers2;
     }
 
-    public QuizUser getOpponent(FirebaseUser me) {
-        if (getPlayer1().getAuthentication().equals(me.getUid())) return getPlayer2();
+    public QuizUser getOpponent(QuizUser me) {
+        if (getPlayer1().getAuthentication().equals(me.getAuthentication())) return getPlayer2();
         return getPlayer1();
     }
 
-    public boolean isInitiator(FirebaseUser user) {
-        return getPlayer1().getAuthentication().equals(user.getUid());
+    public boolean isInitiator(QuizUser user) {
+        return getPlayer1().getAuthentication().equals(user.getAuthentication());
     }
 
-    public boolean isMyTurn(FirebaseUser me) {
+    public boolean isMyTurn(QuizUser me) {
         if (isInitiator(me) && getRound() % 2 == 0) return true;
         return false;
     }

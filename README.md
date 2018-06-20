@@ -4,5 +4,4 @@
 * [Generate SHA-1 fingerprint](https://developers.google.com/android/guides/client-auth) for Google Auth (Key alias is `ferdinand muetsch`)
 
 ## To Do
-* [Add sign-in](https://firebase.google.com/docs/auth/android/firebaseui?authuser=0#sign_in)
-* [Integrate Firestore](https://firebase.google.com/docs/firestore/quickstart?authuser=0#initialize
+* Placeholder images
