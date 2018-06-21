@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
-            mFirestore.fetchOwnUser(mAuthentication, this);
+            mFirestore.fetchUserByAuthentication(mAuthentication.getUid(), this);
             mFirestore.fetchActiveMatches(this);
             try {
                 latch.await();
@@ -124,7 +124,10 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (this.users != null && this.matches != null &&this.users.size() == 1 && this.users.get(0).getAuthentication().equals(mAuthentication.getUid())) {
+            if (this.users != null &&
+                    this.matches != null &&
+                    this.users.size() == 1 &&
+                    this.users.get(0).getAuthentication().equals(mAuthentication.getUid())) {
                 mUser = this.users.get(0);
                 String winRatio = getString(R.string.score_template, UserUtils.getUserScore(context, mUser));
                 mUsernameTv.setText(mAuthentication.getDisplayName());
@@ -158,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         @Override
         public void onError(Exception e) {
+            Log.e(TAG, e.getMessage());
             Toast.makeText(context, getString(R.string.error_fetch_matches), Toast.LENGTH_SHORT).show();
         }
     }
