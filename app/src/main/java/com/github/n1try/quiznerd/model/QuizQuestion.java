@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuizQuestion {
     private String id;
-    private String question;
+    private String text;
     private String code;
     private QuizCategory category;
-    private String creatorId;
     private List<QuizAnswer> answers;
 
     public QuizAnswer getCorrectAnswer() {

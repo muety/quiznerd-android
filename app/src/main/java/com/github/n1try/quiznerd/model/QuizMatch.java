@@ -23,7 +23,7 @@ public class QuizMatch {
     private List<Long> answers1 = new ArrayList<>();
     private List<Long> answers2 = new ArrayList<>();
 
-    public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, List<Long> answers1, List<Long> answers2, Date updated) {
+    public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, List<Long> answers1, List<Long> answers2, Date updated, List<QuizQuestion> questions) {
         this.id = id;
         this.quizCategory = quizCategory;
         this.round = round;
@@ -31,6 +31,7 @@ public class QuizMatch {
         this.updated = updated;
         this.answers1 = answers1;
         this.answers2 = answers2;
+        this.questions = questions;
     }
 
     public QuizUser getOpponent(QuizUser me) {
