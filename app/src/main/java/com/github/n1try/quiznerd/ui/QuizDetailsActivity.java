@@ -46,6 +46,12 @@ public class QuizDetailsActivity extends AppCompatActivity {
 
         UserUtils.loadUserAvatar(this, mUser, mAvatar1Iv);
         UserUtils.loadUserAvatar(this, mMatch.getOpponent(mUser), mAvatar2Iv);
-        mScoreTv.setText(getString(R.string.round_score_template, mMatch.getScores()[0], mMatch.getScores()[1]));
+
+        /* Own user should always be the left avatar. But player1 is the creator, who is not necessarily the current user himself. */
+        if (mMatch.isInitiator(mUser)) {
+            mScoreTv.setText(getString(R.string.round_score_template, mMatch.getScores()[0], mMatch.getScores()[1]));
+        } else {
+            mScoreTv.setText(getString(R.string.round_score_template, mMatch.getScores()[1], mMatch.getScores()[0]));
+        }
     }
 }
