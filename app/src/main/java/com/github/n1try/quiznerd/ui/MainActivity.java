@@ -9,6 +9,9 @@ TODO: Category-specific dark color
 TODO: Ability to change username
 TODO: Clean questions
 TODO: Import questions
+TODO: Notifications
+TODO: Widget
+TODO: Tests
  */
 
 package com.github.n1try.quiznerd.ui;

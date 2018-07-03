@@ -17,6 +17,8 @@
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 
+    <!-- TEXT -->
+
     <style name="AppTheme.Text.Light.BaseText" parent="@style/TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@android:color/white</item>
     </style>
@@ -53,4 +55,7 @@
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <!-- BUTTONS -->
+
 </resources>

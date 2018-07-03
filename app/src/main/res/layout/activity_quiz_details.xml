@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/colorBackground">
 
     <LinearLayout
         android:id="@+id/main_container"
@@ -63,13 +64,24 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <Button
+            android:id="@+id/details_play_button"
+            style="@style/Base.Widget.AppCompat.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/play"
+            android:textColor="@android:color/white" />
+
         <ListView
             android:id="@+id/details_round_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorBackground"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="8dp" />
+            android:background="@android:color/transparent"
+            android:divider="@android:color/transparent" />
 
     </LinearLayout>
 

@@ -1,10 +1,14 @@
 package com.github.n1try.quiznerd.ui;
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,12 +33,15 @@ public class QuizDetailsActivity extends AppCompatActivity {
     @BindView(R.id.details_round_card)
     ListView mRoundCardList;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
     @BindView(R.id.appbar)
-    AppBarLayout appbar;
+    AppBarLayout mAppbar;
+    @BindView(R.id.details_play_button)
+    Button mPlayButton;
 
     private QuizUser mUser;
     private QuizMatch mMatch;
+    private int color;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,14 +49,25 @@ public class QuizDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_details);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mMatch = getIntent().getParcelableExtra(Constants.KEY_MATCH);
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
 
-        appbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory()));
+        color = QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory());
+        mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory()));
+        if (!mMatch.isMyTurn(mUser)) mPlayButton.setVisibility(View.GONE);
+        mPlayButton.setBackgroundTintList(ColorStateList.valueOf(color));
+        mPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(QuizDetailsActivity.this, IngameActivity.class);
+                intent.putExtra(Constants.KEY_MATCH, mMatch);
+                startActivity(intent);
+            }
+        });
 
         UserUtils.loadUserAvatar(this, mUser, mAvatar1Iv);
         UserUtils.loadUserAvatar(this, mMatch.getOpponent(mUser), mAvatar2Iv);
