@@ -1,5 +1,8 @@
 package com.github.n1try.quiznerd.model;
 
+import lombok.Getter;
+
+@Getter
 public enum QuizCategory {
     ANDROID("Android"),
     CPP("C++"),
