@@ -58,6 +58,16 @@ public class QuizRound implements Parcelable {
         return scores;
     }
 
+    /* playerIdx starts at 1 */
+    public boolean isQuestionCorrect(int questionIdx, int playerIdx) {
+        if (playerIdx == 1) {
+            return answers1.size() > questionIdx && questions.size() > questionIdx && answers1.get(questionIdx) == questions.get(questionIdx).getCorrectAnswer().getId();
+        } else if (playerIdx == 2) {
+            return answers2.size() > questionIdx && questions.size() > questionIdx && answers2.get(questionIdx) == questions.get(questionIdx).getCorrectAnswer().getId();
+        }
+        return false;
+    }
+
     @Override
     public int describeContents() {
         return id;

@@ -12,14 +12,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
     @BindView(R.id.quiz_round_tv)
@@ -53,6 +57,49 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         mRoundTv.setTextColor(color);
         mCategoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, round.getCategory()));
 
+        List<QuizRoundQuestion> roundQuestions = new ArrayList<>();
+        for (int i = 0; i < round.getQuestions().size(); i++) {
+            QuizQuestion q = round.getQuestions().get(i);
+            roundQuestions.add(new QuizRoundQuestion(q, round.isQuestionCorrect(i, 1), round.isQuestionCorrect(i, 2)));
+        }
+
+        mQuestionsLv.setAdapter(new QuizRoundQuestionAdapter(context, roundQuestions));
+
         return convertView;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private class QuizRoundQuestion {
+        private QuizQuestion question;
+        private boolean correct1;
+        private boolean correct2;
+    }
+
+    private class QuizRoundQuestionAdapter extends ArrayAdapter<QuizRoundQuestion> {
+        public QuizRoundQuestionAdapter(@NonNull Context context, @NonNull List<QuizRoundQuestion> objects) {
+            super(context, 0, objects);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_round_question, parent, false);
+            }
+
+            final ImageView state1Iv = convertView.findViewById(R.id.question_status1_iv);
+            final ImageView state2Iv = convertView.findViewById(R.id.question_status2_iv);
+            final TextView textTv = convertView.findViewById(R.id.question_text);
+
+            final QuizRoundQuestion question = getItem(position);
+            if (question.isCorrect1()) state1Iv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            else state1Iv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
+            if (question.isCorrect2()) state2Iv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            else state2Iv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
+            textTv.setText(question.question.getText());
+
+            return convertView;
+        }
     }
 }
