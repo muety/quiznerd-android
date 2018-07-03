@@ -69,7 +69,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorBackground"
             android:divider="@android:color/transparent"
-            android:dividerHeight="16dp" />
+            android:dividerHeight="8dp" />
 
     </LinearLayout>
 

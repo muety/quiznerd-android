@@ -1,3 +1,16 @@
+/*
+TODO: Swipe to refresh
+TODO: Start new matches
+TODO: Cloud function to generate new matches
+TODO: Play activity
+TODO: Start next round
+TODO: App icon
+TODO: Category-specific dark color
+TODO: Ability to change username
+TODO: Clean questions
+TODO: Import questions
+ */
+
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
