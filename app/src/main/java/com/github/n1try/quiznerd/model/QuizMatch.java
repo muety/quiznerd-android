@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,19 +24,15 @@ public class QuizMatch implements Parcelable {
     private int round;
     private boolean active;
     private Date updated;
-    private List<QuizQuestion> questions = new ArrayList<>();
-    private List<Long> answers1 = new ArrayList<>();
-    private List<Long> answers2 = new ArrayList<>();
+    private List<QuizRound> rounds;
 
-    public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, List<Long> answers1, List<Long> answers2, Date updated, List<QuizQuestion> questions) {
+    public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, List<QuizRound> rounds) {
         this.id = id;
         this.quizCategory = quizCategory;
         this.round = round;
         this.active = active;
         this.updated = updated;
-        this.answers1 = answers1;
-        this.answers2 = answers2;
-        this.questions = questions;
+        this.rounds = rounds;
     }
 
     protected QuizMatch(Parcel in) {
@@ -62,12 +57,10 @@ public class QuizMatch implements Parcelable {
 
     public int[] getScores() {
         int[] scores = new int[] {0, 0};
-        for (int i = 0; i < questions.size(); i++) {
-            int correctAnswer = questions.get(i).getCorrectAnswer().getId();
-            int user1Answer = answers1.size() > i ? answers1.get(i).intValue() : -1;
-            int user2Answer = answers2.size() > i ? answers2.get(i).intValue() : -1;
-            if (correctAnswer == user1Answer) scores[0]++;
-            if (correctAnswer == user2Answer) scores[1]++;
+        for (QuizRound r : rounds) {
+            int[] score = r.getScores();
+            scores[0] += score[0];
+            scores[1] += score[1];
         }
         return scores;
     }

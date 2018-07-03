@@ -39,6 +39,7 @@ public class QuizDetailsActivity extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mMatch = getIntent().getParcelableExtra(Constants.KEY_MATCH);
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);

@@ -7,7 +7,7 @@ import android.util.Log;
 import com.github.n1try.quiznerd.model.FirestoreQuizMatchResult;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
-import com.github.n1try.quiznerd.model.QuizQuestion;
+import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -127,23 +127,21 @@ public class FirestoreService {
         public List<FirestoreQuizMatchResult> then(@NonNull Task<QuerySnapshot> task) {
             List<FirestoreQuizMatchResult> matches = new ArrayList<>(task.getResult().size());
             for (QueryDocumentSnapshot doc : task.getResult()) {
-                List<Map> questionReferences = (List<Map>) doc.get("questions");
-                List<QuizQuestion> questions = new ArrayList<>(questionReferences.size());
-                for (Map ref : questionReferences) {
-                    questions.add(mGson.fromJson(mGson.toJsonTree(ref), QuizQuestion.class));
+                List<Map> roundReferences = (List<Map>) doc.get("rounds");
+                List<QuizRound> rounds = new ArrayList<>(roundReferences.size());
+                for (Map ref : roundReferences) {
+                    rounds.add(mGson.fromJson(mGson.toJsonTree(ref), QuizRound.class));
                 }
 
                 matches.add(FirestoreQuizMatchResult.builder()
                         .id(doc.getId())
                         .player1Reference(doc.getDocumentReference("player1"))
                         .player2Reference(doc.getDocumentReference("player2"))
-                        .questions(questions)
+                        .rounds(rounds)
                         .quizCategory(QuizCategory.valueOf(doc.getString("category")))
                         .round(doc.getLong("round").intValue())
                         .active(doc.getBoolean("active"))
                         .updated(doc.getDate("updated"))
-                        .answers1((List<Long>) doc.get("answers1"))
-                        .answers2((List<Long>) doc.get("answers2"))
                         .build());
             }
             return matches;
