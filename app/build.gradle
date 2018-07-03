@@ -66,6 +66,7 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation 'com.android.support:gridlayout-v7:27.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

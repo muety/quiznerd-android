@@ -41,6 +41,13 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="AppTheme.Text.Dark.Heading" parent="AppTheme.Text.Dark.BaseText">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="AppTheme.Text.Dark.SectionHeading" parent="AppTheme.Text.Dark.BaseText">
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>

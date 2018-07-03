@@ -3,4 +3,5 @@
     <dimen name="app_bar_elevation">4dp</dimen>
     <dimen name="extended_actionbar_height">156dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="anwer_button_min_height">64dp</dimen>
 </resources>

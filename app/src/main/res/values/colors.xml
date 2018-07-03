@@ -7,6 +7,7 @@
     <color name="textColorPrimary">#090909</color>
     <color name="textColorSecondary">#727272</color>
     <color name="colorBackground">#eeeeee</color>
+    <color name="colorCodeBackground">#EFEFEF</color>
 
     <color name="categoryAndroid">#A4C439</color>
     <color name="categoryJava">#B07219</color>
