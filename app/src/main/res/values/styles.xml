@@ -40,4 +40,10 @@
     <style name="AppTheme.Text.Dark.SubTitle" parent="AppTheme.Text.Dark.BaseText">
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="AppTheme.Text.Dark.SectionHeading" parent="AppTheme.Text.Dark.BaseText">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

@@ -1,5 +1,11 @@
 package com.github.n1try.quiznerd.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizMatch {
+public class QuizMatch implements Parcelable {
     private String id;
     private QuizCategory quizCategory;
     private QuizUser player1;
@@ -32,6 +38,12 @@ public class QuizMatch {
         this.answers1 = answers1;
         this.answers2 = answers2;
         this.questions = questions;
+    }
+
+    protected QuizMatch(Parcel in) {
+        id = in.readString();
+        round = in.readInt();
+        active = in.readByte() != 0;
     }
 
     public QuizUser getOpponent(QuizUser me) {
@@ -58,5 +70,29 @@ public class QuizMatch {
             if (correctAnswer == user2Answer) scores[1]++;
         }
         return scores;
+    }
+
+    public static final Creator<QuizMatch> CREATOR = new Creator<QuizMatch>() {
+        @Override
+        public QuizMatch createFromParcel(Parcel in) {
+            Gson gson = new GsonBuilder().create();
+            return gson.fromJson(in.readString(), QuizMatch.class);
+        }
+
+        @Override
+        public QuizMatch[] newArray(int size) {
+            return new QuizMatch[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return id.hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        Gson gson = new GsonBuilder().create();
+        parcel.writeString(gson.toJson(this));
     }
 }

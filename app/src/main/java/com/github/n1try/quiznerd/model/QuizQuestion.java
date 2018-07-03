@@ -1,5 +1,11 @@
 package com.github.n1try.quiznerd.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -9,17 +15,48 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizQuestion {
+public class QuizQuestion implements Parcelable {
     private String id;
     private String text;
     private String code;
     private QuizCategory category;
     private List<QuizAnswer> answers;
 
+    protected QuizQuestion(Parcel in) {
+        id = in.readString();
+        text = in.readString();
+        code = in.readString();
+        answers = in.createTypedArrayList(QuizAnswer.CREATOR);
+    }
+
+    public static final Creator<QuizQuestion> CREATOR = new Creator<QuizQuestion>() {
+        @Override
+        public QuizQuestion createFromParcel(Parcel in) {
+            Gson gson = new GsonBuilder().create();
+            return gson.fromJson(in.readString(), QuizQuestion.class);
+        }
+
+        @Override
+        public QuizQuestion[] newArray(int size) {
+            return new QuizQuestion[size];
+        }
+    };
+
     public QuizAnswer getCorrectAnswer() {
         for (QuizAnswer answer : answers) {
             if (answer.isCorrect()) return answer;
         }
         return null;
+    }
+
+    @Override
+    public int describeContents() {
+        return id.hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        Gson gson = new GsonBuilder().create();
+        parcel.writeString(gson.toJson(this));
     }
 }

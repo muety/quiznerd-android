@@ -18,4 +18,7 @@
     <color name="categoryPhp">#4F5D95</color>
     <color name="categorySwift">#FFAC45</color>
 
+    <color name="success">#A1CE6F</color>
+    <color name="danger">#F97146</color>
+
 </resources>

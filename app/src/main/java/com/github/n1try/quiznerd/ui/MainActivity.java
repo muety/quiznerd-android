@@ -1,6 +1,7 @@
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.FirestoreService;
+import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,12 +35,12 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "MainActivity";
     private FirebaseUser mAuthentication;
     private QuizUser mUser;
     private FirestoreService mFirestore;
-    private List<QuizMatch> activeMatches;
+    private List<QuizMatch> mMatches;
     private QuizMatchAdapter mMatchAdapter;
 
     @BindView(R.id.main_container)
@@ -67,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
         mFirestore = FirestoreService.getInstance();
 
+        mQuizList.setOnItemClickListener(this);
+
         setReady(false);
         new FetchDataTask().execute();
     }
@@ -94,6 +99,15 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
             mMainContainer.setVisibility(View.GONE);
             mLoadingContainer.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        QuizMatch match = mMatches.get(i);
+        Intent intent = new Intent(this, QuizDetailsActivity.class);
+        intent.putExtra(Constants.KEY_ME, mUser);
+        intent.putExtra(Constants.KEY_MATCH, match);
+        startActivity(intent);
     }
 
     class FetchDataTask extends AsyncTask<Void, Void, Void> implements FirestoreService.FirestoreCallbacks {
@@ -134,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
                 mScoreTv.setText(winRatio);
                 UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
 
-                activeMatches = this.matches;
-                mMatchAdapter = new QuizMatchAdapter(context, activeMatches, mUser);
+                mMatches = this.matches;
+                mMatchAdapter = new QuizMatchAdapter(context, mMatches, mUser);
                 mQuizList.setAdapter(mMatchAdapter);
             } else {
                 onError(new Resources.NotFoundException());

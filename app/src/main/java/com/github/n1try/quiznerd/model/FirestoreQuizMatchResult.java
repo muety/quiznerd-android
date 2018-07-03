@@ -10,8 +10,8 @@ import lombok.Data;
 
 @Data
 public class FirestoreQuizMatchResult extends QuizMatch {
-    private DocumentReference player1Reference;
-    private DocumentReference player2Reference;
+    private transient DocumentReference player1Reference;
+    private transient DocumentReference player2Reference;
 
     @Builder
     private FirestoreQuizMatchResult(String id, QuizCategory quizCategory, int round, boolean active, List<Long> answers1, List<Long> answers2, Date updated, DocumentReference player1Reference, DocumentReference player2Reference, List<QuizQuestion> questions) {
