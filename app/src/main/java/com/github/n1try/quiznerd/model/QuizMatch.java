@@ -52,6 +52,7 @@ public class QuizMatch implements Parcelable {
 
     public boolean isMyTurn(QuizUser me) {
         if (isInitiator(me) && getRound() % 2 == 0) return true;
+        else if (!isInitiator(me) && getRound() % 2 == 1) return true;
         return false;
     }
 

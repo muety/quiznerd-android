@@ -1,10 +1,12 @@
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,10 +23,16 @@ import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/* CAUTION: Can only be attached by activities that also implement OnAnsweredListener */
 public class IngameQuestionFragment extends Fragment {
+    private static final String TAG = "IngameQuestionFragment";
+
     @BindView(R.id.ingame_question_title_tv)
     TextView mTitleTv;
     @BindView(R.id.ingame_category_iv)
@@ -37,10 +45,19 @@ public class IngameQuestionFragment extends Fragment {
     GridLayout mAnswerButtonGrid;
 
     private Context mContext;
+    private OnAnsweredListener mAnsweredListener;
     private LayoutInflater mInflater;
     private QuizUser mUser;
     private QuizQuestion mQuestion;
     private int mPosition;
+    private List<Button> mAnswerButtons;
+
+    private int colorSuccess;
+    private int colorFailed;
+
+    protected interface OnAnsweredListener {
+        public void onAnswered(QuizAnswer answer);
+    }
 
     public static IngameQuestionFragment newInstance(QuizUser user, QuizQuestion question, int position) {
         IngameQuestionFragment fragment = new IngameQuestionFragment();
@@ -79,8 +96,12 @@ public class IngameQuestionFragment extends Fragment {
             mCodeTv.setVisibility(View.VISIBLE);
         }
 
+        mAnswerButtons = new ArrayList<>();
         for (QuizAnswer answer : mQuestion.getAnswers()) {
-            mAnswerButtonGrid.addView(inflateAnswerButtons(answer));
+            Button b = inflateAnswerButtons(answer);
+            b.setTag(answer.getId());
+            mAnswerButtons.add(b);
+            mAnswerButtonGrid.addView(b);
         }
 
         return view;
@@ -90,9 +111,13 @@ public class IngameQuestionFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        mAnsweredListener = (OnAnsweredListener) context;
+
+        colorSuccess = ContextCompat.getColor(context, R.color.success);
+        colorFailed = ContextCompat.getColor(context, R.color.danger);
     }
 
-    private Button inflateAnswerButtons(QuizAnswer answer) {
+    private Button inflateAnswerButtons(final QuizAnswer answer) {
         Button button = (Button) mInflater.inflate(R.layout.button_answer, null);
         button.setText(answer.getText());
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -100,6 +125,26 @@ public class IngameQuestionFragment extends Fragment {
         params.width = 0;
         params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
         button.setLayoutParams(params);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                revealSolution(answer);
+                mAnsweredListener.onAnswered(answer);
+            }
+        });
+
         return button;
+    }
+
+    private void revealSolution(QuizAnswer userAnswer) {
+        for (Button b : mAnswerButtons) {
+            int answerId = (int) b.getTag();
+            if (answerId == userAnswer.getId()) {
+                if (userAnswer.isCorrect()) b.setBackgroundTintList(ColorStateList.valueOf(colorSuccess));
+                else b.setBackgroundTintList(ColorStateList.valueOf(colorFailed));
+            }
+            b.setEnabled(false);
+        }
     }
 }
