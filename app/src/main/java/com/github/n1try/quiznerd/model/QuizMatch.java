@@ -66,6 +66,10 @@ public class QuizMatch implements Parcelable {
         return scores;
     }
 
+    public int getMyPlayerIndex(QuizUser me) {
+        return isInitiator(me) ? 1 : 2;
+    }
+
     public QuizRound getCurrentRound() {
         return rounds.get(round - 1);
     }

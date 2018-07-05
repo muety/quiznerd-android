@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
+import com.github.n1try.quiznerd.service.QuizCacheService;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
@@ -39,6 +40,7 @@ public class QuizDetailsActivity extends AppCompatActivity {
     @BindView(R.id.details_play_button)
     Button mPlayButton;
 
+    private QuizCacheService mQuizCache;
     private QuizUser mUser;
     private QuizMatch mMatch;
     private int color;
@@ -52,8 +54,10 @@ public class QuizDetailsActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mQuizCache = QuizCacheService.getInstance();
 
-        mMatch = getIntent().getParcelableExtra(Constants.KEY_MATCH);
+        String matchId = getIntent().getStringExtra(Constants.KEY_MATCH_ID);
+        mMatch = mQuizCache.matchCache.get(matchId);
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
 
         color = QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory());
@@ -66,13 +70,16 @@ public class QuizDetailsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        mMatch = mQuizCache.matchCache.get(mMatch.getId());
+
         if (!mMatch.isMyTurn(mUser)) mPlayButton.setVisibility(View.GONE);
         mPlayButton.setBackgroundTintList(ColorStateList.valueOf(color));
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(QuizDetailsActivity.this, IngameActivity.class);
-                intent.putExtra(Constants.KEY_MATCH, mMatch);
+                intent.putExtra(Constants.KEY_MATCH_ID, mMatch.getId());
+                intent.putExtra(Constants.KEY_ME, mUser);
                 startActivity(intent);
             }
         });

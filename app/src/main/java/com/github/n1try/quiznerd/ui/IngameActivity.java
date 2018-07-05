@@ -14,6 +14,8 @@ import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizAnswer;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
+import com.github.n1try.quiznerd.service.FirestoreService;
+import com.github.n1try.quiznerd.service.QuizCacheService;
 import com.github.n1try.quiznerd.utils.Constants;
 
 import butterknife.BindView;
@@ -31,7 +33,9 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     @BindView(R.id.appbar)
     AppBarLayout mAppbar;
 
-    private FragmentManager fragmentManager;
+    private FirestoreService mFirestoreService;
+    private QuizCacheService mQuizCache;
+    private FragmentManager mFragmentManager;
     private QuizUser mUser;
     private QuizMatch mMatch;
     private int mCurrentQuestionIdx = 0;
@@ -42,10 +46,13 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         setContentView(R.layout.actvity_ingame);
         ButterKnife.bind(this);
 
-        fragmentManager = getSupportFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
+        mFirestoreService = FirestoreService.getInstance();
+        mQuizCache = QuizCacheService.getInstance();
         setSupportActionBar(mToolbar);
 
-        mMatch = getIntent().getParcelableExtra(Constants.KEY_MATCH);
+        String matchId = getIntent().getStringExtra(Constants.KEY_MATCH_ID);
+        mMatch = mQuizCache.matchCache.get(matchId);
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
 
         setTitle(getString(R.string.round_template, mMatch.getRound()));
@@ -59,7 +66,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     private void displayQuestion() {
         if (mCurrentQuestionIdx < Constants.NUM_ROUNDS && mCurrentQuestionIdx < mMatch.getCurrentRound().getQuestions().size()) {
             Fragment fragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
-            fragmentManager.beginTransaction().replace(R.id.ingame_question_container, fragment, TAG_QUESTION_FRAGMENT).commit();
+            mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, fragment, TAG_QUESTION_FRAGMENT).commit();
         } else {
             super.onBackPressed();
         }
@@ -72,12 +79,15 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     @Override
     public void onAnswered(QuizAnswer answer) {
         mNextButton.setVisibility(View.VISIBLE);
+        mMatch.getCurrentRound().answerQuestionAt(mCurrentQuestionIdx, answer, mMatch.getMyPlayerIndex(mUser));
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ingame_next_fab:
+                mQuizCache.matchCache.put(mMatch.getId(), mMatch);
+                mFirestoreService.updateQuizRounds(mMatch);
                 mCurrentQuestionIdx++;
                 displayQuestion();
                 break;

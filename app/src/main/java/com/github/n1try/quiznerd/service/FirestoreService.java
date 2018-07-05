@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
@@ -33,6 +34,7 @@ public class FirestoreService {
     private static final FirestoreService ourInstance = new FirestoreService();
 
     private FirebaseFirestore mFirestore;
+    private QuizCacheService mQuizCache;
     private Gson mGson;
 
     public static FirestoreService getInstance() {
@@ -40,8 +42,13 @@ public class FirestoreService {
     }
 
     private FirestoreService() {
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build();
         mFirestore = FirebaseFirestore.getInstance();
+        mFirestore.setFirestoreSettings(settings);
         mGson = new Gson();
+        mQuizCache = QuizCacheService.getInstance();
     }
 
     public interface FirestoreCallbacks {
@@ -110,6 +117,9 @@ public class FirestoreService {
                 .addOnSuccessListener(new OnSuccessListener<List<QuizMatch>>() {
                     @Override
                     public void onSuccess(List<QuizMatch> firestoreQuizMatchResults) {
+                        for (QuizMatch m : firestoreQuizMatchResults) {
+                            mQuizCache.matchCache.put(m.getId(), m);
+                        }
                         callback.onMatchesFetched(firestoreQuizMatchResults);
                     }
                 })
@@ -120,6 +130,12 @@ public class FirestoreService {
                         callback.onError(e);
                     }
                 });
+    }
+
+    public void updateQuizRounds(QuizMatch match) {
+        mFirestore.collection(COLL_MATCHES)
+                .document(match.getId())
+                .update("rounds", mGson.fromJson(mGson.toJsonTree(match.getRounds()), List.class));
     }
 
     private class CreateQuizMatches implements Continuation<QuerySnapshot, List<FirestoreQuizMatchResult>> {

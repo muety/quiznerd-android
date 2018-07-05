@@ -47,7 +47,7 @@ public class QuizRound implements Parcelable {
     }
 
     public int[] getScores() {
-        int[] scores = new int[] {0, 0};
+        int[] scores = new int[]{0, 0};
         for (int i = 0; i < questions.size(); i++) {
             int correctAnswer = questions.get(i).getCorrectAnswer().getId();
             int user1Answer = answers1.size() > i ? answers1.get(i).intValue() : -1;
@@ -71,6 +71,16 @@ public class QuizRound implements Parcelable {
         }
         return false;
     }
+
+    public void answerQuestionAt(int questionIdx, QuizAnswer answer, int playerIdx) {
+        try {
+            if (playerIdx == 1) answers1.set(questionIdx, Long.valueOf(answer.getId()));
+            else if (playerIdx == 2) answers2.set(questionIdx, Long.valueOf(answer.getId()));
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // TODO
+        }
+    }
+
 
     @Override
     public int describeContents() {

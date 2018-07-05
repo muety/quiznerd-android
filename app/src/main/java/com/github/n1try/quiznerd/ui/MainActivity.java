@@ -38,12 +38,14 @@ import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.FirestoreService;
+import com.github.n1try.quiznerd.service.QuizCacheService;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     private FirebaseUser mAuthentication;
     private QuizUser mUser;
     private FirestoreService mFirestore;
+    private QuizCacheService mQuizCache;
     private List<QuizMatch> mMatches;
     private QuizMatchAdapter mMatchAdapter;
 
@@ -85,11 +88,18 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
         mFirestore = FirestoreService.getInstance();
+        mQuizCache = QuizCacheService.getInstance();
 
         mQuizList.setOnItemClickListener(this);
 
         setReady(false);
         new FetchDataTask().execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        postMatchesLoad();
     }
 
     @Override
@@ -122,8 +132,14 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         QuizMatch match = mMatches.get(i);
         Intent intent = new Intent(this, QuizDetailsActivity.class);
         intent.putExtra(Constants.KEY_ME, mUser);
-        intent.putExtra(Constants.KEY_MATCH, match);
+        intent.putExtra(Constants.KEY_MATCH_ID, match.getId());
         startActivity(intent);
+    }
+
+    private void postMatchesLoad() {
+        mMatches = new ArrayList<>(mQuizCache.matchCache.values());
+        mMatchAdapter = new QuizMatchAdapter(this, mMatches, mUser);
+        mQuizList.setAdapter(mMatchAdapter);
     }
 
     class FetchDataTask extends AsyncTask<Void, Void, Void> implements FirestoreService.FirestoreCallbacks {
@@ -164,9 +180,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
                 mScoreTv.setText(winRatio);
                 UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
 
-                mMatches = this.matches;
-                mMatchAdapter = new QuizMatchAdapter(context, mMatches, mUser);
-                mQuizList.setAdapter(mMatchAdapter);
+                postMatchesLoad();
             } else {
                 onError(new Resources.NotFoundException());
             }
