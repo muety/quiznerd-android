@@ -57,8 +57,12 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     }
 
     private void displayQuestion() {
-        Fragment fragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
-        fragmentManager.beginTransaction().replace(R.id.ingame_question_container, fragment, TAG_QUESTION_FRAGMENT).commit();
+        if (mCurrentQuestionIdx < Constants.NUM_ROUNDS && mCurrentQuestionIdx < mMatch.getCurrentRound().getQuestions().size()) {
+            Fragment fragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
+            fragmentManager.beginTransaction().replace(R.id.ingame_question_container, fragment, TAG_QUESTION_FRAGMENT).commit();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

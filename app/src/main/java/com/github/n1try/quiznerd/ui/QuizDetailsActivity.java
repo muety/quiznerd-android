@@ -58,6 +58,14 @@ public class QuizDetailsActivity extends AppCompatActivity {
 
         color = QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory());
         mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory()));
+        UserUtils.loadUserAvatar(this, mUser, mAvatar1Iv);
+        UserUtils.loadUserAvatar(this, mMatch.getOpponent(mUser), mAvatar2Iv);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         if (!mMatch.isMyTurn(mUser)) mPlayButton.setVisibility(View.GONE);
         mPlayButton.setBackgroundTintList(ColorStateList.valueOf(color));
         mPlayButton.setOnClickListener(new View.OnClickListener() {
@@ -68,9 +76,6 @@ public class QuizDetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        UserUtils.loadUserAvatar(this, mUser, mAvatar1Iv);
-        UserUtils.loadUserAvatar(this, mMatch.getOpponent(mUser), mAvatar2Iv);
 
         /* Own user should always be the left avatar. But player1 is the creator, who is not necessarily the current user himself. */
         if (mMatch.isInitiator(mUser)) {
