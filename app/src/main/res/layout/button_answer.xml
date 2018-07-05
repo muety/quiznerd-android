@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Base.Widget.AppCompat.Button.Borderless"
-    android:layout_width="0dp"
+    style="@style/Base.Widget.AppCompat.Button.Colored"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp"
-    android:layout_marginStart="16dp"
+    android:backgroundTint="@color/colorCodeBackground"
     android:minHeight="@dimen/anwer_button_min_height"
     android:text="Button"
+    android:textColor="@color/textColorPrimary"
     app:layout_columnWeight="1" />

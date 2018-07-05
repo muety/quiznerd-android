@@ -65,6 +65,10 @@ public class QuizMatch implements Parcelable {
         return scores;
     }
 
+    public QuizRound getCurrentRound() {
+        return rounds.get(round - 1);
+    }
+
     public static final Creator<QuizMatch> CREATOR = new Creator<QuizMatch>() {
         @Override
         public QuizMatch createFromParcel(Parcel in) {

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,6 +19,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IngameActivity extends AppCompatActivity {
+    private static final String TAG_QUESTION_FRAGMENT = "question_fragment";
+
     @BindView(R.id.ingame_question_container)
     View mQuestionContainer;
     @BindView(R.id.ingame_next_fab)
@@ -26,8 +30,10 @@ public class IngameActivity extends AppCompatActivity {
     @BindView(R.id.appbar)
     AppBarLayout mAppbar;
 
+    private FragmentManager fragmentManager;
     private QuizUser mUser;
     private QuizMatch mMatch;
+    private int mCurrentQuestionIdx = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +41,7 @@ public class IngameActivity extends AppCompatActivity {
         setContentView(R.layout.actvity_ingame);
         ButterKnife.bind(this);
 
+        fragmentManager = getSupportFragmentManager();
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -42,5 +49,8 @@ public class IngameActivity extends AppCompatActivity {
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
 
         setTitle(getString(R.string.round_template, mMatch.getRound()));
+
+        Fragment fragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
+        fragmentManager.beginTransaction().replace(R.id.ingame_question_container, fragment, TAG_QUESTION_FRAGMENT).commit();
     }
 }

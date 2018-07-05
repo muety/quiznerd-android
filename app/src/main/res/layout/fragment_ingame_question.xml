@@ -44,7 +44,8 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/shape_code_view_bg"
             android:padding="8dp"
-            android:text="TextView"
+            android:text="Code"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingame_question_text_tv">
@@ -56,16 +57,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:padding="8dp"
             app:columnCount="@integer/answer_buttons_cols"
             app:columnOrderPreserved="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingame_question_code_tv">
+            app:layout_constraintTop_toBottomOf="@+id/ingame_question_code_tv"
+            app:useDefaultMargins="false">
 
             <!-- Button here -->
 
         </android.support.v7.widget.GridLayout>
-
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
