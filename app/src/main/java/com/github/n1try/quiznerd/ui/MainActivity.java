@@ -12,6 +12,8 @@ TODO: Import questions
 TODO: Notifications
 TODO: Widget
 TODO: Tests
+TODO: Include license section
+TODO: Do update after last question of each round
  */
 
 package com.github.n1try.quiznerd.ui;
