@@ -11,4 +11,9 @@
     <string name="round_score_template">%1$s vs. %2$s</string>
     <string name="loading">Loading ...</string>
     <string name="play">Play!</string>
+    <string name="progress_your_turn">It\'s your turn!</string>
+    <string name="progress_waiting_for_opponent">Waiting for opponent ...</string>
+    <string name="result_time_up">Your time was up ...</string>
+    <string name="result_correct">Correct answer, congratulations!</string>
+    <string name="result_wrong">Sorry, that was the wrong answer ...</string>
 </resources>

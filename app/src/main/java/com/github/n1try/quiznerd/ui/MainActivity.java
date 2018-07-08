@@ -13,7 +13,7 @@ TODO: Notifications
 TODO: Widget
 TODO: Tests
 TODO: Include license section
-TODO: Do update after last question of each round
+TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
  */
 
 package com.github.n1try.quiznerd.ui;

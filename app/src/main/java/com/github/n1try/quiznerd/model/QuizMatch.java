@@ -3,6 +3,7 @@ package com.github.n1try.quiznerd.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.n1try.quiznerd.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -51,6 +52,7 @@ public class QuizMatch implements Parcelable {
     }
 
     public boolean isMyTurn(QuizUser me) {
+        if (!active) return false;
         if (isInitiator(me) && getRound() % 2 == 0) return true;
         else if (!isInitiator(me) && getRound() % 2 == 1) return true;
         return false;
@@ -72,6 +74,10 @@ public class QuizMatch implements Parcelable {
 
     public QuizRound getCurrentRound() {
         return rounds.get(round - 1);
+    }
+
+    public void nextRound() {
+        round = Math.min(round + 1, Constants.NUM_ROUNDS);
     }
 
     public static final Creator<QuizMatch> CREATOR = new Creator<QuizMatch>() {

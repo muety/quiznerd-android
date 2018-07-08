@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.538" />
 
     <ImageView
-        android:id="@+id/question_status1_iv"
+        android:id="@+id/ingame_question_result_iv"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_margin="4dp"
@@ -44,7 +44,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/question_status1_iv"
+        app:layout_constraintStart_toEndOf="@id/ingame_question_result_iv"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_wrong" />
 </android.support.constraint.ConstraintLayout>

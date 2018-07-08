@@ -20,6 +20,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/ingame_question_result_iv"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ingame_question_title_tv"
+            app:layout_constraintStart_toEndOf="@+id/ingame_question_title_tv"
+            app:layout_constraintTop_toTopOf="@+id/ingame_question_title_tv"
+            app:srcCompat="@drawable/ic_wrong" />
+
+        <ImageView
             android:id="@+id/ingame_category_iv"
             android:layout_width="32dp"
             android:layout_height="32dp"

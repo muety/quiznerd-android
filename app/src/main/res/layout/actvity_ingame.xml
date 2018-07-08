@@ -26,12 +26,21 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <ProgressBar
+            android:id="@+id/ingame_countdown"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:max="@integer/countdown_millis"
+            android:progress="@integer/countdown_millis" />
+
         <FrameLayout
             android:id="@+id/ingame_question_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </FrameLayout>
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

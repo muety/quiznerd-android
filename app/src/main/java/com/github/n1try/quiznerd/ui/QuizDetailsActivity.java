@@ -91,7 +91,7 @@ public class QuizDetailsActivity extends AppCompatActivity {
             mScoreTv.setText(getString(R.string.round_score_template, mMatch.getScores()[1], mMatch.getScores()[0]));
         }
 
-        QuizRoundAdapter roundAdapter = new QuizRoundAdapter(this, mMatch.getRounds(), mUser);
+        QuizRoundAdapter roundAdapter = new QuizRoundAdapter(this, mMatch, mUser);
         mRoundCardList.setAdapter(roundAdapter);
     }
 }

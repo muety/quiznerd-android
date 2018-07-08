@@ -1,14 +1,15 @@
 package com.github.n1try.quiznerd.ui;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizAnswer;
@@ -32,13 +33,17 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     Toolbar mToolbar;
     @BindView(R.id.appbar)
     AppBarLayout mAppbar;
+    @BindView(R.id.ingame_countdown)
+    ProgressBar mProgressBar;
 
     private FirestoreService mFirestoreService;
     private QuizCacheService mQuizCache;
     private FragmentManager mFragmentManager;
+    private IngameQuestionFragment mCurrentFragment;
     private QuizUser mUser;
     private QuizMatch mMatch;
     private int mCurrentQuestionIdx = 0;
+    private CountDownTimer mCountdown;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,14 +65,30 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         mNextButton.setVisibility(View.GONE);
         mNextButton.setOnClickListener(this);
 
+        mCountdown = new CountDownTimer(getResources().getInteger(R.integer.countdown_millis), 1000) {
+            @Override
+            public void onTick(long remaining) {
+                mProgressBar.setProgress((int) remaining);
+            }
+
+            @Override
+            public void onFinish() {
+                mProgressBar.setProgress(0);
+                mCurrentFragment.revealSolution(QuizAnswer.EMPTY_ANSWER);
+                onAnswered(QuizAnswer.EMPTY_ANSWER);
+            }
+        }.start();
+
         displayQuestion();
     }
 
     private void displayQuestion() {
         if (mCurrentQuestionIdx < Constants.NUM_ROUNDS && mCurrentQuestionIdx < mMatch.getCurrentRound().getQuestions().size()) {
-            Fragment fragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
-            mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, fragment, TAG_QUESTION_FRAGMENT).commit();
+            mCurrentFragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
+            mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, mCurrentFragment, TAG_QUESTION_FRAGMENT).commit();
         } else {
+            mMatch.setActive(false);
+            mFirestoreService.updateQuizState(mMatch);
             super.onBackPressed();
         }
     }
@@ -87,9 +108,14 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         switch (view.getId()) {
             case R.id.ingame_next_fab:
                 mQuizCache.matchCache.put(mMatch.getId(), mMatch);
-                mFirestoreService.updateQuizRounds(mMatch);
                 mCurrentQuestionIdx++;
+                if (mCurrentQuestionIdx == mMatch.getCurrentRound().getQuestions().size() - 1) {
+                    // Push to Firestore after last round
+                    mMatch.nextRound();
+                    mFirestoreService.updateQuizRounds(mMatch);
+                }
                 displayQuestion();
+                mCountdown.cancel();
                 break;
         }
     }

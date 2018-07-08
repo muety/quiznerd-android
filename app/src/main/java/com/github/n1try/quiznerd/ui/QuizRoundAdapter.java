@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
@@ -32,16 +33,20 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
     ImageView mCategoryIv;
     @BindView(R.id.quiz_questions_lv)
     ListView mQuestionsLv;
+    @BindView(R.id.quiz_progress_tv)
+    TextView mProgressTv;
 
     private Context context;
     private QuizUser mUser;
+    private QuizMatch mMatch;
     private int color;
 
-    public QuizRoundAdapter(@NonNull Context context, @NonNull List<QuizRound> objects, @NonNull QuizUser user) {
-        super(context, 0, objects);
+    public QuizRoundAdapter(@NonNull Context context, @NonNull QuizMatch match, @NonNull QuizUser user) {
+        super(context, 0, match.getRounds());
         this.context = context;
         this.mUser = user;
-        this.color = QuizUtils.getCategoryColorId(context, objects.get(0).getCategory());
+        this.mMatch = match;
+        this.color = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory());
     }
 
     @NonNull
@@ -57,13 +62,24 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         mRoundTv.setTextColor(color);
         mCategoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, round.getCategory()));
 
-        List<QuizRoundQuestion> roundQuestions = new ArrayList<>();
-        for (int i = 0; i < round.getQuestions().size(); i++) {
-            QuizQuestion q = round.getQuestions().get(i);
-            roundQuestions.add(new QuizRoundQuestion(q, round.isQuestionCorrect(i, 1), round.isQuestionCorrect(i, 2)));
+        if (!mMatch.isActive() || mMatch.getRound() > round.getId()) {
+            List<QuizRoundQuestion> roundQuestions = new ArrayList<>();
+            for (int i = 0; i < round.getQuestions().size(); i++) {
+                QuizQuestion q = round.getQuestions().get(i);
+                roundQuestions.add(new QuizRoundQuestion(q, round.isQuestionCorrect(i, 1), round.isQuestionCorrect(i, 2)));
+            }
+            mQuestionsLv.setAdapter(new QuizRoundQuestionAdapter(context, roundQuestions));
+            mQuestionsLv.setVisibility(View.VISIBLE);
+            mProgressTv.setVisibility(View.GONE);
+        } else {
+            if (mMatch.isMyTurn(mUser)) {
+                mProgressTv.setText(R.string.progress_your_turn);
+            } else {
+                mProgressTv.setText(R.string.progress_waiting_for_opponent);
+            }
+            mQuestionsLv.setVisibility(View.GONE);
+            mProgressTv.setVisibility(View.VISIBLE);
         }
-
-        mQuestionsLv.setAdapter(new QuizRoundQuestionAdapter(context, roundQuestions));
 
         return convertView;
     }
@@ -88,7 +104,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_round_question, parent, false);
             }
 
-            final ImageView state1Iv = convertView.findViewById(R.id.question_status1_iv);
+            final ImageView state1Iv = convertView.findViewById(R.id.ingame_question_result_iv);
             final ImageView state2Iv = convertView.findViewById(R.id.question_status2_iv);
             final TextView textTv = convertView.findViewById(R.id.question_text);
 

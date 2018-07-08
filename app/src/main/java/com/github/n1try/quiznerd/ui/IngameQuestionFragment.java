@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizAnswer;
@@ -43,6 +44,8 @@ public class IngameQuestionFragment extends Fragment {
     TextView mCodeTv;
     @BindView(R.id.ingame_question_button_container)
     GridLayout mAnswerButtonGrid;
+    @BindView(R.id.ingame_question_result_iv)
+    ImageView mResultIndicator;
 
     private Context mContext;
     private OnAnsweredListener mAnsweredListener;
@@ -89,6 +92,7 @@ public class IngameQuestionFragment extends Fragment {
         mTitleTv.setText(mContext.getString(R.string.question_template, String.valueOf(mPosition + 1)));
         mTextTv.setText(mQuestion.getText());
         mCategoryIv.setImageDrawable(QuizUtils.getCategoryIcon(mContext, mQuestion.getCategory()));
+        mResultIndicator.setVisibility(View.GONE);
         if (TextUtils.isEmpty(mQuestion.getCode())) {
             mCodeTv.setVisibility(View.GONE);
         } else {
@@ -137,12 +141,28 @@ public class IngameQuestionFragment extends Fragment {
         return button;
     }
 
-    private void revealSolution(QuizAnswer userAnswer) {
+    public void revealSolution(QuizAnswer userAnswer) {
+        if (userAnswer == null || userAnswer.equals(QuizAnswer.EMPTY_ANSWER)) {
+            Toast.makeText(mContext, R.string.result_time_up, Toast.LENGTH_SHORT).show();
+            mResultIndicator.setImageDrawable(mContext.getDrawable(R.drawable.ic_wrong));
+            mResultIndicator.setVisibility(View.VISIBLE);
+        } else if (userAnswer.isCorrect()) {
+            Toast.makeText(mContext, R.string.result_correct, Toast.LENGTH_SHORT).show();
+            mResultIndicator.setImageDrawable(mContext.getDrawable(R.drawable.ic_check));
+            mResultIndicator.setVisibility(View.VISIBLE);
+        } else {
+            Toast.makeText(mContext, R.string.result_wrong, Toast.LENGTH_SHORT).show();
+            mResultIndicator.setImageDrawable(mContext.getDrawable(R.drawable.ic_wrong));
+            mResultIndicator.setVisibility(View.VISIBLE);
+        }
+
         for (Button b : mAnswerButtons) {
             int answerId = (int) b.getTag();
-            if (answerId == userAnswer.getId()) {
-                if (userAnswer.isCorrect()) b.setBackgroundTintList(ColorStateList.valueOf(colorSuccess));
-                else b.setBackgroundTintList(ColorStateList.valueOf(colorFailed));
+            if (answerId == mQuestion.getCorrectAnswer().getId()) {
+                b.setBackgroundTintList(ColorStateList.valueOf(colorSuccess));
+            }
+            if (userAnswer != null && answerId == userAnswer.getId() && !userAnswer.isCorrect()) {
+                b.setBackgroundTintList(ColorStateList.valueOf(colorFailed));
             }
             b.setEnabled(false);
         }

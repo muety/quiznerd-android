@@ -135,7 +135,19 @@ public class FirestoreService {
     public void updateQuizRounds(QuizMatch match) {
         mFirestore.collection(COLL_MATCHES)
                 .document(match.getId())
-                .update("rounds", mGson.fromJson(mGson.toJsonTree(match.getRounds()), List.class));
+                .update(
+                        "rounds", mGson.fromJson(mGson.toJsonTree(match.getRounds()), List.class),
+                        "round", match.getRound(),
+                        "active", match.isActive()
+                );
+    }
+
+    public void updateQuizState(QuizMatch match) {
+        mFirestore.collection(COLL_MATCHES)
+                .document(match.getId())
+                .update(
+                        "active", match.isActive()
+                );
     }
 
     private class CreateQuizMatches implements Continuation<QuerySnapshot, List<FirestoreQuizMatchResult>> {

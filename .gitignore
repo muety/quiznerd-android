@@ -6,4 +6,4 @@
 /captures
 .externalNativeBuild
 app/secrets.properties
-*.idea*
+.idea

@@ -6,13 +6,17 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class QuizAnswer implements Parcelable {
     private int id;
     private String text;
     private boolean correct;
+
+    public static QuizAnswer EMPTY_ANSWER = new QuizAnswer(-1, "", false);
 
     protected QuizAnswer(Parcel in) {
         id = in.readInt();
