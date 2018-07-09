@@ -26,40 +26,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class FirestoreService {
+public class FirestoreApiService extends QuizApiService {
     public static final String COLL_MATCHES = "matches";
     public static final String COLL_USERS = "users";
 
-    private static final String TAG = "FirestoreService";
-    private static final FirestoreService ourInstance = new FirestoreService();
+    private static final String TAG = "FirestoreApiService";
+    private static final FirestoreApiService ourInstance = new FirestoreApiService();
 
     private FirebaseFirestore mFirestore;
-    private QuizCacheService mQuizCache;
     private Gson mGson;
 
-    public static FirestoreService getInstance() {
+    public static FirestoreApiService getInstance() {
         return ourInstance;
     }
 
-    private FirestoreService() {
+    private FirestoreApiService() {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build();
         mFirestore = FirebaseFirestore.getInstance();
         mFirestore.setFirestoreSettings(settings);
         mGson = new Gson();
-        mQuizCache = QuizCacheService.getInstance();
     }
 
-    public interface FirestoreCallbacks {
-        void onMatchesFetched(List<QuizMatch> matches);
-
-        void onUsersFetched(List<QuizUser> users);
-
-        void onError(Exception e);
-    }
-
-    public void fetchUserByMail(String emailQuery, final FirestoreCallbacks callback) {
+    public void fetchUserByMail(String emailQuery, final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_USERS)
                 .whereEqualTo("email", emailQuery)
                 .get()
@@ -83,7 +73,7 @@ public class FirestoreService {
                 });
     }
 
-    public void fetchUserByAuthentication(String authentication, final FirestoreCallbacks callback) {
+    public void fetchUserByAuthentication(String authentication, final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_USERS)
                 .whereEqualTo("authentication", authentication)
                 .get()
@@ -107,7 +97,7 @@ public class FirestoreService {
                 });
     }
 
-    public void fetchActiveMatches(final FirestoreCallbacks callback) {
+    public void fetchActiveMatches(final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_MATCHES)
                 .whereEqualTo("active", true)
                 .get()
@@ -118,7 +108,7 @@ public class FirestoreService {
                     @Override
                     public void onSuccess(List<QuizMatch> firestoreQuizMatchResults) {
                         for (QuizMatch m : firestoreQuizMatchResults) {
-                            mQuizCache.matchCache.put(m.getId(), m);
+                            matchCache.put(m.getId(), m);
                         }
                         callback.onMatchesFetched(firestoreQuizMatchResults);
                     }

@@ -14,6 +14,8 @@ TODO: Widget
 TODO: Tests
 TODO: Include license section
 TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
+TODO: Update instantly after user answer
+TODO: Timeout all non-answered questions of active rouns on app quit
  */
 
 package com.github.n1try.quiznerd.ui;
@@ -39,8 +41,8 @@ import android.widget.Toast;
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
-import com.github.n1try.quiznerd.service.FirestoreService;
-import com.github.n1try.quiznerd.service.QuizCacheService;
+import com.github.n1try.quiznerd.service.QuizApiCallbacks;
+import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
@@ -59,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     private static final String TAG = "MainActivity";
     private FirebaseUser mAuthentication;
     private QuizUser mUser;
-    private FirestoreService mFirestore;
-    private QuizCacheService mQuizCache;
+    private QuizApiService mApiService;
     private List<QuizMatch> mMatches;
     private QuizMatchAdapter mMatchAdapter;
 
@@ -89,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         setSupportActionBar(toolbar);
 
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
-        mFirestore = FirestoreService.getInstance();
-        mQuizCache = QuizCacheService.getInstance();
+        mApiService = QuizApiService.getInstance();
 
         mQuizList.setOnItemClickListener(this);
 
@@ -139,12 +139,12 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     }
 
     private void postMatchesLoad() {
-        mMatches = new ArrayList<>(mQuizCache.matchCache.values());
+        mMatches = new ArrayList<>(mApiService.matchCache.values());
         mMatchAdapter = new QuizMatchAdapter(this, mMatches, mUser);
         mQuizList.setAdapter(mMatchAdapter);
     }
 
-    class FetchDataTask extends AsyncTask<Void, Void, Void> implements FirestoreService.FirestoreCallbacks {
+    class FetchDataTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
         private List<QuizUser> users;
         private List<QuizMatch> matches;
@@ -160,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
-            mFirestore.fetchUserByAuthentication(mAuthentication.getUid(), this);
-            mFirestore.fetchActiveMatches(this);
+            mApiService.fetchUserByAuthentication(mAuthentication.getUid(), this);
+            mApiService.fetchActiveMatches(this);
             try {
                 latch.await();
             } catch (InterruptedException e) {

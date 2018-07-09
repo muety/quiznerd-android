@@ -15,8 +15,7 @@ import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizAnswer;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
-import com.github.n1try.quiznerd.service.FirestoreService;
-import com.github.n1try.quiznerd.service.QuizCacheService;
+import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.utils.Constants;
 
 import butterknife.BindView;
@@ -36,8 +35,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     @BindView(R.id.ingame_countdown)
     ProgressBar mProgressBar;
 
-    private FirestoreService mFirestoreService;
-    private QuizCacheService mQuizCache;
+    private QuizApiService mApiService;
     private FragmentManager mFragmentManager;
     private IngameQuestionFragment mCurrentFragment;
     private QuizUser mUser;
@@ -52,12 +50,11 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         ButterKnife.bind(this);
 
         mFragmentManager = getSupportFragmentManager();
-        mFirestoreService = FirestoreService.getInstance();
-        mQuizCache = QuizCacheService.getInstance();
+        mApiService = QuizApiService.getInstance();
         setSupportActionBar(mToolbar);
 
         String matchId = getIntent().getStringExtra(Constants.KEY_MATCH_ID);
-        mMatch = mQuizCache.matchCache.get(matchId);
+        mMatch = mApiService.matchCache.get(matchId);
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
 
         setTitle(getString(R.string.round_template, mMatch.getRound()));
@@ -88,7 +85,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
             mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, mCurrentFragment, TAG_QUESTION_FRAGMENT).commit();
         } else {
             mMatch.setActive(false);
-            mFirestoreService.updateQuizState(mMatch);
+            mApiService.updateQuizState(mMatch);
             super.onBackPressed();
         }
     }
@@ -107,12 +104,12 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ingame_next_fab:
-                mQuizCache.matchCache.put(mMatch.getId(), mMatch);
+                mApiService.matchCache.put(mMatch.getId(), mMatch);
                 mCurrentQuestionIdx++;
                 if (mCurrentQuestionIdx == mMatch.getCurrentRound().getQuestions().size() - 1) {
                     // Push to Firestore after last round
                     mMatch.nextRound();
-                    mFirestoreService.updateQuizRounds(mMatch);
+                    mApiService.updateQuizRounds(mMatch);
                 }
                 displayQuestion();
                 mCountdown.cancel();
