@@ -3,7 +3,7 @@ TODO: Swipe to refresh
 TODO: Start new matches
 TODO: Cloud function to generate new matches
 TODO: Play activity
-TODO: Start next round
+TODO: Start next round (https://stackoverflow.com/a/46801925/3112139)
 TODO: App icon
 TODO: Category-specific dark color
 TODO: Ability to change username
@@ -14,8 +14,7 @@ TODO: Widget
 TODO: Tests
 TODO: Include license section
 TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
-TODO: Update instantly after user answer
-TODO: Timeout all non-answered questions of active rouns on app quit
+TODO: Timeout all non-answered questions of active rounds on app quit
  */
 
 package com.github.n1try.quiznerd.ui;

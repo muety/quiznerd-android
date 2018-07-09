@@ -14,8 +14,10 @@ import android.widget.ProgressBar;
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizAnswer;
 import com.github.n1try.quiznerd.model.QuizMatch;
+import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiService;
+import com.github.n1try.quiznerd.service.QuizRoundManager;
 import com.github.n1try.quiznerd.utils.Constants;
 
 import butterknife.BindView;
@@ -36,11 +38,11 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     ProgressBar mProgressBar;
 
     private QuizApiService mApiService;
+    private QuizRoundManager mQuizRoundManager;
     private FragmentManager mFragmentManager;
     private IngameQuestionFragment mCurrentFragment;
     private QuizUser mUser;
     private QuizMatch mMatch;
-    private int mCurrentQuestionIdx = 0;
     private CountDownTimer mCountdown;
 
     @Override
@@ -49,14 +51,12 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         setContentView(R.layout.actvity_ingame);
         ButterKnife.bind(this);
 
-        mFragmentManager = getSupportFragmentManager();
         mApiService = QuizApiService.getInstance();
-        setSupportActionBar(mToolbar);
-
-        String matchId = getIntent().getStringExtra(Constants.KEY_MATCH_ID);
-        mMatch = mApiService.matchCache.get(matchId);
+        mFragmentManager = getSupportFragmentManager();
+        mMatch = mApiService.matchCache.get(getIntent().getStringExtra(Constants.KEY_MATCH_ID));
         mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
-
+        mQuizRoundManager = new QuizRoundManager(mMatch, mUser);
+        setSupportActionBar(mToolbar);
         setTitle(getString(R.string.round_template, mMatch.getRound()));
 
         mNextButton.setVisibility(View.GONE);
@@ -72,22 +72,16 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
             public void onFinish() {
                 mProgressBar.setProgress(0);
                 mCurrentFragment.revealSolution(QuizAnswer.EMPTY_ANSWER);
-                onAnswered(QuizAnswer.EMPTY_ANSWER);
+                mQuizRoundManager.timeout();
             }
         }.start();
 
-        displayQuestion();
+        displayQuestion(mQuizRoundManager.playCurrentRound().getCurrentQuestion());
     }
 
-    private void displayQuestion() {
-        if (mCurrentQuestionIdx < Constants.NUM_ROUNDS && mCurrentQuestionIdx < mMatch.getCurrentRound().getQuestions().size()) {
-            mCurrentFragment = IngameQuestionFragment.newInstance(mUser, mMatch.getCurrentRound().getQuestion(mCurrentQuestionIdx), mCurrentQuestionIdx);
-            mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, mCurrentFragment, TAG_QUESTION_FRAGMENT).commit();
-        } else {
-            mMatch.setActive(false);
-            mApiService.updateQuizState(mMatch);
-            super.onBackPressed();
-        }
+    private void displayQuestion(QuizQuestion question) {
+        mCurrentFragment = IngameQuestionFragment.newInstance(mUser, question, mMatch.getCurrentRound().getQuestionIndex(question));
+        mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, mCurrentFragment, TAG_QUESTION_FRAGMENT).commit();
     }
 
     @Override
@@ -97,22 +91,17 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     @Override
     public void onAnswered(QuizAnswer answer) {
         mNextButton.setVisibility(View.VISIBLE);
-        mMatch.getCurrentRound().answerQuestionAt(mCurrentQuestionIdx, answer, mMatch.getMyPlayerIndex(mUser));
+        mCountdown.cancel();
+        mQuizRoundManager.answer(answer);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ingame_next_fab:
-                mApiService.matchCache.put(mMatch.getId(), mMatch);
-                mCurrentQuestionIdx++;
-                if (mCurrentQuestionIdx == mMatch.getCurrentRound().getQuestions().size() - 1) {
-                    // Push to Firestore after last round
-                    mMatch.nextRound();
-                    mApiService.updateQuizRounds(mMatch);
-                }
-                displayQuestion();
-                mCountdown.cancel();
+                QuizQuestion nextQuestion = mQuizRoundManager.next().getCurrentQuestion();
+                if (nextQuestion == null) super.onBackPressed();
+                else displayQuestion(nextQuestion);
                 break;
         }
     }

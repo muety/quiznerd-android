@@ -81,6 +81,12 @@ public class QuizRound implements Parcelable {
         }
     }
 
+    public int getQuestionIndex(QuizQuestion question) {
+        for (int i = 0; i < questions.size(); i++) {
+            if (questions.get(i).equals(question)) return i;
+        }
+        return -1;
+    }
 
     @Override
     public int describeContents() {

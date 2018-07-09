@@ -49,6 +49,10 @@ public class QuizQuestion implements Parcelable {
         return null;
     }
 
+    public QuizAnswer getAnswer(int index) {
+        return answers.get(index);
+    }
+
     @Override
     public int describeContents() {
         return id.hashCode();

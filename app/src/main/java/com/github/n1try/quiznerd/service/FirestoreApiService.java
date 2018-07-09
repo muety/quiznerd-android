@@ -126,9 +126,15 @@ public class FirestoreApiService extends QuizApiService {
         mFirestore.collection(COLL_MATCHES)
                 .document(match.getId())
                 .update(
-                        "rounds", mGson.fromJson(mGson.toJsonTree(match.getRounds()), List.class),
-                        "round", match.getRound(),
-                        "active", match.isActive()
+                        "rounds", mGson.fromJson(mGson.toJsonTree(match.getRounds()), List.class)
+                );
+    }
+
+    public void updateQuizRound(QuizMatch match) {
+        mFirestore.collection(COLL_MATCHES)
+                .document(match.getId())
+                .update(
+                        "round", match.getRound()
                 );
     }
 
