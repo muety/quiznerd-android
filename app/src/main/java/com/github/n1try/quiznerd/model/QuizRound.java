@@ -88,6 +88,16 @@ public class QuizRound implements Parcelable {
         return -1;
     }
 
+    public int getMyNextQuestionIndex(int playerIdx) {
+        List<Long> answers = playerIdx == 1 ? answers1 : answers2;
+        for (int i = 0; i < answers.size(); i++) {
+            if (answers.get(i) == QuizAnswer.EMPTY_ANSWER_ID) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public int describeContents() {
         return id;

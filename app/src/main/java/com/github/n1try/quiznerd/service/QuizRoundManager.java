@@ -12,16 +12,19 @@ public class QuizRoundManager {
     private QuizMatch match;
     private QuizUser user;
     private QuizRound round;
-    private int questionIndex = 0;
+    private int playerIndex;
+    private int questionIndex;
 
     public QuizRoundManager(QuizMatch match, QuizUser user) {
-        apiService = QuizApiService.getInstance();
+        this.apiService = QuizApiService.getInstance();
         this.match = match;
         this.user = user;
+        this.playerIndex = match.getMyPlayerIndex(user);
     }
 
     public QuizRoundManager playCurrentRound() {
         round = match.getCurrentRound();
+        questionIndex = round.getMyNextQuestionIndex(playerIndex);
         return this;
     }
 
@@ -32,12 +35,16 @@ public class QuizRoundManager {
         return this;
     }
 
-    public QuizRoundManager timeout() {
-        return answer(QuizAnswer.EMPTY_ANSWER);
+    public QuizRoundManager timeoutAllPending() {
+        while (questionIndex >= 0) {
+            answer(QuizAnswer.TIMEOUT_ANSWER);
+            next();
+        }
+        return this;
     }
 
     public QuizRoundManager next() {
-        if (questionIndex < round.getQuestions().size() - 2) {
+        if (questionIndex < round.getQuestions().size() - 1) {
             questionIndex++;
         } else {
             if (round.getId() < Constants.NUM_ROUNDS && round.getId() < match.getRounds().size() - 1) {

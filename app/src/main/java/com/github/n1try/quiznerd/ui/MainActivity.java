@@ -15,6 +15,8 @@ TODO: Tests
 TODO: Include license section
 TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
 TODO: Timeout all non-answered questions of active rounds on app quit
+TODO: Set database permissions
+TODO: Won / lost alert
  */
 
 package com.github.n1try.quiznerd.ui;

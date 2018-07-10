@@ -133,7 +133,6 @@ public class IngameQuestionFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                revealSolution(answer);
                 mAnsweredListener.onAnswered(answer);
             }
         });
@@ -142,7 +141,7 @@ public class IngameQuestionFragment extends Fragment {
     }
 
     public void revealSolution(QuizAnswer userAnswer) {
-        if (userAnswer == null || userAnswer.equals(QuizAnswer.EMPTY_ANSWER)) {
+        if (userAnswer == null || userAnswer.equals(QuizAnswer.TIMEOUT_ANSWER)) {
             Toast.makeText(mContext, R.string.result_time_up, Toast.LENGTH_SHORT).show();
             mResultIndicator.setImageDrawable(mContext.getDrawable(R.drawable.ic_wrong));
             mResultIndicator.setVisibility(View.VISIBLE);

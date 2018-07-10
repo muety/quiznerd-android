@@ -16,7 +16,10 @@ public class QuizAnswer implements Parcelable {
     private String text;
     private boolean correct;
 
-    public static QuizAnswer EMPTY_ANSWER = new QuizAnswer(-1, "", false);
+    public static int EMPTY_ANSWER_ID = -1;
+    public static int TIMEOUT_ANSWER_ID = -2;
+    public static QuizAnswer EMPTY_ANSWER = new QuizAnswer(EMPTY_ANSWER_ID, "", false);
+    public static QuizAnswer TIMEOUT_ANSWER = new QuizAnswer(TIMEOUT_ANSWER_ID, "", false);
 
     protected QuizAnswer(Parcel in) {
         id = in.readInt();

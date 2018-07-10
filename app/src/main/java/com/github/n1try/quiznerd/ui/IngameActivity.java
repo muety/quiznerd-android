@@ -71,12 +71,22 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
             @Override
             public void onFinish() {
                 mProgressBar.setProgress(0);
-                mCurrentFragment.revealSolution(QuizAnswer.EMPTY_ANSWER);
-                mQuizRoundManager.timeout();
+                onAnswered(QuizAnswer.TIMEOUT_ANSWER);
             }
         }.start();
 
         displayQuestion(mQuizRoundManager.playCurrentRound().getCurrentQuestion());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mQuizRoundManager.timeoutAllPending();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     private void displayQuestion(QuizQuestion question) {
@@ -93,13 +103,15 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         mNextButton.setVisibility(View.VISIBLE);
         mCountdown.cancel();
         mQuizRoundManager.answer(answer);
+        mQuizRoundManager.next();
+        mCurrentFragment.revealSolution(answer);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ingame_next_fab:
-                QuizQuestion nextQuestion = mQuizRoundManager.next().getCurrentQuestion();
+                QuizQuestion nextQuestion = mQuizRoundManager.getCurrentQuestion();
                 if (nextQuestion == null) super.onBackPressed();
                 else displayQuestion(nextQuestion);
                 break;
