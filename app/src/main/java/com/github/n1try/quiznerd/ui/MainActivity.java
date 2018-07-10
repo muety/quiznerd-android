@@ -13,6 +13,7 @@ TODO: Include license section
 TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
 TODO: Set database permissions
 TODO: Won / lost alert
+TODO: Remove "waiting for opponent" message and show question mark icon instead
  */
 
 package com.github.n1try.quiznerd.ui;

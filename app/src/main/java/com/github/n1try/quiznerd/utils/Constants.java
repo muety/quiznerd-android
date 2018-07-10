@@ -7,4 +7,5 @@ public final class Constants {
     public static final String KEY_MATCH_ID = "match_id";
     public static final String KEY_QUESTION = "question";
     public static final String KEY_POSITION = "position";
+    public static final String KEY_COUNTDOWN = "countdown";
 }

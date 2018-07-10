@@ -53,8 +53,11 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
 
         mApiService = QuizApiService.getInstance();
         mFragmentManager = getSupportFragmentManager();
-        mMatch = mApiService.matchCache.get(getIntent().getStringExtra(Constants.KEY_MATCH_ID));
-        mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
+
+        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
+        mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
+        mUser = bundle.getParcelable(Constants.KEY_ME);
+
         mQuizRoundManager = new QuizRoundManager(mMatch, mUser);
         setSupportActionBar(mToolbar);
         setTitle(getString(R.string.round_template, mMatch.getRound()));
@@ -62,7 +65,10 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         mNextButton.setVisibility(View.GONE);
         mNextButton.setOnClickListener(this);
 
-        mCountdown = new CountDownTimer(getResources().getInteger(R.integer.countdown_millis), 1000) {
+        long countdownState = bundle.containsKey(Constants.KEY_COUNTDOWN)
+                ? bundle.getLong(Constants.KEY_COUNTDOWN)
+                : getResources().getInteger(R.integer.countdown_millis);
+        mCountdown = new CountDownTimer(countdownState, 1000) {
             @Override
             public void onTick(long remaining) {
                 mProgressBar.setProgress((int) remaining);
@@ -78,20 +84,17 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         displayQuestion(mQuizRoundManager.playCurrentRound().getCurrentQuestion());
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mQuizRoundManager.timeoutAllPending();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
     private void displayQuestion(QuizQuestion question) {
         mCurrentFragment = IngameQuestionFragment.newInstance(mUser, question, mMatch.getCurrentRound().getQuestionIndex(question));
         mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, mCurrentFragment, TAG_QUESTION_FRAGMENT).commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.KEY_MATCH_ID, mMatch.getId());
+        outState.putParcelable(Constants.KEY_ME, mUser);
+        outState.putLong(Constants.KEY_COUNTDOWN, mProgressBar.getProgress());
     }
 
     @Override

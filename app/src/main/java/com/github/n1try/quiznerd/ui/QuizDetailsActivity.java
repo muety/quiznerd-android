@@ -56,9 +56,10 @@ public class QuizDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mApiService = QuizApiService.getInstance();
-        String matchId = getIntent().getStringExtra(Constants.KEY_MATCH_ID);
-        mMatch = mApiService.matchCache.get(matchId);
-        mUser = getIntent().getParcelableExtra(Constants.KEY_ME);
+
+        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
+        mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
+        mUser = bundle.getParcelable(Constants.KEY_ME);
 
         color = QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory());
         mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory()));
@@ -93,5 +94,12 @@ public class QuizDetailsActivity extends AppCompatActivity {
 
         QuizRoundAdapter roundAdapter = new QuizRoundAdapter(this, mMatch, mUser);
         mRoundCardList.setAdapter(roundAdapter);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.KEY_MATCH_ID, mMatch.getId());
+        outState.putParcelable(Constants.KEY_ME, mUser);
     }
 }
