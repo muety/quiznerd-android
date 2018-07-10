@@ -11,7 +11,7 @@ const PATH_CATEGORIES = './data/quizzes.json';
 const PATH_QUESTIONS = './data/questions.json';
 const CREATOR_ID = 'vPFq7bm4MX5EyecNSlvn';
 const RANDOM_STRING_LENGTH = 20;
-const LIMIT = 20; // Number.MAX_VALUE
+const LIMIT = 80; // Number.MAX_VALUE
 const SHUFFLE = true;
 const DUMP_JSON = false;
 
