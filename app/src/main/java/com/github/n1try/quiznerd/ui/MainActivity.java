@@ -1,7 +1,6 @@
 /*
 Must-do's:
 TODO: Swipe to refresh
-TODO: Start new matches (https://stackoverflow.com/a/46801925/3112139)
 TODO: App icon
 TODO: Category-specific dark color
 TODO: Clean questions

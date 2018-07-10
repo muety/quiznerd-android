@@ -66,6 +66,7 @@ public class FirestoreApiService extends QuizApiService {
                 .get();
     }
 
+    /* Based on https://stackoverflow.com/a/46801925/3112139 */
     public void fetchRandomQuestions(final int n, final QuizCategory category, final QuizApiCallbacks callback) {
         final List<QuizQuestion> questions = new ArrayList<>(n);
         final Task fetchTask = tryFetchRandomQuestions(n, category);
