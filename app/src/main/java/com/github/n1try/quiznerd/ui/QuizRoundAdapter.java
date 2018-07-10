@@ -62,7 +62,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         mRoundTv.setTextColor(color);
         mCategoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, round.getCategory()));
 
-        if (!mMatch.isActive() || mMatch.getRound() > round.getId()) {
+        if (mayShowRound(round)) {
             List<QuizRoundQuestion> roundQuestions = new ArrayList<>();
             for (int i = 0; i < round.getQuestions().size(); i++) {
                 QuizQuestion q = round.getQuestions().get(i);
@@ -82,6 +82,17 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         }
 
         return convertView;
+    }
+
+    /* User is allowed to see the round's questions if either ...
+        - ... the match is over
+        - ... the round is over
+        - ... it's the opponent's turn and the user has already made her guess
+     */
+    private boolean mayShowRound(QuizRound round) {
+        return !mMatch.isActive() ||
+                mMatch.getRound() > round.getId() ||
+                (!mMatch.isMyTurn(mUser) && round.countAnswers(mMatch.getMyPlayerIndex(mUser)) >= round.getQuestions().size());
     }
 
     @Data
