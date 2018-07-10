@@ -8,11 +8,13 @@ import com.google.gson.GsonBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 public class QuizUser implements Parcelable {
     private String id;
     private String displayName;

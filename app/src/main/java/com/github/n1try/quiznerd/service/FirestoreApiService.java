@@ -101,10 +101,12 @@ public class FirestoreApiService extends QuizApiService {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
                         if (docs.size() != 1) {
-                            callback.onError(new Resources.NotFoundException("Couldn't fetch user."));
+                            callback.onError(new Resources.NotFoundException("Couldn't find user."));
+                            return;
                         }
                         QuizUser user = docs.get(0).toObject(QuizUser.class);
                         user.setId(docs.get(0).getId());
+                        userCache.put(user.getId(), user);
                         callback.onUsersFetched(Arrays.asList(user));
                     }
                 })
@@ -125,10 +127,12 @@ public class FirestoreApiService extends QuizApiService {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
                         if (docs.size() != 1) {
-                            callback.onError(new Resources.NotFoundException("Couldn't fetch user."));
+                            callback.onError(new Resources.NotFoundException("Couldn't find user."));
+                            return;
                         }
                         QuizUser user = docs.get(0).toObject(QuizUser.class);
                         user.setId(docs.get(0).getId());
+                        userCache.put(user.getId(), user);
                         callback.onUsersFetched(Arrays.asList(user));
                     }
                 })
@@ -244,6 +248,8 @@ public class FirestoreApiService extends QuizApiService {
             player2.setId(docs.get(1).getId());
             match.setPlayer1(player1);
             match.setPlayer2(player2);
+            userCache.put(player1.getId(), player1);
+            userCache.put(player2.getId(), player2);
 
             return match;
         }

@@ -1,10 +1,15 @@
 package com.github.n1try.quiznerd.ui;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +19,25 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
+import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
+import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.ui.adapter.QuizCategoryAdapter;
 import com.github.n1try.quiznerd.ui.adapter.QuizUserAdapter;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +68,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
     private QuizApiService mApiService;
     private QuizUser mUser;
     private QuizUser currentSelectedOpponent;
+    private QuizUserAdapter mUserAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,23 +89,33 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         QuizCategoryAdapter adapter = new QuizCategoryAdapter(this, QuizCategory.values());
         mCategorySpinner.setAdapter(adapter);
 
-        Map<String, QuizUser> previousOpponents = new HashMap<>();
-        for (QuizMatch match : mApiService.matchCache.values()) {
-            previousOpponents.put(match.getPlayer1().getId(), match.getPlayer1());
-            previousOpponents.put(match.getPlayer2().getId(), match.getPlayer2());
-        }
-        previousOpponents.remove(mUser.getId());
-
+        List<QuizUser> previousOpponents = getCachedUsers();
         if (previousOpponents.isEmpty()) {
             mFriendsLabel.setVisibility(View.GONE);
             mFriendsList.setVisibility(View.GONE);
         } else {
             mFriendsLabel.setVisibility(View.VISIBLE);
             mFriendsList.setVisibility(View.VISIBLE);
-            QuizUserAdapter userAdapter = new QuizUserAdapter(this, previousOpponents.values().toArray(new QuizUser[]{}));
-            mFriendsList.setAdapter(userAdapter);
             mFriendsList.setOnItemClickListener(this);
         }
+        mUserAdapter = new QuizUserAdapter(this, previousOpponents.toArray(new QuizUser[]{}));
+        mFriendsList.setAdapter(mUserAdapter);
+        mMailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mSearchButton.setEnabled(Patterns.EMAIL_ADDRESS.matcher(editable.toString()).matches());
+            }
+        });
+        mSearchButton.setEnabled(false);
+        mSearchButton.setOnClickListener(this);
     }
 
     @Override
@@ -101,6 +123,12 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         if (currentSelectedOpponent == null) return false;
         getMenuInflater().inflate(R.menu.new_match, menu);
         return true;
+    }
+
+    private List<QuizUser> getCachedUsers() {
+        Map<String, QuizUser> users = new HashMap<>(mApiService.userCache);
+        users.remove(mUser.getId());
+        return new ArrayList<>(users.values());
     }
 
     private void showCurrentSelectedOpponent() {
@@ -139,6 +167,63 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
                 currentSelectedOpponent = null;
                 hideCurrentSelectedOpponent();
                 break;
+            case R.id.new_find_opponent_button:
+                new FetchUserTask().execute();
+                break;
+        }
+    }
+
+    class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
+        private final CountDownLatch latch;
+        private final Context context;
+        private QuizUser userResult;
+
+        public FetchUserTask() {
+            latch = new CountDownLatch(1);
+            context = getApplicationContext();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mApiService.fetchUserByMail(mMailInput.getText().toString(), this);
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                onError(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (userResult == null || userResult.equals(mUser)) {
+                Toast.makeText(context, R.string.user_not_found, Toast.LENGTH_LONG).show();
+            } else {
+                currentSelectedOpponent = userResult;
+                mUserAdapter.notifyDataSetInvalidated();
+                showCurrentSelectedOpponent();
+            }
+        }
+
+        @Override
+        public void onMatchesFetched(List<QuizMatch> matches) {
+        }
+
+        @Override
+        public void onUsersFetched(List<QuizUser> users) {
+            if (!users.isEmpty()) {
+                userResult = users.get(0);
+            }
+            latch.countDown();
+        }
+
+        @Override
+        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+        }
+
+        @Override
+        public void onError(Exception e) {
+            latch.countDown();
         }
     }
 }

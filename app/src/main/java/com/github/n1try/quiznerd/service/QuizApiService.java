@@ -1,6 +1,7 @@
 package com.github.n1try.quiznerd.service;
 
 import com.github.n1try.quiznerd.model.QuizMatch;
+import com.github.n1try.quiznerd.model.QuizUser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,8 @@ public abstract class QuizApiService {
     }
 
     public Map<String, QuizMatch> matchCache = new HashMap<>();
+
+    public Map<String, QuizUser> userCache = new HashMap<>();
 
     public abstract void fetchUserByMail(String emailQuery, QuizApiCallbacks callback);
 
