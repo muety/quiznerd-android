@@ -98,6 +98,15 @@ public class QuizRound implements Parcelable {
         return -1;
     }
 
+    public int countAnswers(int playerIdx) {
+        List<Long> answers = playerIdx == 1 ? answers1 : answers2;
+        int c = 0;
+        for (Long id : answers) {
+            if (id != QuizAnswer.EMPTY_ANSWER_ID) c++;
+        }
+        return c;
+    }
+
     @Override
     public int describeContents() {
         return id;

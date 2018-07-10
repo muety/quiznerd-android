@@ -22,7 +22,7 @@ public class QuizMatch implements Parcelable {
     private QuizCategory quizCategory;
     private QuizUser player1;
     private QuizUser player2;
-    private int round;
+    private int round; // starts at 1
     private boolean active;
     private Date updated;
     private List<QuizRound> rounds;
@@ -52,9 +52,23 @@ public class QuizMatch implements Parcelable {
     }
 
     public boolean isMyTurn(QuizUser me) {
-        if (!active) return false;
-        if (isInitiator(me) && getRound() % 2 == 0) return true;
-        else if (!isInitiator(me) && getRound() % 2 == 1) return true;
+        if (!active) {
+            return false;
+        }
+
+        int myPlayerIndex = getMyPlayerIndex(me);
+        int opponentPlayerIndex = (myPlayerIndex % 2) + 1;
+        int myAnswerCount = getCurrentRound().countAnswers(myPlayerIndex);
+        int opponentAnswerCount = getCurrentRound().countAnswers(opponentPlayerIndex);
+
+        if (myAnswerCount == opponentAnswerCount) {
+            return !isInitiator(me);
+        }
+
+        if (myAnswerCount < getCurrentRound().getQuestions().size()) {
+            return true;
+        }
+
         return false;
     }
 
