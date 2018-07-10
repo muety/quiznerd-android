@@ -2,6 +2,7 @@ package com.github.n1try.quiznerd.service;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.github.n1try.quiznerd.model.FirestoreQuizMatchDto;
@@ -27,6 +28,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -268,9 +270,19 @@ public class FirestoreApiService extends QuizApiService {
         public Task<List<FirestoreQuizMatchDto>> then(@NonNull Task<List<FirestoreQuizMatchDto>> task) {
             List<Task<FirestoreQuizMatchDto>> tasks = new ArrayList<>();
             for (FirestoreQuizMatchDto match : task.getResult()) {
-                Task<DocumentSnapshot> t1 = match.getPlayer1Reference().get();
-                Task<DocumentSnapshot> t2 = match.getPlayer2Reference().get();
-                tasks.add(Tasks.<DocumentSnapshot>whenAllSuccess(t1, t2).continueWith(new AddPlayers(match)));
+                Map<String, Integer> playerIndexes = new HashMap<>();
+                List<Task<DocumentSnapshot>> fetchPlayerTasks = new ArrayList<>();
+                if (!userCache.containsKey(match.getPlayer1Reference().getId())) {
+                    Log.d(TAG, String.format("Cache hit for player %s", match.getPlayer1Reference().getId()));
+                    fetchPlayerTasks.add(match.getPlayer1Reference().get());
+                }
+                if (!userCache.containsKey(match.getPlayer2Reference().getId())) {
+                    Log.d(TAG, String.format("Cache hit for player %s", match.getPlayer2Reference().getId()));
+                    fetchPlayerTasks.add(match.getPlayer2Reference().get());
+                }
+                playerIndexes.put(match.getPlayer1Reference().getId(), 1);
+                playerIndexes.put(match.getPlayer2Reference().getId(), 2);
+                tasks.add(Tasks.<DocumentSnapshot>whenAllSuccess(fetchPlayerTasks).continueWith(new AddPlayers(match, playerIndexes)));
             }
             return Tasks.whenAllSuccess(tasks);
         }
@@ -278,22 +290,47 @@ public class FirestoreApiService extends QuizApiService {
 
     private class AddPlayers implements Continuation<List<DocumentSnapshot>, FirestoreQuizMatchDto> {
         private FirestoreQuizMatchDto match;
+        private Map<String, Integer> playerIndexes;
 
-        public AddPlayers(FirestoreQuizMatchDto match) {
+        public AddPlayers(FirestoreQuizMatchDto match, @Nullable Map<String, Integer> playerIndexes) {
             this.match = match;
+            this.playerIndexes = playerIndexes;
         }
 
         @Override
         public FirestoreQuizMatchDto then(@NonNull Task<List<DocumentSnapshot>> task) {
             List<DocumentSnapshot> docs = task.getResult();
-            QuizUser player1 = docs.get(0).toObject(QuizUser.class);
-            QuizUser player2 = docs.get(1).toObject(QuizUser.class);
-            player1.setId(docs.get(0).getId());
-            player2.setId(docs.get(1).getId());
+            QuizUser player1; //= docs.get(0).toObject(QuizUser.class);
+            QuizUser player2; //= docs.get(1).toObject(QuizUser.class);
+            if (docs.size() == 2) {
+                player1 = docs.get(0).toObject(QuizUser.class);
+                player2 = docs.get(1).toObject(QuizUser.class);
+                player1.setId(docs.get(0).getId());
+                player2.setId(docs.get(1).getId());
+            } else {
+                String presentPlayerId = docs.get(0).getId();
+                String absentPlayerId = null;
+                for (String id : playerIndexes.keySet()) {
+                    if (!id.equals(presentPlayerId)) {
+                        absentPlayerId = id;
+                        break;
+                    }
+                }
+                if (playerIndexes.get(presentPlayerId).intValue() == 1) {
+                    player1 = docs.get(0).toObject(QuizUser.class);
+                    player1.setId(docs.get(0).getId());
+                    player2 = userCache.get(absentPlayerId);
+                } else {
+                    player2 = docs.get(0).toObject(QuizUser.class);
+                    player2.setId(docs.get(0).getId());
+                    player1 = userCache.get(absentPlayerId);
+                }
+            }
+
             match.setPlayer1(player1);
             match.setPlayer2(player2);
-            userCache.put(player1.getId(), player1);
-            userCache.put(player2.getId(), player2);
+            if (!userCache.containsKey(player1.getId())) userCache.put(player1.getId(), player1);
+            if (!userCache.containsKey(player2.getId())) userCache.put(player2.getId(), player2);
 
             return match;
         }

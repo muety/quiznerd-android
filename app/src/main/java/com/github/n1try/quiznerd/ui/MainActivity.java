@@ -208,14 +208,14 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         @Override
         public void onMatchesFetched(List<QuizMatch> matches) {
-            Log.i(TAG, String.format("%s matches fetched after %s ms.", matches.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+            Log.d(TAG, String.format("%s matches fetched after %s ms.", matches.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
             this.matches = matches;
             latch.countDown();
         }
 
         @Override
         public void onUsersFetched(List<QuizUser> users) {
-            Log.i(TAG, String.format("Own user fetched. Found %s after %s ms.", users.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+            Log.d(TAG, String.format("Own user fetched. Found %s after %s ms.", users.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
             this.users = users;
             latch.countDown();
         }

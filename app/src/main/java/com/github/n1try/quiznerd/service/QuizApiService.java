@@ -4,8 +4,8 @@ import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class QuizApiService {
     public static QuizApiService getInstance() {
@@ -13,9 +13,9 @@ public abstract class QuizApiService {
         return FirestoreApiService.getInstance();
     }
 
-    public Map<String, QuizMatch> matchCache = new HashMap<>();
+    public Map<String, QuizMatch> matchCache = new ConcurrentHashMap<>();
 
-    public Map<String, QuizUser> userCache = new HashMap<>();
+    public Map<String, QuizUser> userCache = new ConcurrentHashMap<>();
 
     public abstract void fetchUserByMail(String emailQuery, QuizApiCallbacks callback);
 
