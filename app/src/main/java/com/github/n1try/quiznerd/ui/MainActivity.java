@@ -46,6 +46,7 @@ import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
+import com.github.n1try.quiznerd.ui.adapter.QuizMatchAdapter;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
@@ -60,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener, AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "MainActivity";
     private FirebaseUser mAuthentication;
     private QuizUser mUser;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         mApiService = QuizApiService.getInstance();
 
         mQuizList.setOnItemClickListener(this);
+        mNewQuizFab.setOnClickListener(this);
 
         setReady(false);
         new FetchDataTask().execute();
@@ -147,6 +149,17 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         mQuizList.setAdapter(mMatchAdapter);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.main_new_fab:
+                Intent intent = new Intent(this, NewGameActivity.class);
+                intent.putExtra(Constants.KEY_ME, mUser);
+                startActivity(intent);
+                break;
+        }
+    }
+
     class FetchDataTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
         private List<QuizUser> users;
@@ -156,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         public FetchDataTask() {
             context = getApplicationContext();
-            latch = new CountDownLatch(3);
+            latch = new CountDownLatch(2);
             stopwatch = Stopwatch.createUnstarted();
         }
 

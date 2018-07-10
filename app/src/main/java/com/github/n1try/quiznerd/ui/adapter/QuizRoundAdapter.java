@@ -1,4 +1,4 @@
-package com.github.n1try.quiznerd.ui;
+package com.github.n1try.quiznerd.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

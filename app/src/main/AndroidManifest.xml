@@ -50,6 +50,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.QuizDetailsActivity" />
         </activity>
+
+        <activity
+            android:name=".ui.NewGameActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
