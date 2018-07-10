@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class QuizQuestion implements Parcelable {
     private String id;
     private String text;
+    private String creatorId;
     private String code;
     private QuizCategory category;
     private List<QuizAnswer> answers;

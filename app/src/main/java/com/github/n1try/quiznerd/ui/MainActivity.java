@@ -1,18 +1,23 @@
 /*
+Must-do's:
 TODO: Swipe to refresh
 TODO: Start new matches (https://stackoverflow.com/a/46801925/3112139)
 TODO: App icon
 TODO: Category-specific dark color
-TODO: Ability to change username
 TODO: Clean questions
 TODO: Import questions
 TODO: Notifications
 TODO: Widget
 TODO: Tests
+TODO: Won / lost alert
+TODO: Set database permissions
 TODO: Include license section
 TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
-TODO: Set database permissions
-TODO: Won / lost alert
+
+Can do's:
+TODO: Settings section (change username, change gender)
+TODO: Find opponent by QR code
+TODO: Ability to add questions
  */
 
 package com.github.n1try.quiznerd.ui;
@@ -37,6 +42,7 @@ import android.widget.Toast;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
+import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
@@ -150,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         public FetchDataTask() {
             context = getApplicationContext();
-            latch = new CountDownLatch(2);
+            latch = new CountDownLatch(3);
             stopwatch = Stopwatch.createUnstarted();
         }
 
@@ -200,6 +206,10 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
             Log.i(TAG, String.format("Own user fetched. Found %s after %s ms.", users.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
             this.users = users;
             latch.countDown();
+        }
+
+        @Override
+        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
         }
 
         @Override

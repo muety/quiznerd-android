@@ -8,9 +8,11 @@ import com.google.gson.GsonBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class QuizAnswer implements Parcelable {
     private int id;
     private String text;

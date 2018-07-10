@@ -19,6 +19,8 @@ public abstract class QuizApiService {
 
     public abstract void fetchActiveMatches(QuizApiCallbacks callback);
 
+    public abstract void fetchRandomQuestions(int n, QuizApiCallbacks callback);
+
     public abstract void updateQuizRound(QuizMatch match);
 
     public abstract void updateQuizRounds(QuizMatch match);

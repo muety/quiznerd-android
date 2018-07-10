@@ -7,8 +7,11 @@ import android.util.Log;
 import com.github.n1try.quiznerd.model.FirestoreQuizMatchResult;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
+import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
+import com.github.n1try.quiznerd.utils.Constants;
+import com.github.n1try.quiznerd.utils.RandomString;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +32,7 @@ import java.util.Map;
 public class FirestoreApiService extends QuizApiService {
     public static final String COLL_MATCHES = "matches";
     public static final String COLL_USERS = "users";
+    public static final String COLL_QUESTIONS = "questions";
 
     private static final String TAG = "FirestoreApiService";
     private static final FirestoreApiService ourInstance = new FirestoreApiService();
@@ -47,6 +51,45 @@ public class FirestoreApiService extends QuizApiService {
         mFirestore = FirebaseFirestore.getInstance();
         mFirestore.setFirestoreSettings(settings);
         mGson = new Gson();
+    }
+
+    private Task<QuerySnapshot> tryFetchRandomQuestions(int n) {
+        String rand = new RandomString(Constants.RANDOM_ID_LENGTH).nextString();
+        return mFirestore.collection(COLL_QUESTIONS)
+                .whereGreaterThan("random", rand)
+                .orderBy("random")
+                .limit(n)
+                .get();
+    }
+
+    public void fetchRandomQuestions(final int n, final QuizApiCallbacks callback) {
+        final List<QuizQuestion> questions = new ArrayList<>(n);
+        final Task fetchTask = tryFetchRandomQuestions(n);
+
+        class OnQuestionsFetchedSuccess implements OnSuccessListener<QuerySnapshot> {
+            @Override
+            public void onSuccess(QuerySnapshot o) {
+                for (DocumentSnapshot doc : o.getDocuments()) {
+                    QuizQuestion q = doc.toObject(QuizQuestion.class);
+                    q.setId(doc.getId());
+                    questions.add(q);
+                }
+
+                if (questions.size() < n) {
+                    fetchTask.continueWithTask(new Continuation<QuerySnapshot, Task<QuerySnapshot>>() {
+                        @Override
+                        public Task<QuerySnapshot> then(@NonNull Task<QuerySnapshot> task) {
+                            return tryFetchRandomQuestions(n);
+                        }
+                    }).addOnSuccessListener(new OnQuestionsFetchedSuccess());
+                }
+                else {
+                    callback.onRandomQuestionsFetched(questions);
+                }
+            }
+        }
+
+        fetchTask.addOnSuccessListener(new OnQuestionsFetchedSuccess());
     }
 
     public void fetchUserByMail(String emailQuery, final QuizApiCallbacks callback) {
