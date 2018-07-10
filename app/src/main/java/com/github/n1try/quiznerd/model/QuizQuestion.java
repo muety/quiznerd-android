@@ -9,12 +9,14 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class QuizQuestion implements Parcelable {
     private String id;
     private String text;

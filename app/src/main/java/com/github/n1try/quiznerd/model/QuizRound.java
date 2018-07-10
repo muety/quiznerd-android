@@ -3,6 +3,7 @@ package com.github.n1try.quiznerd.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,6 +20,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class QuizRound implements Parcelable {
+    public static List<Long> DEFAULT_ANSWERS = Lists.newArrayList(-1L, -1L, -1L, -1L);
+
     private int id;
     private List<QuizQuestion> questions;
     private List<Long> answers1 = new ArrayList<>();

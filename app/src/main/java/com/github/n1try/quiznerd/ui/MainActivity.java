@@ -222,8 +222,10 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         }
 
         @Override
-        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
-        }
+        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+
+        @Override
+        public void onMatchCreated(QuizMatch match) {}
 
         @Override
         public void onError(Exception e) {

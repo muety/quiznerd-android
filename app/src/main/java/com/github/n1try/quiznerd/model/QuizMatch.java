@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuizMatch implements Parcelable {
     private String id;
-    private QuizCategory quizCategory;
+    private QuizCategory category;
     private QuizUser player1;
     private QuizUser player2;
     private int round; // starts at 1
@@ -27,9 +27,20 @@ public class QuizMatch implements Parcelable {
     private Date updated;
     private List<QuizRound> rounds;
 
+    public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, QuizUser player1, QuizUser player2, List<QuizRound> rounds) {
+        this.id = id;
+        this.category = quizCategory;
+        this.round = round;
+        this.active = active;
+        this.updated = updated;
+        this.rounds = rounds;
+        this.player1 = player1;
+        this.player2 = player2;
+    }
+
     public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, List<QuizRound> rounds) {
         this.id = id;
-        this.quizCategory = quizCategory;
+        this.category = quizCategory;
         this.round = round;
         this.active = active;
         this.updated = updated;

@@ -1,5 +1,6 @@
 package com.github.n1try.quiznerd.service;
 
+import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
 
@@ -22,7 +23,9 @@ public abstract class QuizApiService {
 
     public abstract void fetchActiveMatches(QuizApiCallbacks callback);
 
-    public abstract void fetchRandomQuestions(int n, QuizApiCallbacks callback);
+    public abstract void fetchRandomQuestions(int n, QuizCategory category, QuizApiCallbacks callback);
+
+    public abstract void createMatch(QuizMatch match, QuizApiCallbacks callback);
 
     public abstract void updateQuizRound(QuizMatch match);
 

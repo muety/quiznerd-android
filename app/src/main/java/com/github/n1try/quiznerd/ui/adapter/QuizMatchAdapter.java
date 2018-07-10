@@ -51,7 +51,7 @@ public class QuizMatchAdapter extends ArrayAdapter<QuizMatch> {
         usernameTv.setText(match.getOpponent(mUser).getDisplayName());
         UserUtils.loadUserAvatar(context, match.getOpponent(mUser), avatarIv);
         roundTv.setText(context.getString(R.string.round_with_score_template, match.getRound(), scores[0], scores[1]));
-        categoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, match.getQuizCategory()));
+        categoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, match.getCategory()));
         if (!match.isMyTurn(mUser)) turnTv.setVisibility(View.GONE);
 
         return convertView;

@@ -13,5 +13,7 @@ public interface QuizApiCallbacks {
 
     void onRandomQuestionsFetched(List<QuizQuestion> questions);
 
+    void onMatchCreated(QuizMatch match);
+
     void onError(Exception e);
 }

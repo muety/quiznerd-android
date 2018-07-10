@@ -24,4 +24,5 @@
     <string name="find_opponent">Find opponent</string>
     <string name="find_by_mail">Find player by e-mail address</string>
     <string name="user_not_found">No user found, sorry.</string>
+    <string name="error_create_match">Couldn\\\'t create new match, sorry.</string>
 </resources>

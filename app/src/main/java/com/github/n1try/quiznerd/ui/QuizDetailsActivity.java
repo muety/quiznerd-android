@@ -62,8 +62,8 @@ public class QuizDetailsActivity extends AppCompatActivity {
         mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
         mUser = bundle.getParcelable(Constants.KEY_ME);
 
-        color = QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory());
-        mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getQuizCategory()));
+        color = QuizUtils.getCategoryColorId(this, mMatch.getCategory());
+        mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getCategory()));
         UserUtils.loadUserAvatar(this, mUser, mAvatar1Iv);
         UserUtils.loadUserAvatar(this, mMatch.getOpponent(mUser), mAvatar2Iv);
     }
