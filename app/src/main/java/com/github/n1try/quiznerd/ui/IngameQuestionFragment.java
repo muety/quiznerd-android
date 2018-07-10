@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayout;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,7 +97,7 @@ public class IngameQuestionFragment extends Fragment {
         if (TextUtils.isEmpty(mQuestion.getCode())) {
             mCodeTv.setVisibility(View.GONE);
         } else {
-            mCodeTv.setText(mQuestion.getCode());
+            mCodeTv.setText(Html.fromHtml(mQuestion.getCode()));
             mCodeTv.setVisibility(View.VISIBLE);
         }
 

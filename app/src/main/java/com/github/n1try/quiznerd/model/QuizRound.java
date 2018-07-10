@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class QuizRound implements Parcelable {
-    public static List<Long> DEFAULT_ANSWERS = Lists.newArrayList(-1L, -1L, -1L, -1L);
+    public static List<Long> DEFAULT_ANSWERS = Lists.newArrayList(-1L, -1L, -1L);
 
     private int id;
     private List<QuizQuestion> questions;

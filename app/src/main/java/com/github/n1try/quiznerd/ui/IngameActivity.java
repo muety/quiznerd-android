@@ -68,7 +68,13 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         long countdownState = bundle.containsKey(Constants.KEY_COUNTDOWN)
                 ? bundle.getLong(Constants.KEY_COUNTDOWN)
                 : getResources().getInteger(R.integer.countdown_millis);
-        mCountdown = new CountDownTimer(countdownState, 1000) {
+        restartCountdown(countdownState);
+
+        displayQuestion(mQuizRoundManager.playCurrentRound().getCurrentQuestion());
+    }
+
+    private void restartCountdown(long state) {
+        mCountdown = new CountDownTimer(state, 1000) {
             @Override
             public void onTick(long remaining) {
                 mProgressBar.setProgress((int) remaining);
@@ -80,8 +86,6 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
                 onAnswered(QuizAnswer.TIMEOUT_ANSWER);
             }
         }.start();
-
-        displayQuestion(mQuizRoundManager.playCurrentRound().getCurrentQuestion());
     }
 
     private void displayQuestion(QuizQuestion question) {
@@ -116,7 +120,10 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
             case R.id.ingame_next_fab:
                 QuizQuestion nextQuestion = mQuizRoundManager.getCurrentQuestion();
                 if (nextQuestion == null) super.onBackPressed();
-                else displayQuestion(nextQuestion);
+                else {
+                    displayQuestion(nextQuestion);
+                    restartCountdown(getResources().getInteger(R.integer.countdown_millis));
+                }
                 break;
         }
     }

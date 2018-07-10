@@ -115,15 +115,21 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_round_question, parent, false);
             }
 
-            final ImageView state1Iv = convertView.findViewById(R.id.ingame_question_result_iv);
+            final ImageView state1Iv = convertView.findViewById(R.id.question_status1_iv);
             final ImageView state2Iv = convertView.findViewById(R.id.question_status2_iv);
             final TextView textTv = convertView.findViewById(R.id.question_text);
 
             final QuizRoundQuestion question = getItem(position);
-            if (question.isCorrect1()) state1Iv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
-            else state1Iv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
-            if (question.isCorrect2()) state2Iv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
-            else state2Iv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
+
+            ImageView currentStateIv;
+            currentStateIv = mMatch.getMyPlayerIndex(mUser) == 1 ? state1Iv : state2Iv;
+            if (question.isCorrect1()) currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            else currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
+
+            currentStateIv = mMatch.getMyPlayerIndex(mUser) == 1 ? state2Iv : state1Iv;
+            if (question.isCorrect2()) currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            else currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
+
             textTv.setText(question.question.getText());
 
             return convertView;
