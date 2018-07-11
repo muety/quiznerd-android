@@ -17,8 +17,8 @@
     <string name="result_time_up">Your time was up ...</string>
     <string name="result_correct">Correct answer, congratulations!</string>
     <string name="result_wrong">Sorry, that was the wrong answer ...</string>
-    <string name="choose_opponent">Choose opponent</string>
-    <string name="choose_category">Choose a category</string>
+    <string name="choose_opponent">Opponent</string>
+    <string name="choose_category">Category</string>
     <string name="previous_opponents">Previous opponents</string>
     <string name="action_start">Start</string>
     <string name="new_match">New Match</string>

@@ -151,7 +151,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         if (currentSelectedOpponent == null
                 || mRandomQuestions == null
                 || mRandomQuestions.size() < Constants.NUM_ROUNDS * Constants.NUM_QUESTIONS_PER_ROUND) {
-            return false;
+            return true;
         }
         getMenuInflater().inflate(R.menu.new_match, menu);
         return true;
@@ -163,6 +163,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
             case R.id.start:
                 createMatch();
                 break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
         return false;
     }
