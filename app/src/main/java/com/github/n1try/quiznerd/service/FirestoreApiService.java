@@ -300,30 +300,26 @@ public class FirestoreApiService extends QuizApiService {
         @Override
         public FirestoreQuizMatchDto then(@NonNull Task<List<DocumentSnapshot>> task) {
             List<DocumentSnapshot> docs = task.getResult();
-            QuizUser player1; //= docs.get(0).toObject(QuizUser.class);
-            QuizUser player2; //= docs.get(1).toObject(QuizUser.class);
+            QuizUser player1 = null;
+            QuizUser player2 = null;
+
+            for (Map.Entry<String, Integer> e : playerIndexes.entrySet()) {
+                if (e.getValue() == 1) player1 = userCache.get(e.getKey());
+                else if (e.getValue() == 2) player2 = userCache.get(e.getKey());
+            }
+
             if (docs.size() == 2) {
                 player1 = docs.get(0).toObject(QuizUser.class);
                 player2 = docs.get(1).toObject(QuizUser.class);
                 player1.setId(docs.get(0).getId());
                 player2.setId(docs.get(1).getId());
-            } else {
-                String presentPlayerId = docs.get(0).getId();
-                String absentPlayerId = null;
-                for (String id : playerIndexes.keySet()) {
-                    if (!id.equals(presentPlayerId)) {
-                        absentPlayerId = id;
-                        break;
-                    }
-                }
-                if (playerIndexes.get(presentPlayerId).intValue() == 1) {
+            } else if (docs.size() == 1) {
+                if (player1 == null) {
                     player1 = docs.get(0).toObject(QuizUser.class);
                     player1.setId(docs.get(0).getId());
-                    player2 = userCache.get(absentPlayerId);
-                } else {
+                } else if (player2 == null) {
                     player2 = docs.get(0).toObject(QuizUser.class);
                     player2.setId(docs.get(0).getId());
-                    player1 = userCache.get(absentPlayerId);
                 }
             }
 

@@ -1,10 +1,7 @@
 /*
 Must-do's:
-TODO: Swipe to refresh
 TODO: App icon
 TODO: Category-specific dark color
-TODO: Clean questions
-TODO: Import questions
 TODO: Notifications
 TODO: Widget
 TODO: Tests
@@ -17,6 +14,7 @@ Can do's:
 TODO: Settings section (change username, change gender)
 TODO: Find opponent by QR code
 TODO: Ability to add questions
+TODO: Clean questions
  */
 
 package com.github.n1try.quiznerd.ui;
@@ -27,6 +25,7 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -82,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     FloatingActionButton mNewQuizFab;
     @BindView(R.id.main_quiz_lv)
     ListView mQuizList;
+    @BindView(R.id.main_refresh_layout)
+    SwipeRefreshLayout mRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +98,18 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         mQuizList.setOnItemClickListener(this);
         mNewQuizFab.setOnClickListener(this);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                init();
+            }
+        });
 
-        setReady(false);
+        setReady(false); // Only show loading overlay initially, not on refresh
+        init();
+    }
+
+    private void init() {
         new FetchDataTask().execute();
     }
 
@@ -127,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         if (ready) {
             mMainContainer.setVisibility(View.VISIBLE);
             mLoadingContainer.setVisibility(View.GONE);
+            mRefreshLayout.setRefreshing(false);
         } else {
             mMainContainer.setVisibility(View.GONE);
             mLoadingContainer.setVisibility(View.VISIBLE);
