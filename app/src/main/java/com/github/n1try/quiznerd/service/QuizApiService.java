@@ -21,9 +21,9 @@ public abstract class QuizApiService {
 
     public abstract void fetchUserById(String authentication, QuizApiCallbacks callback);
 
-    public abstract void fetchActiveMatches(QuizApiCallbacks callback);
+    public abstract void fetchActiveMatches(String userId, QuizApiCallbacks callback);
 
-    public abstract void fetchPastMatches(QuizApiCallbacks callback);
+    public abstract void fetchPastMatches(String userId, QuizApiCallbacks callback);
 
     public abstract void fetchRandomQuestions(int n, QuizCategory category, QuizApiCallbacks callback);
 

@@ -2,14 +2,17 @@ package com.github.n1try.quiznerd.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.github.n1try.quiznerd.utils.Constants;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,15 +21,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizMatch implements Parcelable {
+public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
     private String id;
     private QuizCategory category;
     private QuizUser player1;
     private QuizUser player2;
     private int round; // starts at 1
     private boolean active;
+    private boolean archived;
     private Date updated;
     private List<QuizRound> rounds;
+    private Map<String, Boolean> players; // Dirty hack; see https://firebase.google.com/docs/firestore/solutions/arrays
 
     public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, QuizUser player1, QuizUser player2, List<QuizRound> rounds) {
         this.id = id;
@@ -37,6 +42,10 @@ public class QuizMatch implements Parcelable {
         this.rounds = rounds;
         this.player1 = player1;
         this.player2 = player2;
+        this.players = ImmutableMap.of(
+                player1.getAuthentication(), true,
+                player2.getAuthentication(), true
+        );
     }
 
     public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, List<QuizRound> rounds) {
@@ -85,7 +94,7 @@ public class QuizMatch implements Parcelable {
     }
 
     public int[] getScores() {
-        int[] scores = new int[] {0, 0};
+        int[] scores = new int[]{0, 0};
         for (QuizRound r : rounds) {
             int[] score = r.getScores();
             scores[0] += score[0];
@@ -146,5 +155,10 @@ public class QuizMatch implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         Gson gson = new GsonBuilder().create();
         parcel.writeString(gson.toJson(this));
+    }
+
+    @Override
+    public int compareTo(@NonNull QuizMatch match) {
+        return updated.compareTo(match.getUpdated());
     }
 }

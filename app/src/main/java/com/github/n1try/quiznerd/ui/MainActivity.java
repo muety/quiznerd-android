@@ -195,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
             mApiService.fetchUserById(mAuthentication.getUid(), this);
-            mApiService.fetchActiveMatches(this);
-            mApiService.fetchPastMatches(this);
+            mApiService.fetchActiveMatches(mAuthentication.getUid(), this);
+            mApiService.fetchPastMatches(mAuthentication.getUid(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {

@@ -43,13 +43,22 @@ public class QuizMatchListItem implements ListItem {
         ImageView categoryIv = convertView.findViewById(R.id.quiz_category_iv);
         CircleImageView avatarIv = convertView.findViewById(R.id.quiz_avatar_iv);
         TextView usernameTv = convertView.findViewById(R.id.quiz_username_tv);
-        TextView roundTv = convertView.findViewById(R.id.quiz_round_tv);
+        TextView roundTv = convertView.findViewById(R.id.quiz_score_round_tv);
+        TextView scoreTv = convertView.findViewById(R.id.quiz_score_tv);
         TextView turnTv = convertView.findViewById(R.id.quiz_turn_tv);
 
         int[] scores = match.getSortedScores(user);
         usernameTv.setText(match.getOpponent(user).getDisplayName());
         UserUtils.loadUserAvatar(context, match.getOpponent(user), avatarIv);
         roundTv.setText(context.getString(R.string.round_with_score_template, match.getRound(), scores[0], scores[1]));
+        scoreTv.setText(context.getString(R.string.score_no_round_template, scores[0], scores[1]));
+        if (match.isActive()) {
+            roundTv.setVisibility(View.VISIBLE);
+            scoreTv.setVisibility(View.GONE);
+        } else {
+            roundTv.setVisibility(View.GONE);
+            scoreTv.setVisibility(View.VISIBLE);
+        }
         categoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, match.getCategory()));
         if (!match.isMyTurn(user)) turnTv.setVisibility(View.GONE);
 

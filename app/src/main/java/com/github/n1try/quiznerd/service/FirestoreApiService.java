@@ -22,7 +22,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
@@ -30,6 +29,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -159,25 +159,26 @@ public class FirestoreApiService extends QuizApiService {
                 });
     }
 
-    public void fetchActiveMatches(final QuizApiCallbacks callback) {
-        fetchMatches(true, callback);
+    public void fetchActiveMatches(String userId, QuizApiCallbacks callback) {
+        fetchMatches(true, userId, callback);
     }
 
-    public void fetchPastMatches(final QuizApiCallbacks callback) {
-        fetchMatches(false, callback);
+    public void fetchPastMatches(String userId, QuizApiCallbacks callback) {
+        fetchMatches(false, userId, callback);
     }
 
-    private void fetchMatches(boolean active, final QuizApiCallbacks callback) {
+    private void fetchMatches(boolean active, String userId, final QuizApiCallbacks callback) {
         Task<QuerySnapshot> task;
         if (active) {
             task = mFirestore.collection(COLL_MATCHES)
+                    .whereEqualTo(String.format("players.%s", userId), true)
                     .whereEqualTo("active", true)
-                    .orderBy("updated", Query.Direction.DESCENDING)
                     .get(Source.DEFAULT);
         } else {
             task = mFirestore.collection(COLL_MATCHES)
+                    .whereEqualTo(String.format("players.%s", userId), true)
                     .whereEqualTo("active", false)
-                    .orderBy("updated", Query.Direction.DESCENDING)
+                    .whereEqualTo("archived", false)
                     .limit(Constants.NUM_PAST_MATCHES)
                     //.get(Source.CACHE);
                     .get(Source.DEFAULT);
@@ -287,6 +288,8 @@ public class FirestoreApiService extends QuizApiService {
                         .updated(doc.getDate("updated"))
                         .build());
             }
+
+            Collections.sort(matches);
             return matches;
         }
     }
