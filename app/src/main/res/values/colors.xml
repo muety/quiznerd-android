@@ -22,6 +22,7 @@
     <color name="success">#A1CE6F</color>
     <color name="danger">#F97146</color>
 
-    <color name="materialGrey400">#bdbdbd</color>
+    /* https://www.materialpalette.com/colors */
+    <color name="materialGrey300">#e0e0e0</color>
 
 </resources>

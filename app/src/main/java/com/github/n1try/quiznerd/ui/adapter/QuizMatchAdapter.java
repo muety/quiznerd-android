@@ -32,9 +32,6 @@ public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
         });
         List<ListItem> items = new ArrayList<>(sorted.size() + 2);
 
-        if (!sorted.isEmpty() && sorted.get(0).isActive()) {
-            items.add(new QuizMatchListHeader(context.getString(R.string.active_matches)));
-        }
         boolean headerAdded = false;
         for (QuizMatch m : sorted) {
             if (!headerAdded && !m.isActive()) {
