@@ -184,7 +184,8 @@ public class FirestoreApiService extends QuizApiService {
                     .whereEqualTo("active", false)
                     .orderBy("updated", Query.Direction.DESCENDING)
                     .limit(Constants.NUM_PAST_MATCHES)
-                    .get(Source.CACHE);
+                    //.get(Source.CACHE);
+                    .get(Source.DEFAULT);
         }
 
         task
