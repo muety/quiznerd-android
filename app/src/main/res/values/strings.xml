@@ -25,4 +25,13 @@
     <string name="find_by_mail">Find player by e-mail address</string>
     <string name="user_not_found">No user found, sorry.</string>
     <string name="error_create_match">Couldn\\\'t create new match, sorry.</string>
+    <string name="dialog_title_won">You won!</string>
+    <string name="dialog_title_lost">You lost</string>
+    <string name="dialog_message_won">Congratulation! You won this round.</string>
+    <string name="dialog_message_lost">Unfortunately, you lost the match. Maybe better luck next time?</string>
+    <string name="dialog_button_won">Wohoo!</string>
+    <string name="dialog_button_lost">Sure</string>
+    <string name="dialog_title_draw">Draw</string>
+    <string name="dialog_message_draw">That was close! It\'s a draw.</string>
+    <string name="dialog_button_draw">OK</string>
 </resources>

@@ -93,6 +93,15 @@ public class QuizMatch implements Parcelable {
         return scores;
     }
 
+    public QuizResult getResult(QuizUser me) {
+        if (isActive()) return QuizResult.PENDING;
+        int[] scores = getScores();
+        int playerIndex = getMyPlayerIndex(me) - 1;
+        if (scores[playerIndex] > scores[playerIndex ^ 1]) return QuizResult.WON;
+        else if (scores[playerIndex] < scores[playerIndex ^ 1]) return QuizResult.LOST;
+        else return QuizResult.DRAW;
+    }
+
     public int getMyPlayerIndex(QuizUser me) {
         return isInitiator(me) ? 1 : 2;
     }

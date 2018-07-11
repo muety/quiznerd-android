@@ -95,6 +95,8 @@ public class QuizDetailsActivity extends AppCompatActivity {
 
         QuizRoundAdapter roundAdapter = new QuizRoundAdapter(this, mMatch, mUser);
         mRoundCardList.setAdapter(roundAdapter);
+
+        if (!mMatch.isActive()) QuizUtils.showPostMatchDialog(this, mMatch.getResult(mUser));
     }
 
     @Override

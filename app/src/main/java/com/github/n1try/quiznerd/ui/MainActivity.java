@@ -5,12 +5,12 @@ TODO: Category-specific dark color
 TODO: Notifications
 TODO: Widget
 TODO: Tests
-TODO: Won / lost alert
 TODO: Set database permissions
 TODO: Include license section
 TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
 
 Can do's:
+TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
 TODO: Settings section (change username, change gender)
 TODO: Find opponent by QR code
 TODO: Ability to add questions
