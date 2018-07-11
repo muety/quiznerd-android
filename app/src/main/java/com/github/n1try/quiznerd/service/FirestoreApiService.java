@@ -138,20 +138,15 @@ public class FirestoreApiService extends QuizApiService {
                 });
     }
 
-    public void fetchUserByAuthentication(String authentication, final QuizApiCallbacks callback) {
+    public void fetchUserById(String id, final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_USERS)
-                .whereEqualTo("authentication", authentication)
+                .document(id)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
-                        if (docs.size() != 1) {
-                            callback.onError(new Resources.NotFoundException("Couldn't find user."));
-                            return;
-                        }
-                        QuizUser user = docs.get(0).toObject(QuizUser.class);
-                        user.setId(docs.get(0).getId());
+                    public void onSuccess(DocumentSnapshot snapshot) {
+                        QuizUser user = snapshot.toObject(QuizUser.class);
+                        user.setId(snapshot.getId());
                         userCache.put(user.getId(), user);
                         callback.onUsersFetched(Arrays.asList(user));
                     }
@@ -189,6 +184,12 @@ public class FirestoreApiService extends QuizApiService {
         }
 
         task
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(1);
+                    }
+                })
                 .continueWith(new CreateQuizMatches())
                 .continueWithTask(new FetchPlayers())
                 .continueWith(new Cast())

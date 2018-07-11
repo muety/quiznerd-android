@@ -19,7 +19,7 @@ public abstract class QuizApiService {
 
     public abstract void fetchUserByMail(String emailQuery, QuizApiCallbacks callback);
 
-    public abstract void fetchUserByAuthentication(String authentication, QuizApiCallbacks callback);
+    public abstract void fetchUserById(String authentication, QuizApiCallbacks callback);
 
     public abstract void fetchActiveMatches(QuizApiCallbacks callback);
 

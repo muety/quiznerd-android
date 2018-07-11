@@ -5,7 +5,7 @@ TODO: Category-specific dark color
 TODO: Notifications
 TODO: Widget
 TODO: Tests
-TODO: Set database permissions
+TODO: Set database permissions (https://stackoverflow.com/a/46662736/3112139)
 TODO: Include license section
 
 Can do's:
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
-            mApiService.fetchUserByAuthentication(mAuthentication.getUid(), this);
+            mApiService.fetchUserById(mAuthentication.getUid(), this);
             mApiService.fetchActiveMatches(this);
             mApiService.fetchPastMatches(this);
             try {
