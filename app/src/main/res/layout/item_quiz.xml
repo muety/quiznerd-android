@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/quiz_category_iv"
@@ -43,8 +42,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:visibility="gone"
         android:text="TextView"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/quiz_username_tv"
         app:layout_constraintTop_toBottomOf="@+id/quiz_username_tv" />
 

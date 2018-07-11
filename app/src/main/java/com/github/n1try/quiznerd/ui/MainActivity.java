@@ -46,6 +46,7 @@ import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.ui.adapter.QuizMatchAdapter;
 import com.github.n1try.quiznerd.ui.adapter.entity.ListItem;
 import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
+import com.github.n1try.quiznerd.utils.AndroidUtils;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
                 init();
             }
         });
+        mNewQuizFab.setVisibility(AndroidUtils.isNetworkConnected(this) ? View.VISIBLE : View.GONE);
 
         setReady(false); // Only show loading overlay initially, not on refresh
         init();
