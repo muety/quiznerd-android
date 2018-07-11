@@ -7,7 +7,6 @@ TODO: Widget
 TODO: Tests
 TODO: Set database permissions
 TODO: Include license section
-TODO: Show past matches (https://stackoverflow.com/questions/26862799/custom-list-view-with-section-headers)
 
 Can do's:
 TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
@@ -48,6 +47,7 @@ import com.github.n1try.quiznerd.ui.adapter.QuizMatchAdapter;
 import com.github.n1try.quiznerd.ui.adapter.entity.ListItem;
 import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
 import com.github.n1try.quiznerd.utils.Constants;
+import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
                     this.users.size() == 1 &&
                     this.users.get(0).getAuthentication().equals(mAuthentication.getUid())) {
                 mUser = this.users.get(0);
-                String winRatio = getString(R.string.score_template, UserUtils.getUserScore(context, mUser));
+                String winRatio = getString(R.string.score_template, ((int) QuizUtils.getWinRatio(matches, mUser) * 100));
                 mUsernameTv.setText(mAuthentication.getDisplayName());
                 mScoreTv.setText(winRatio);
                 UserUtils.loadUserAvatar(context, mUser, mAvatarIv);

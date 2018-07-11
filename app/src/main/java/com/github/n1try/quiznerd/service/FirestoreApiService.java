@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,6 +177,7 @@ public class FirestoreApiService extends QuizApiService {
         if (active) {
             task = mFirestore.collection(COLL_MATCHES)
                     .whereEqualTo("active", true)
+                    .orderBy("updated", Query.Direction.DESCENDING)
                     .get(Source.DEFAULT);
         } else {
             task = mFirestore.collection(COLL_MATCHES)
@@ -219,7 +221,8 @@ public class FirestoreApiService extends QuizApiService {
         mFirestore.collection(COLL_MATCHES)
                 .document(match.getId())
                 .update(
-                        "round", match.getRound()
+                        "round", match.getRound(),
+                        "updated", new Date()
                 );
     }
 

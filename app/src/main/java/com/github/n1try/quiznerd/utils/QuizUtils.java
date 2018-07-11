@@ -8,7 +8,11 @@ import android.support.v7.app.AlertDialog;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizCategory;
+import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizResult;
+import com.github.n1try.quiznerd.model.QuizUser;
+
+import java.util.List;
 
 public class QuizUtils {
     public static Drawable getCategoryIcon(Context context, QuizCategory category) {
@@ -53,5 +57,21 @@ public class QuizUtils {
             }
         });
         dialog.create().show();
+    }
+
+    public static float getWinRatio(List<QuizMatch> matches, QuizUser me) {
+        int won = 0;
+        int total = 0;
+        for (QuizMatch m : matches) {
+            if (m.isActive()) continue;
+            QuizResult result = m.getResult(me);
+            if (result.equals(QuizResult.WON)) {
+                won++;
+                total++;
+            } else if (result.equals(QuizResult.LOST)) {
+                total++;
+            }
+        }
+        return total > 0 ? won / total : 0;
     }
 }

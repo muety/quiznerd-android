@@ -24,8 +24,4 @@ public class UserUtils {
                 ))
                 .into(target);
     }
-
-    public static int getUserScore(Context context, QuizUser user) {
-        return 87;
-    }
 }
