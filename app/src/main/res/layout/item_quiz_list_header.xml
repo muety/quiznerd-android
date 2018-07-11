@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
-    android:paddingTop="16dp">
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/header_text_tv"

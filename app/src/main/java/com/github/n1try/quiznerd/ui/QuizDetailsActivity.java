@@ -54,13 +54,13 @@ public class QuizDetailsActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mApiService = QuizApiService.getInstance();
 
         Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
         mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
         mUser = bundle.getParcelable(Constants.KEY_ME);
+        setTitle(mMatch.getOpponent(mUser).getDisplayName());
 
         color = QuizUtils.getCategoryColorId(this, mMatch.getCategory());
         mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getCategory()));
