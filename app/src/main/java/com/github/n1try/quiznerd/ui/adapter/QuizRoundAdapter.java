@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -69,6 +70,12 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
                 roundQuestions.add(new QuizRoundQuestion(q, round.isQuestionCorrect(i, 1), round.isQuestionCorrect(i, 2)));
             }
             mQuestionsLv.setAdapter(new QuizRoundQuestionAdapter(context, roundQuestions));
+            mQuestionsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    QuizUtils.showQuestionDialog(context, round.getQuestion(i), round.getAnswersByPlayerIndex(mMatch.getMyPlayerIndex(mUser)).get(i).intValue());
+                }
+            });
             mQuestionsLv.setVisibility(View.VISIBLE);
             mProgressTv.setVisibility(View.GONE);
         } else {

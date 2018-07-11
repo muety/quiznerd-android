@@ -91,6 +91,10 @@ public class QuizRound implements Parcelable {
         return -1;
     }
 
+    public List<Long> getAnswersByPlayerIndex(int playerIndex) {
+        return playerIndex == 1 ? answers1 : answers2;
+    }
+
     public int getMyNextQuestionIndex(int playerIdx) {
         List<Long> answers = playerIdx == 1 ? answers1 : answers2;
         for (int i = 0; i < answers.size(); i++) {

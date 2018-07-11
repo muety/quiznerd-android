@@ -37,4 +37,6 @@
     <string name="dialog_button_draw">OK</string>
     <string name="active_matches">Active Matches</string>
     <string name="previous_matches">Past Matches</string>
+    <string name="your_answer">Your answer:</string>
+    <string name="correct_answer">Correct answer:</string>
 </resources>
