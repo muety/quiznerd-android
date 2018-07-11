@@ -46,7 +46,7 @@ public class QuizMatchListItem implements ListItem {
         TextView roundTv = convertView.findViewById(R.id.quiz_round_tv);
         TextView turnTv = convertView.findViewById(R.id.quiz_turn_tv);
 
-        int[] scores = match.getScores();
+        int[] scores = match.getSortedScores(user);
         usernameTv.setText(match.getOpponent(user).getDisplayName());
         UserUtils.loadUserAvatar(context, match.getOpponent(user), avatarIv);
         roundTv.setText(context.getString(R.string.round_with_score_template, match.getRound(), scores[0], scores[1]));

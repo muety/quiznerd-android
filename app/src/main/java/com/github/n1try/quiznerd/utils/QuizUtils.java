@@ -60,17 +60,13 @@ public class QuizUtils {
     }
 
     public static float getWinRatio(List<QuizMatch> matches, QuizUser me) {
-        int won = 0;
-        int total = 0;
+        float won = 0f;
+        float total = 0f;
         for (QuizMatch m : matches) {
             if (m.isActive()) continue;
             QuizResult result = m.getResult(me);
-            if (result.equals(QuizResult.WON)) {
-                won++;
-                total++;
-            } else if (result.equals(QuizResult.LOST)) {
-                total++;
-            }
+            if (result.equals(QuizResult.WON)) won++;
+            if (!result.equals(QuizResult.PENDING)) total++;
         }
         return total > 0 ? won / total : 0;
     }

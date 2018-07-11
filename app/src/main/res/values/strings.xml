@@ -2,7 +2,7 @@
     <string name="app_name">QuizNerd</string>
     <string name="sign_in_failed">Error. Could not sign in. Please try again.</string>
     <string name="action_settings">Settings</string>
-    <string name="score_template">%1$s %% win ratio</string>
+    <string name="score_template">%1$.0f %% win ratio</string>
     <string name="your_turn">Your turn</string>
     <string name="error_fetch_matches">Sorry, an error has occured ;-(</string>
     <string name="question_template">Question %1$s</string>

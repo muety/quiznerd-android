@@ -7,6 +7,7 @@ import com.github.n1try.quiznerd.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -91,6 +92,15 @@ public class QuizMatch implements Parcelable {
             scores[1] += score[1];
         }
         return scores;
+    }
+
+    public int[] getSortedScores(QuizUser me) {
+        int[] scores = getScores();
+        int[] sorted = Arrays.copyOf(scores, 2);
+        int playerIdx = getMyPlayerIndex(me);
+        sorted[0] = scores[playerIdx - 1];
+        sorted[1] = scores[(playerIdx - 1) ^ 1];
+        return sorted;
     }
 
     public QuizResult getResult(QuizUser me) {

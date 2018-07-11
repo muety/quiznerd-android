@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
                     this.users.size() == 1 &&
                     this.users.get(0).getAuthentication().equals(mAuthentication.getUid())) {
                 mUser = this.users.get(0);
-                String winRatio = getString(R.string.score_template, ((int) QuizUtils.getWinRatio(matches, mUser) * 100));
+                String winRatio = getString(R.string.score_template, (QuizUtils.getWinRatio(matches, mUser) * 100));
                 mUsernameTv.setText(mAuthentication.getDisplayName());
                 mScoreTv.setText(winRatio);
                 UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
