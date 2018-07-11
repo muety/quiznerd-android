@@ -54,6 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.main_new_fab:
                 Intent intent = new Intent(this, NewGameActivity.class);
                 intent.putExtra(Constants.KEY_ME, mUser);
@@ -185,8 +186,9 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         public FetchDataTask() {
             context = getApplicationContext();
-            latch = new CountDownLatch(2);
+            latch = new CountDownLatch(3);
             stopwatch = Stopwatch.createUnstarted();
+            matches = Collections.synchronizedList(new ArrayList<QuizMatch>());
         }
 
         @Override
@@ -194,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
             stopwatch.start();
             mApiService.fetchUserByAuthentication(mAuthentication.getUid(), this);
             mApiService.fetchActiveMatches(this);
+            mApiService.fetchPastMatches(this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -226,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         public void onMatchesFetched(List<QuizMatch> matches) {
             Log.d(TAG, String.format("%s matches fetched after %s ms.", matches.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
-            this.matches = matches;
+            this.matches.addAll(matches);
             latch.countDown();
         }
 
@@ -238,10 +241,12 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         }
 
         @Override
-        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+        }
 
         @Override
-        public void onMatchCreated(QuizMatch match) {}
+        public void onMatchCreated(QuizMatch match) {
+        }
 
         @Override
         public void onError(Exception e) {

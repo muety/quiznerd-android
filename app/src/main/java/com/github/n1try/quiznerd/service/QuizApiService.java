@@ -23,6 +23,8 @@ public abstract class QuizApiService {
 
     public abstract void fetchActiveMatches(QuizApiCallbacks callback);
 
+    public abstract void fetchPastMatches(QuizApiCallbacks callback);
+
     public abstract void fetchRandomQuestions(int n, QuizCategory category, QuizApiCallbacks callback);
 
     public abstract void createMatch(QuizMatch match, QuizApiCallbacks callback);

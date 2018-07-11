@@ -24,10 +24,10 @@ public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
 
     public static List<ListItem> generateItemList(Context context, List<QuizMatch> objects, QuizUser me) {
         List<QuizMatch> sorted = new ArrayList<>(objects);
-        Collections.sort(objects, new Comparator<QuizMatch>() {
+        Collections.sort(sorted, new Comparator<QuizMatch>() {
             @Override
             public int compare(QuizMatch t1, QuizMatch t2) {
-                return Boolean.compare(t1.isActive(), t2.isActive());
+                return Boolean.compare(t2.isActive(), t1.isActive());
             }
         });
         List<ListItem> items = new ArrayList<>(sorted.size() + 2);
@@ -40,9 +40,8 @@ public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
             if (!headerAdded && !m.isActive()) {
                 items.add(new QuizMatchListHeader(context.getString(R.string.previous_matches)));
                 headerAdded = true;
-            } else {
-                items.add(new QuizMatchListItem(context, m, me));
             }
+            items.add(new QuizMatchListItem(context, m, me));
         }
         return items;
     }

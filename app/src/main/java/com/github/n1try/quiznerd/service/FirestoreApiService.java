@@ -22,8 +22,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -162,9 +164,28 @@ public class FirestoreApiService extends QuizApiService {
     }
 
     public void fetchActiveMatches(final QuizApiCallbacks callback) {
-        mFirestore.collection(COLL_MATCHES)
-                .whereEqualTo("active", true)
-                .get()
+        fetchMatches(true, callback);
+    }
+
+    public void fetchPastMatches(final QuizApiCallbacks callback) {
+        fetchMatches(false, callback);
+    }
+
+    private void fetchMatches(boolean active, final QuizApiCallbacks callback) {
+        Task<QuerySnapshot> task;
+        if (active) {
+            task = mFirestore.collection(COLL_MATCHES)
+                    .whereEqualTo("active", true)
+                    .get(Source.DEFAULT);
+        } else {
+            task = mFirestore.collection(COLL_MATCHES)
+                    .whereEqualTo("active", false)
+                    .orderBy("updated", Query.Direction.DESCENDING)
+                    .limit(Constants.NUM_PAST_MATCHES)
+                    .get(Source.CACHE);
+        }
+
+        task
                 .continueWith(new CreateQuizMatches())
                 .continueWithTask(new FetchPlayers())
                 .continueWith(new Cast())
