@@ -34,4 +34,6 @@
     <string name="dialog_title_draw">Draw</string>
     <string name="dialog_message_draw">That was close! It\'s a draw.</string>
     <string name="dialog_button_draw">OK</string>
+    <string name="active_matches">Active Matches</string>
+    <string name="previous_matches">Previous Matches</string>
 </resources>

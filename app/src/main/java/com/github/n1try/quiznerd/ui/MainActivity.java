@@ -45,6 +45,8 @@ import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.ui.adapter.QuizMatchAdapter;
+import com.github.n1try.quiznerd.ui.adapter.entity.ListItem;
+import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
@@ -147,16 +149,19 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        QuizMatch match = mMatches.get(i);
-        Intent intent = new Intent(this, QuizDetailsActivity.class);
-        intent.putExtra(Constants.KEY_ME, mUser);
-        intent.putExtra(Constants.KEY_MATCH_ID, match.getId());
-        startActivity(intent);
+        ListItem item = (ListItem) adapterView.getItemAtPosition(i);
+        if (item instanceof QuizMatchListItem) {
+            QuizMatch match = ((QuizMatchListItem) item).getMatch();
+            Intent intent = new Intent(this, QuizDetailsActivity.class);
+            intent.putExtra(Constants.KEY_ME, mUser);
+            intent.putExtra(Constants.KEY_MATCH_ID, match.getId());
+            startActivity(intent);
+        }
     }
 
     private void postMatchesLoad() {
         mMatches = new ArrayList<>(mApiService.matchCache.values());
-        mMatchAdapter = new QuizMatchAdapter(this, mMatches, mUser);
+        mMatchAdapter = new QuizMatchAdapter(this, QuizMatchAdapter.generateItemList(this, mMatches, mUser));
         mQuizList.setAdapter(mMatchAdapter);
     }
 

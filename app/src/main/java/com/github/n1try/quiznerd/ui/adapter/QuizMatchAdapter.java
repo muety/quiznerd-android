@@ -7,53 +7,66 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
-import com.github.n1try.quiznerd.utils.QuizUtils;
-import com.github.n1try.quiznerd.utils.UserUtils;
+import com.github.n1try.quiznerd.ui.adapter.entity.ListItem;
+import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListHeader;
+import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
+public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
 
-public class QuizMatchAdapter extends ArrayAdapter<QuizMatch> {
-    @BindView(R.id.quiz_category_iv) ImageView categoryIv;
-    @BindView(R.id.quiz_avatar_iv) CircleImageView avatarIv;
-    @BindView(R.id.quiz_username_tv) TextView usernameTv;
-    @BindView(R.id.quiz_round_tv) TextView roundTv;
-    @BindView(R.id.quiz_turn_tv) TextView turnTv;
+    public static List<ListItem> generateItemList(Context context, List<QuizMatch> objects, QuizUser me) {
+        List<QuizMatch> sorted = new ArrayList<>(objects);
+        Collections.sort(objects, new Comparator<QuizMatch>() {
+            @Override
+            public int compare(QuizMatch t1, QuizMatch t2) {
+                return Boolean.compare(t1.isActive(), t2.isActive());
+            }
+        });
+        List<ListItem> items = new ArrayList<>(sorted.size() + 2);
+
+        if (!sorted.isEmpty() && sorted.get(0).isActive()) {
+            items.add(new QuizMatchListHeader(context.getString(R.string.active_matches)));
+        }
+        boolean headerAdded = false;
+        for (QuizMatch m : sorted) {
+            if (!headerAdded && !m.isActive()) {
+                items.add(new QuizMatchListHeader(context.getString(R.string.previous_matches)));
+                headerAdded = true;
+            } else {
+                items.add(new QuizMatchListItem(context, m, me));
+            }
+        }
+        return items;
+    }
 
     private Context context;
-    private QuizUser mUser;
 
-    public QuizMatchAdapter(@NonNull Context context, List<QuizMatch> objects, QuizUser user) {
+    public QuizMatchAdapter(@NonNull Context context, List<ListItem> objects) {
         super(context, 0, objects);
         this.context = context;
-        this.mUser = user;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position).getViewType();
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return ListItem.RowType.values().length;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_quiz, parent, false);
-        }
-        ButterKnife.bind(this, convertView);
-
-        final QuizMatch match = getItem(position);
-        int[] scores = match.getScores();
-        usernameTv.setText(match.getOpponent(mUser).getDisplayName());
-        UserUtils.loadUserAvatar(context, match.getOpponent(mUser), avatarIv);
-        roundTv.setText(context.getString(R.string.round_with_score_template, match.getRound(), scores[0], scores[1]));
-        categoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, match.getCategory()));
-        if (!match.isMyTurn(mUser)) turnTv.setVisibility(View.GONE);
-
-        return convertView;
+        return getItem(position).getView(LayoutInflater.from(context), convertView);
     }
 }

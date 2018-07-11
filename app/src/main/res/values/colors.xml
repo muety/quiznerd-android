@@ -22,4 +22,6 @@
     <color name="success">#A1CE6F</color>
     <color name="danger">#F97146</color>
 
+    <color name="materialGrey400">#bdbdbd</color>
+
 </resources>

@@ -74,7 +74,10 @@
                 <ListView
                     android:id="@+id/main_quiz_lv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/transparent"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/main_new_fab"
