@@ -5,7 +5,6 @@ import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
-import com.github.n1try.quiznerd.utils.Constants;
 
 public class QuizRoundManager {
     private QuizApiService apiService;
@@ -47,7 +46,7 @@ public class QuizRoundManager {
         if (questionIndex < round.getQuestions().size() - 1) {
             questionIndex++;
         } else {
-            if (round.getId() < Constants.NUM_ROUNDS && round.getId() < match.getRounds().size() - 1) {
+            if (!match.isOver()) {
                 match.nextRound();
                 apiService.updateQuizRound(match);
                 round = match.getCurrentRound();

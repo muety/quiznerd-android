@@ -77,17 +77,20 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
             return false;
         }
 
+        QuizRound r = getCurrentRound();
         int myPlayerIndex = getMyPlayerIndex(me);
         int opponentPlayerIndex = (myPlayerIndex % 2) + 1;
-        int myAnswerCount = getCurrentRound().countAnswers(myPlayerIndex);
-        int opponentAnswerCount = getCurrentRound().countAnswers(opponentPlayerIndex);
+        int myAnswerCount = r.countAnswers(myPlayerIndex);
+        int opponentAnswerCount = r.countAnswers(opponentPlayerIndex);
+        int numQuestions = r.getQuestions().size();
 
         if (myAnswerCount == opponentAnswerCount) {
             return !isInitiator(me);
         }
 
-        if (myAnswerCount < getCurrentRound().getQuestions().size()) {
-            return true;
+        if (myAnswerCount < numQuestions) {
+            if (r.hasPlayed((myPlayerIndex % 2) + 1)) return true;
+            if (myAnswerCount > opponentAnswerCount) return true;
         }
 
         return false;
@@ -119,6 +122,13 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
         if (scores[playerIndex] > scores[playerIndex ^ 1]) return QuizResult.WON;
         else if (scores[playerIndex] < scores[playerIndex ^ 1]) return QuizResult.LOST;
         else return QuizResult.DRAW;
+    }
+
+    public boolean isOver() {
+        for (QuizRound r : rounds) {
+            if (!r.hasPlayed(1) || !r.hasPlayed(2)) return false;
+        }
+        return round >= Constants.NUM_ROUNDS || round >= rounds.size() - 1;
     }
 
     public int getMyPlayerIndex(QuizUser me) {

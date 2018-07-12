@@ -84,6 +84,14 @@ public class QuizRound implements Parcelable {
         }
     }
 
+    public boolean hasPlayed(int playerIdx) {
+        List<Long> answers = playerIdx == 1 ? answers1 : answers2;
+        for (Long a : answers) {
+            if (a.intValue() == QuizAnswer.EMPTY_ANSWER_ID) return false;
+        }
+        return true;
+    }
+
     public int getQuestionIndex(QuizQuestion question) {
         for (int i = 0; i < questions.size(); i++) {
             if (questions.get(i).equals(question)) return i;
