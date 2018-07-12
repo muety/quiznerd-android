@@ -47,4 +47,6 @@
     <string name="action_create">Create</string>
     <string name="create_profile">Create your nerd</string>
     <string name="error_create_user">Couldn\\\'t create new user, sorry.</string>
+    <string name="no_whitespaces">No whitespaces allowed</string>
+    <string name="nickname_max_length_template">Nickname must be at least %1$s characters</string>
 </resources>

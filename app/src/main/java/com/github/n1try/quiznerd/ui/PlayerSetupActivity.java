@@ -97,14 +97,20 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(final Editable editable) {
                 timer.cancel();
                 timer = new Timer();
                 timer.schedule(
                         new TimerTask() {
                             @Override
                             public void run() {
-                                new FetchUserTask().execute();
+                                if (editable.toString().indexOf(" ") > -1) {
+                                    Toast.makeText(getApplicationContext(), R.string.no_whitespaces, Toast.LENGTH_SHORT).show();
+                                } else if (editable.length() > Constants.MAX_NICKNAME_LENGTH) {
+                                    Toast.makeText(getApplicationContext(), getString(R.string.nickname_max_length_template, String.valueOf(R.string.nickname_max_length_template)), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    new FetchUserTask().execute();
+                                }
                             }
                         }, DELAY
                 );
@@ -187,16 +193,20 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
 
         mApiService.createUser(newUser, new QuizApiCallbacks() {
             @Override
-            public void onMatchesFetched(List<QuizMatch> matches) {}
+            public void onMatchesFetched(List<QuizMatch> matches) {
+            }
 
             @Override
-            public void onUsersFetched(List<QuizUser> users) {}
+            public void onUsersFetched(List<QuizUser> users) {
+            }
 
             @Override
-            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+            }
 
             @Override
-            public void onMatchCreated(QuizMatch match) {}
+            public void onMatchCreated(QuizMatch match) {
+            }
 
             @Override
             public void onUserCreated(QuizUser user) {
@@ -266,10 +276,12 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         }
 
         @Override
-        public void onMatchCreated(QuizMatch match) {}
+        public void onMatchCreated(QuizMatch match) {
+        }
 
         @Override
-        public void onUserCreated(QuizUser user) {}
+        public void onUserCreated(QuizUser user) {
+        }
 
         @Override
         public void onError(Exception e) {

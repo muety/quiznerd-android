@@ -5,6 +5,7 @@ public final class Constants {
     public static final int NUM_QUESTIONS_PER_ROUND = 3;
     public static final int NUM_PAST_MATCHES = 5;
     public static final int RANDOM_ID_LENGTH = 20;
+    public static final int MAX_NICKNAME_LENGTH = 32;
 
     public static final String KEY_PREFERENCES = "prefs.prefs";
     public static final String KEY_ME = "me";
