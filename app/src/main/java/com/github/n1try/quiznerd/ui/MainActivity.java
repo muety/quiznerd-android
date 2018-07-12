@@ -267,7 +267,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         @Override
-        public void onUserCreated(QuizUser user) {}
+        public void onUserCreated(QuizUser user) {
+        }
 
         @Override
         public void onError(Exception e) {
