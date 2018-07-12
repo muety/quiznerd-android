@@ -39,7 +39,7 @@ public class QuizUserAdapter extends ArrayAdapter<QuizUser> {
         ButterKnife.bind(this, convertView);
 
         final QuizUser user = getItem(position);
-        usernameTv.setText(user.getDisplayName());
+        usernameTv.setText(user.getId());
         UserUtils.loadUserAvatar(context, user, avatarIv);
 
         return convertView;

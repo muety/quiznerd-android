@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,8 +50,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
     @BindView(R.id.new_category_spinner)
     Spinner mCategorySpinner;
-    @BindView(R.id.new_mail_input)
-    EditText mMailInput;
+    @BindView(R.id.new_nickname_input)
+    EditText mNicknameInput;
     @BindView(R.id.new_find_opponent_button)
     ImageButton mSearchButton;
     @BindView(R.id.new_friends_label)
@@ -109,7 +108,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
         mUserAdapter = new QuizUserAdapter(this, previousOpponents.toArray(new QuizUser[]{}));
         mFriendsList.setAdapter(mUserAdapter);
-        mMailInput.addTextChangedListener(new TextWatcher() {
+        mNicknameInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -120,7 +119,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mSearchButton.setEnabled(Patterns.EMAIL_ADDRESS.matcher(editable.toString()).matches());
+                mSearchButton.setEnabled(editable.length() > 0);
             }
         });
         mSearchButton.setEnabled(false);
@@ -182,7 +181,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         TextView usernameTv = selectedOpponentView.findViewById(R.id.quiz_username_tv);
         ImageButton clearButton = selectedOpponentView.findViewById(R.id.clear_button);
         UserUtils.loadUserAvatar(this, currentSelectedOpponent, avatarIv);
-        usernameTv.setText(currentSelectedOpponent.getDisplayName());
+        usernameTv.setText(currentSelectedOpponent.getId());
         selectedOpponentContainer.setVisibility(View.VISIBLE);
         opponentControlsContainer.setVisibility(View.GONE);
         clearButton.setVisibility(View.VISIBLE);
@@ -253,6 +252,9 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
             }
 
             @Override
+            public void onUserCreated(QuizUser user) {}
+
+            @Override
             public void onError(Exception e) {
                 Toast.makeText(mContext, R.string.error_create_match, Toast.LENGTH_LONG).show();
             }
@@ -271,7 +273,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mApiService.fetchUserByNickname(mMailInput.getText().toString(), this);
+            mApiService.fetchUserById(mNicknameInput.getText().toString(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -307,6 +309,9 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         public void onMatchCreated(QuizMatch match) {}
+
+        @Override
+        public void onUserCreated(QuizUser user) {}
 
         @Override
         public void onError(Exception e) {
@@ -364,6 +369,9 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         public void onMatchCreated(QuizMatch match) {}
+
+        @Override
+        public void onUserCreated(QuizUser user) {}
 
         @Override
         public void onError(Exception e) {

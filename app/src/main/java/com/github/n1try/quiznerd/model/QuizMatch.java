@@ -43,8 +43,8 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
         this.player1 = player1;
         this.player2 = player2;
         this.players = ImmutableMap.of(
-                player1.getAuthentication(), true,
-                player2.getAuthentication(), true
+                player1.getId(), true,
+                player2.getId(), true
         );
     }
 

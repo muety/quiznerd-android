@@ -20,6 +20,7 @@ package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     private QuizApiService mApiService;
     private List<QuizMatch> mMatches;
     private QuizMatchAdapter mMatchAdapter;
+    private SharedPreferences mPrefs;
+    private String mUserNickname;
 
     @BindView(R.id.main_container)
     View mMainContainer;
@@ -99,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
         mApiService = QuizApiService.getInstance();
+        mPrefs = getSharedPreferences(Constants.KEY_PREFERENCES, MODE_PRIVATE);
+        mUserNickname = mPrefs.getString(Constants.KEY_USER_NICKNAME, "");
 
         mQuizList.setOnItemClickListener(this);
         mNewQuizFab.setOnClickListener(this);
@@ -196,9 +201,9 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
-            mApiService.fetchUserById(mAuthentication.getUid(), this);
-            mApiService.fetchActiveMatches(mAuthentication.getUid(), this);
-            mApiService.fetchPastMatches(mAuthentication.getUid(), this);
+            mApiService.fetchUserById(mUserNickname, this);
+            mApiService.fetchActiveMatches(mUserNickname, this);
+            mApiService.fetchPastMatches(mUserNickname, this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -215,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
                     this.users.get(0).getAuthentication().equals(mAuthentication.getUid())) {
                 mUser = this.users.get(0);
                 String winRatio = getString(R.string.score_template, (QuizUtils.getWinRatio(matches, mUser) * 100));
-                mUsernameTv.setText(mAuthentication.getDisplayName());
+                mUsernameTv.setText(mUser.getId());
                 mScoreTv.setText(winRatio);
                 UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
 
@@ -249,6 +254,9 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         public void onMatchCreated(QuizMatch match) {
         }
+
+        @Override
+        public void onUserCreated(QuizUser user) {}
 
         @Override
         public void onError(Exception e) {

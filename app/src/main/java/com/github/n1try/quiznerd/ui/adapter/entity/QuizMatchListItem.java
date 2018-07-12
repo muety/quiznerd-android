@@ -48,7 +48,7 @@ public class QuizMatchListItem implements ListItem {
         TextView turnTv = convertView.findViewById(R.id.quiz_turn_tv);
 
         int[] scores = match.getSortedScores(user);
-        usernameTv.setText(match.getOpponent(user).getDisplayName());
+        usernameTv.setText(match.getOpponent(user).getId());
         UserUtils.loadUserAvatar(context, match.getOpponent(user), avatarIv);
         roundTv.setText(context.getString(R.string.round_with_score_template, match.getRound(), scores[0], scores[1]));
         scoreTv.setText(context.getString(R.string.score_no_round_template, scores[0], scores[1]));
@@ -61,6 +61,7 @@ public class QuizMatchListItem implements ListItem {
         }
         categoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, match.getCategory()));
         if (!match.isMyTurn(user)) turnTv.setVisibility(View.GONE);
+        else turnTv.setVisibility(View.VISIBLE);
 
         return convertView;
     }

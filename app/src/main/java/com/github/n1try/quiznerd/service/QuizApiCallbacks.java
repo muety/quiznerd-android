@@ -6,6 +6,7 @@ import com.github.n1try.quiznerd.model.QuizUser;
 
 import java.util.List;
 
+// TODO: Refactor these
 public interface QuizApiCallbacks {
     void onMatchesFetched(List<QuizMatch> matches);
 
@@ -14,6 +15,8 @@ public interface QuizApiCallbacks {
     void onRandomQuestionsFetched(List<QuizQuestion> questions);
 
     void onMatchCreated(QuizMatch match);
+
+    void onUserCreated(QuizUser user);
 
     void onError(Exception e);
 }

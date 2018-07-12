@@ -19,15 +19,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QuizUser implements Parcelable {
     private String id;
-    private String displayName;
-    private String email;
     private String authentication;
     private GenderType gender = GenderType.MALE;
 
     protected QuizUser(Parcel in) {
         id = in.readString();
-        displayName = in.readString();
-        email = in.readString();
         authentication = in.readString();
     }
 

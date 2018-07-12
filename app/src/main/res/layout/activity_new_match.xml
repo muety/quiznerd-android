@@ -102,15 +102,15 @@
                             android:orientation="horizontal">
 
                             <EditText
-                                android:id="@+id/new_mail_input"
+                                android:id="@+id/new_nickname_input"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="8dp"
                                 android:layout_marginTop="8dp"
                                 android:layout_weight="10"
                                 android:ems="10"
-                                android:hint="@string/find_by_mail"
-                                android:inputType="textEmailAddress" />
+                                android:hint="@string/find_by_nickname"
+                                android:inputType="text" />
 
                             <ImageButton
                                 android:id="@+id/new_find_opponent_button"

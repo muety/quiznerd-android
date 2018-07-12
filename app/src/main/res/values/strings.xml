@@ -23,7 +23,7 @@
     <string name="action_start">Start</string>
     <string name="new_match">New Match</string>
     <string name="find_opponent">Find opponent</string>
-    <string name="find_by_mail">Find player by e-mail address</string>
+    <string name="find_by_nickname">Find player</string>
     <string name="user_not_found">No user found, sorry.</string>
     <string name="error_create_match">Couldn\\\'t create new match, sorry.</string>
     <string name="dialog_title_won">You won!</string>
@@ -46,4 +46,5 @@
     <string name="male">Male</string>
     <string name="action_create">Create</string>
     <string name="create_profile">Create your nerd</string>
+    <string name="error_create_user">Couldn\\\'t create new user, sorry.</string>
 </resources>

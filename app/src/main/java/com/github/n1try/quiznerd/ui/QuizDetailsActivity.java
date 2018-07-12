@@ -60,7 +60,7 @@ public class QuizDetailsActivity extends AppCompatActivity {
         Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
         mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
         mUser = bundle.getParcelable(Constants.KEY_ME);
-        setTitle(mMatch.getOpponent(mUser).getDisplayName());
+        setTitle(mMatch.getOpponent(mUser).getId());
 
         color = QuizUtils.getCategoryColorId(this, mMatch.getCategory());
         mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getCategory()));

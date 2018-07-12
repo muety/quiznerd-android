@@ -112,32 +112,6 @@ public class FirestoreApiService extends QuizApiService {
         fetchTask.addOnFailureListener(new OnQuestionsFetchedFailed());
     }
 
-    public void fetchUserByNickname(String nickname, final QuizApiCallbacks callback) {
-        mFirestore.collection(COLL_USERS)
-                .whereEqualTo("nickname", nickname)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
-                        if (docs.size() != 1) {
-                            callback.onError(new Resources.NotFoundException("Couldn't find user."));
-                            return;
-                        }
-                        QuizUser user = docs.get(0).toObject(QuizUser.class);
-                        user.setId(docs.get(0).getId());
-                        userCache.put(user.getId(), user);
-                        callback.onUsersFetched(Arrays.asList(user));
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        callback.onError(e);
-                    }
-                });
-    }
-
     public void fetchUserById(String id, final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_USERS)
                 .document(id)
@@ -146,9 +120,13 @@ public class FirestoreApiService extends QuizApiService {
                     @Override
                     public void onSuccess(DocumentSnapshot snapshot) {
                         QuizUser user = snapshot.toObject(QuizUser.class);
-                        user.setId(snapshot.getId());
-                        userCache.put(user.getId(), user);
-                        callback.onUsersFetched(Arrays.asList(user));
+                        if (user == null) {
+                            callback.onError(new Resources.NotFoundException("User not found"));
+                        } else {
+                            user.setId(snapshot.getId());
+                            userCache.put(user.getId(), user);
+                            callback.onUsersFetched(Arrays.asList(user));
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -266,6 +244,28 @@ public class FirestoreApiService extends QuizApiService {
                 });
     }
 
+    @Override
+    public void createUser(final QuizUser user, final QuizApiCallbacks callback) {
+        Map dto = mGson.fromJson(mGson.toJsonTree(user), Map.class);
+        dto.remove("id");
+
+        mFirestore.collection(COLL_USERS)
+                .document(user.getId())
+                .set(dto)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void v) {
+                        callback.onUserCreated(user);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onError(e);
+                    }
+                });
+    }
+
     private class CreateQuizMatches implements Continuation<QuerySnapshot, List<FirestoreQuizMatchDto>> {
         @Override
         public List<FirestoreQuizMatchDto> then(@NonNull Task<QuerySnapshot> task) {
@@ -354,8 +354,10 @@ public class FirestoreApiService extends QuizApiService {
 
             match.setPlayer1(player1);
             match.setPlayer2(player2);
-            if (!userCache.containsKey(player1.getId())) userCache.put(player1.getId(), player1);
-            if (!userCache.containsKey(player2.getId())) userCache.put(player2.getId(), player2);
+            if (!userCache.containsKey(player1.getId()))
+                userCache.put(player1.getId(), player1);
+            if (!userCache.containsKey(player2.getId()))
+                userCache.put(player2.getId(), player2);
 
             return match;
         }

@@ -17,8 +17,6 @@ public abstract class QuizApiService {
 
     public Map<String, QuizUser> userCache = new ConcurrentHashMap<>();
 
-    public abstract void fetchUserByNickname(String nickname, QuizApiCallbacks callback);
-
     public abstract void fetchUserById(String authentication, QuizApiCallbacks callback);
 
     public abstract void fetchActiveMatches(String userId, QuizApiCallbacks callback);
@@ -28,6 +26,8 @@ public abstract class QuizApiService {
     public abstract void fetchRandomQuestions(int n, QuizCategory category, QuizApiCallbacks callback);
 
     public abstract void createMatch(QuizMatch match, QuizApiCallbacks callback);
+
+    public abstract void createUser(QuizUser user, QuizApiCallbacks callback);
 
     public abstract void updateQuizRound(QuizMatch match);
 

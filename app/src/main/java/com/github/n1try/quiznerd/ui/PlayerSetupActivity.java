@@ -1,6 +1,8 @@
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.n1try.quiznerd.R;
@@ -23,6 +26,7 @@ import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
+import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,6 +64,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     private String selectedNickname;
     private FirebaseUser mAuthentication;
     private RandomNameGenerator mRandomNameGen;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         mApiService = QuizApiService.getInstance();
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
         mRandomNameGen = new RandomNameGenerator(new Random().nextInt());
+        mPrefs = getSharedPreferences(Constants.KEY_PREFERENCES, MODE_PRIVATE);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -117,8 +123,8 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.crete:
-                //createMatch();
+            case R.id.create:
+                createUser();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -163,13 +169,53 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     private void setReadyState() {
         if (checkReady()) {
             UserUtils.loadUserAvatar(this, QuizUser.builder()
-                    .displayName(nicknameInput.getText().toString())
+                    .id(nicknameInput.getText().toString())
                     .gender(selectedGender)
                     .build(), avatarIv);
         } else {
             avatarIv.setImageDrawable(getDrawable(R.drawable.ic_unknown_user));
         }
         supportInvalidateOptionsMenu();
+    }
+
+    private void createUser() {
+        QuizUser newUser = QuizUser.builder()
+                .id(selectedNickname)
+                .authentication(mAuthentication.getUid())
+                .gender(selectedGender)
+                .build();
+
+        mApiService.createUser(newUser, new QuizApiCallbacks() {
+            @Override
+            public void onMatchesFetched(List<QuizMatch> matches) {}
+
+            @Override
+            public void onUsersFetched(List<QuizUser> users) {}
+
+            @Override
+            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+
+            @Override
+            public void onMatchCreated(QuizMatch match) {}
+
+            @Override
+            public void onUserCreated(QuizUser user) {
+                mApiService.userCache.put(user.getId(), user);
+                mPrefs.edit().putString(Constants.KEY_USER_NICKNAME, user.getId()).commit();
+                launchMain();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(getApplicationContext(), R.string.error_create_user, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void launchMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
@@ -184,7 +230,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mApiService.fetchUserByNickname(nicknameInput.getText().toString(), this);
+            mApiService.fetchUserById(nicknameInput.getText().toString(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -220,8 +266,10 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         }
 
         @Override
-        public void onMatchCreated(QuizMatch match) {
-        }
+        public void onMatchCreated(QuizMatch match) {}
+
+        @Override
+        public void onUserCreated(QuizUser user) {}
 
         @Override
         public void onError(Exception e) {
