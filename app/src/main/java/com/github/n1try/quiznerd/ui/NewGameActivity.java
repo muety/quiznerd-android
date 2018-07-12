@@ -337,6 +337,11 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
+        protected void onPreExecute() {
+            if (mRandomQuestions != null) mRandomQuestions.clear();
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid) {
             supportInvalidateOptionsMenu();
         }
