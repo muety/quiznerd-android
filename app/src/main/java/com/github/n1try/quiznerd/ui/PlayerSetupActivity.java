@@ -104,7 +104,9 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
                         new TimerTask() {
                             @Override
                             public void run() {
-                                new FetchUserTask().execute();
+                                if (editable.length() > 0) {
+                                    new FetchUserTask().execute();
+                                }
                             }
                         }, DELAY
                 );

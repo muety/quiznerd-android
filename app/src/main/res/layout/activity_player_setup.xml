@@ -75,7 +75,7 @@
                             android:id="@+id/setup_nickname_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:digits="0123456789qwertzuiopasdfghjklyxcvbnm"
+                            android:digits="0123456789_qwertzuiopasdfghjklyxcvbnm"
                             android:hint="@string/choose_nickname"
                             android:maxLength="32"
                             android:singleLine="true" />

@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mApiService.matchCache.clear();
                 startActivity(new Intent(this, StartActivity.class));
                 break;
+            case R.id.debug_logout:
+                startActivity(new Intent(this, PlayerSetupActivity.class));
         }
         return false;
     }

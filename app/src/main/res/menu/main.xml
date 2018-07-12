@@ -6,6 +6,10 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
+        android:id="@+id/debug_logout"
+        android:title="Debug Logout"
+        app:showAsAction="never" /> <!-- TODO: Remove! -->
+    <item
         android:id="@+id/logout"
         android:title="@string/action_logout"
         app:showAsAction="never" />

@@ -12,9 +12,8 @@ import com.github.n1try.quiznerd.utils.svg.SvgSoftwareLayerSetter;
 public class UserUtils {
     public static final String AVATAR_URL_TEMPLATE = "https://avatars.dicebear.com/v2/%s/%s.svg";
 
-    public static void loadUserAvatar(Context context, QuizUser user, ImageView target) {
+    public static void loadUserAvatar(Context context, QuizUser user, final ImageView target) {
         String userNick = user.getId().replace(" ", "").toLowerCase();
-        userNick = userNick.substring(0, Math.min(userNick.length() - 1, 10));
 
         GlideApp.with(context)
                 .as(PictureDrawable.class)
@@ -23,6 +22,7 @@ public class UserUtils {
                 .load(String.format(
                         AVATAR_URL_TEMPLATE, user.getGender().name().toLowerCase(), userNick
                 ))
+                .error(R.drawable.ic_unknown_user)
                 .fallback(R.drawable.ic_unknown_user)
                 .into(target);
     }
