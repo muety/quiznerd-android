@@ -100,7 +100,7 @@ function promiseSerial(funcs) {
 }
 
 function strip(text) {
-    return striptags(text).replace(/&.+;/g, '')
+    return text.replace(/&hellip;/, '...').striptags(text).replace(/&.+;/g, '')
 }
 
 /* https://stackoverflow.com/a/1349426/3112139 */
