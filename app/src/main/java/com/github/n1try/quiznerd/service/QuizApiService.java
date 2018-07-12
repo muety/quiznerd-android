@@ -17,7 +17,7 @@ public abstract class QuizApiService {
 
     public Map<String, QuizUser> userCache = new ConcurrentHashMap<>();
 
-    public abstract void fetchUserByMail(String emailQuery, QuizApiCallbacks callback);
+    public abstract void fetchUserByNickname(String nickname, QuizApiCallbacks callback);
 
     public abstract void fetchUserById(String authentication, QuizApiCallbacks callback);
 

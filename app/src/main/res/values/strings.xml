@@ -39,4 +39,11 @@
     <string name="previous_matches">Past Matches</string>
     <string name="your_answer">Your answer:</string>
     <string name="correct_answer">Correct answer:</string>
+    <string name="choose_nickname">Choose a nickname</string>
+    <string name="nickname">Your nickname</string>
+    <string name="gender">Your Gender</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="action_create">Create</string>
+    <string name="create_profile">Create your nerd</string>
 </resources>

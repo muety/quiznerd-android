@@ -259,7 +259,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
-    class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
+    private class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
         private final Context context;
         private QuizUser userResult;
@@ -271,7 +271,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mApiService.fetchUserByMail(mMailInput.getText().toString(), this);
+            mApiService.fetchUserByNickname(mMailInput.getText().toString(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -314,7 +314,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-    class FetchRandomQuestionsTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
+    private class FetchRandomQuestionsTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private CountDownLatch latch;
         private Context context;
 

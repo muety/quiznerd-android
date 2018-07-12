@@ -112,9 +112,9 @@ public class FirestoreApiService extends QuizApiService {
         fetchTask.addOnFailureListener(new OnQuestionsFetchedFailed());
     }
 
-    public void fetchUserByMail(String emailQuery, final QuizApiCallbacks callback) {
+    public void fetchUserByNickname(String nickname, final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_USERS)
-                .whereEqualTo("email", emailQuery)
+                .whereEqualTo("nickname", nickname)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
