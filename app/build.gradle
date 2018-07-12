@@ -49,6 +49,7 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:1.1.2"
     implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
     implementation "com.firebaseui:firebase-ui-auth:$firebaseUiVersion"
+    implementation "com.firebaseui:firebase-ui-database:$firebaseUiVersion"
     implementation "com.google.firebase:firebase-firestore:$firebaseFirestoreVersion"
     implementation "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     implementation "com.jakewharton:butterknife:$butterknifeVersion"

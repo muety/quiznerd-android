@@ -112,7 +112,7 @@ public class FirestoreApiService extends QuizApiService {
         fetchTask.addOnFailureListener(new OnQuestionsFetchedFailed());
     }
 
-    public void fetchUserById(String id, final QuizApiCallbacks callback) {
+    public void getUserById(String id, final QuizApiCallbacks callback) {
         mFirestore.collection(COLL_USERS)
                 .document(id)
                 .get()
@@ -127,6 +127,32 @@ public class FirestoreApiService extends QuizApiService {
                             userCache.put(user.getId(), user);
                             callback.onUsersFetched(Arrays.asList(user));
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onError(e);
+                    }
+                });
+    }
+
+    public void getUserByAuthentication(String authentication, final QuizApiCallbacks callback) {
+        mFirestore.collection(COLL_USERS)
+                .whereEqualTo("authentication", authentication)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot snapshot) {
+                        List<DocumentSnapshot> docs = snapshot.getDocuments();
+                        if (docs.isEmpty()) {
+                            callback.onError(new Resources.NotFoundException("User not found"));
+                        }
+                        QuizUser user = docs.get(0).toObject(QuizUser.class);
+                        user.setId(docs.get(0).getId());
+                        userCache.put(user.getId(), user);
+                        callback.onUsersFetched(Arrays.asList(user));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

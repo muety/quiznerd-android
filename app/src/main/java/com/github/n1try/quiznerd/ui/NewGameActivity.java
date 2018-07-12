@@ -273,7 +273,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mApiService.fetchUserById(mNicknameInput.getText().toString(), this);
+            mApiService.getUserById(mNicknameInput.getText().toString(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {

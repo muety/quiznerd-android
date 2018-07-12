@@ -104,13 +104,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
                         new TimerTask() {
                             @Override
                             public void run() {
-                                if (editable.toString().indexOf(" ") > -1) {
-                                    Toast.makeText(getApplicationContext(), R.string.no_whitespaces, Toast.LENGTH_SHORT).show();
-                                } else if (editable.length() > Constants.MAX_NICKNAME_LENGTH) {
-                                    Toast.makeText(getApplicationContext(), getString(R.string.nickname_max_length_template, String.valueOf(R.string.nickname_max_length_template)), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    new FetchUserTask().execute();
-                                }
+                                new FetchUserTask().execute();
                             }
                         }, DELAY
                 );
@@ -240,7 +234,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mApiService.fetchUserById(nicknameInput.getText().toString(), this);
+            mApiService.getUserById(nicknameInput.getText().toString(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {

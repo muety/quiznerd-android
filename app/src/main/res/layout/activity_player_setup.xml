@@ -65,6 +65,8 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="32dp"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/setup_avatar_iv">
@@ -73,7 +75,10 @@
                             android:id="@+id/setup_nickname_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/choose_nickname" />
+                            android:digits="0123456789qwertzuiopasdfghjklyxcvbnm"
+                            android:hint="@string/choose_nickname"
+                            android:maxLength="32"
+                            android:singleLine="true" />
                     </android.support.design.widget.TextInputLayout>
 
                     <TextView

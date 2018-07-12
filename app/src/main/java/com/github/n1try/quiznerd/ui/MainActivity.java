@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener, AdapterView.OnItemClickListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "MainActivity";
     private FirebaseUser mAuthentication;
     private QuizUser mUser;
@@ -130,7 +130,16 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                mPrefs.edit().remove(Constants.KEY_USER_NICKNAME).commit();
+                FirebaseAuth.getInstance().signOut();
+                mApiService.userCache.clear();
+                mApiService.matchCache.clear();
+                startActivity(new Intent(this, StartActivity.class));
+                break;
+        }
         return false;
     }
 
@@ -201,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         @Override
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
-            mApiService.fetchUserById(mUserNickname, this);
+            mApiService.getUserById(mUserNickname, this);
             mApiService.fetchActiveMatches(mUserNickname, this);
             mApiService.fetchPastMatches(mUserNickname, this);
             try {
