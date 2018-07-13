@@ -160,10 +160,7 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
         int playerIdx = getMyPlayerIndex(me);
         for (int i = 0; i < rounds.size(); i++) {
             QuizRound r = rounds.get(i);
-            if (r.hasPlayed(playerIdx)) filtered.add(r);
-            else if (r.getId() == round) filtered.add(r);
-            else if (round > 0 && r.getId() == round + 1 && getRounds().get(round - 1).hasPlayed(playerIdx))
-                filtered.add(r);
+            if (r.hasPlayed(playerIdx) || r.getId() == round) filtered.add(r);
         }
         return filtered;
     }

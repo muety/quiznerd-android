@@ -42,6 +42,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
     private QuizMatch mMatch;
     private int color;
     private int colorDark;
+    private int playerIdx;
 
     public QuizRoundAdapter(@NonNull Context context, @NonNull QuizMatch match, @NonNull QuizUser user) {
         super(context, 0, match.getDisplayRounds(user));
@@ -50,6 +51,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         this.mMatch = match;
         this.color = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory(), false);
         this.colorDark = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory(), true);
+        playerIdx = mMatch.getMyPlayerIndex(mUser);
     }
 
     @NonNull
@@ -75,17 +77,20 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
             mQuestionsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    QuizUtils.showQuestionDialog(context, round.getQuestion(i), round.getAnswersByPlayerIndex(mMatch.getMyPlayerIndex(mUser)).get(i).intValue());
+                    QuizUtils.showQuestionDialog(context, round.getQuestion(i), round.getAnswersByPlayerIndex(playerIdx).get(i).intValue());
                 }
             });
             mQuestionsLv.setVisibility(View.VISIBLE);
-            mProgressTv.setVisibility(View.GONE);
-        } else {
-            if (mMatch.isMyTurn(mUser)) {
-                mProgressTv.setText(R.string.progress_your_turn);
-            } else {
+
+            if (round.hasPlayed(playerIdx) && !round.hasPlayed((playerIdx % 2) + 1)) {
+                mProgressTv.setVisibility(View.VISIBLE);
                 mProgressTv.setText(R.string.progress_waiting_for_opponent);
+            } else {
+                mProgressTv.setVisibility(View.GONE);
             }
+        } else {
+            if (mMatch.isMyTurn(mUser)) mProgressTv.setText(R.string.progress_your_turn);
+            else mProgressTv.setText(R.string.progress_waiting_for_opponent);
             mQuestionsLv.setVisibility(View.GONE);
             mProgressTv.setVisibility(View.VISIBLE);
         }
@@ -132,11 +137,13 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
 
             ImageView currentStateIv;
             currentStateIv = mMatch.getMyPlayerIndex(mUser) == 1 ? state1Iv : state2Iv;
-            if (question.isCorrect1()) currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            if (question.isCorrect1())
+                currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
             else currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
 
             currentStateIv = mMatch.getMyPlayerIndex(mUser) == 1 ? state2Iv : state1Iv;
-            if (question.isCorrect2()) currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            if (question.isCorrect2())
+                currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
             else currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
 
             textTv.setText(question.question.getText());
