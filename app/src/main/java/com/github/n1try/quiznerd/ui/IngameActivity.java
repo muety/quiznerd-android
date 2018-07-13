@@ -136,7 +136,8 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         int color = QuizUtils.getCategoryColorId(this, mMatch.getCategory(), false);
         int colorDark = QuizUtils.getCategoryColorId(this, mMatch.getCategory(), true);
         mAppbar.setBackgroundColor(color);
-        mNextButton.setBackgroundTintList(ColorStateList.valueOf(color));
         getWindow().setStatusBarColor(colorDark);
+        mNextButton.setBackgroundTintList(ColorStateList.valueOf(color));
+        mProgressBar.setProgressTintList(ColorStateList.valueOf(color));
     }
 }
