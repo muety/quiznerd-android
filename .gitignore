@@ -8,3 +8,4 @@
 app/secrets.properties
 .idea
 .firebaserc
+*.jks
