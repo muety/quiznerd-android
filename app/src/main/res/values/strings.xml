@@ -51,4 +51,7 @@
     <string name="nickname_max_length_template">Nickname must be at least %1$s characters</string>
     <string name="action_logout">Logout</string>
     <string name="no_matches">You don\'t have any matches, yet. Go start one!</string>
+    <string name="slogan">... created for nerds who like quizzes.</string>
+    <string name="featuring">Currently featuring</string>
+    <string name="beta">Beta</string>
 </resources>
