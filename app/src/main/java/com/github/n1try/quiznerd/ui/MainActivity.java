@@ -4,7 +4,6 @@
 Must-do's:
 TODO: Notifications
 TODO: Widget
-TODO: Include license section
 
 Can do's:
 TODO: Tests
