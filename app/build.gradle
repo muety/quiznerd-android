@@ -20,7 +20,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
-        debug {
+        release {
             keyAlias 'quiznerd_keystore'
             keyPassword '<INSERT_HERE>'
             storeFile file('../quiznerd_keystore.jks')
@@ -31,10 +31,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
         debug {
-            signingConfig signingConfigs.debug
         }
     }
 }
