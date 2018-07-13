@@ -53,6 +53,7 @@ import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     FloatingActionButton mNewQuizFab;
     @BindView(R.id.main_quiz_lv)
     ListView mQuizList;
+    @BindView(R.id.main_quiz_list_container)
+    View mQuizListContainer;
     @BindView(R.id.main_refresh_layout)
     SwipeRefreshLayout mRefreshLayout;
 
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 init();
             }
         });
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         mNewQuizFab.setVisibility(AndroidUtils.isNetworkConnected(this) ? View.VISIBLE : View.GONE);
 
         setReady(false); // Only show loading overlay initially, not on refresh
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        postMatchesLoad();
+        postMatchesLoad(mApiService.matchCache.values());
     }
 
     @Override
@@ -172,10 +176,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void postMatchesLoad() {
-        mMatches = new ArrayList<>(mApiService.matchCache.values());
-        mMatchAdapter = new QuizMatchAdapter(this, QuizMatchAdapter.generateItemList(this, mMatches, mUser));
-        mQuizList.setAdapter(mMatchAdapter);
+    private void postMatchesLoad(Collection<QuizMatch> matches) {
+        if (matches.isEmpty()) {
+            mMatchAdapter = null;
+            mQuizListContainer.setVisibility(View.GONE);
+        } else {
+            mMatchAdapter = new QuizMatchAdapter(this, QuizMatchAdapter.generateItemList(this, new ArrayList<>(matches), mUser));
+            mQuizList.setAdapter(mMatchAdapter);
+            mQuizListContainer.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -221,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mUsernameTv.setText(mUser.getId());
             mScoreTv.setText(winRatio);
             UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
-            postMatchesLoad();
+            postMatchesLoad(matches);
             stopwatch.stop();
             setReady(true);
         }

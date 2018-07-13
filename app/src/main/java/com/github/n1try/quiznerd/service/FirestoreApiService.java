@@ -184,12 +184,6 @@ public class FirestoreApiService extends QuizApiService {
         }
 
         task
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println(1);
-                    }
-                })
                 .continueWith(new CreateQuizMatches())
                 .continueWith(new Cast())
                 .addOnSuccessListener(new OnSuccessListener<List<QuizMatch>>() {

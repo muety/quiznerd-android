@@ -25,7 +25,7 @@
     <string name="find_opponent">Find opponent</string>
     <string name="find_by_nickname">Find player</string>
     <string name="user_not_found">No user found, sorry.</string>
-    <string name="error_create_match">Couldn\\\'t create new match, sorry.</string>
+    <string name="error_create_match">Could not create new match, sorry.</string>
     <string name="dialog_title_won">You won!</string>
     <string name="dialog_title_lost">You lost</string>
     <string name="dialog_message_won">Congratulation! You won this round.</string>
@@ -46,8 +46,9 @@
     <string name="male">Male</string>
     <string name="action_create">Create</string>
     <string name="create_profile">Create your nerd</string>
-    <string name="error_create_user">Couldn\\\'t create new user, sorry.</string>
+    <string name="error_create_user">Could not create new user, sorry.</string>
     <string name="no_whitespaces">No whitespaces allowed</string>
     <string name="nickname_max_length_template">Nickname must be at least %1$s characters</string>
     <string name="action_logout">Logout</string>
+    <string name="no_matches">You don\'t have any matches, yet. Go start one!</string>
 </resources>
