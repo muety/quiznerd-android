@@ -303,6 +303,7 @@ public class FirestoreApiService extends QuizApiService {
         if (!match.getAcknowledge().containsKey(match.getPlayer1().getId())) return false;
         if (!match.getAcknowledge().containsKey(match.getPlayer2().getId())) return false;
         if (match.getAcknowledge().size() != 2) return false;
+        if (match.getCategory() == null) return false;
 
         for (int i = 0; i < match.getRounds().size(); i++) {
             QuizRound r = match.getRounds().get(i);
@@ -314,6 +315,7 @@ public class FirestoreApiService extends QuizApiService {
             for (int j = 0; j < r.getQuestions().size(); j++) {
                 QuizQuestion q = r.getQuestion(j);
                 if (TextUtils.isEmpty(q.getText())) return false;
+                if (q.getCategory() == null) return false;
 
                 for (int k = 0; k < q.getAnswers().size(); k++) {
                     QuizAnswer a = q.getAnswer(k);
