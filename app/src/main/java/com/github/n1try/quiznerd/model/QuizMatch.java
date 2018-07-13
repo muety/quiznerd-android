@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -141,6 +142,18 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
 
     public void nextRound() {
         round = Math.min(round + 1, Constants.NUM_ROUNDS);
+    }
+
+    public List<QuizRound> getDisplayRounds(QuizUser me) {
+        List<QuizRound> filtered = new ArrayList<>();
+        int playerIdx = getMyPlayerIndex(me);
+        for (int i = 0; i < rounds.size(); i++) {
+            QuizRound r = rounds.get(i);
+            if (r.hasPlayed(playerIdx)) filtered.add(r);
+            else if (r.getId() == round) filtered.add(r);
+            else if (round > 0 && r.getId() == round + 1 && getRounds().get(round - 1).hasPlayed(playerIdx)) filtered.add(r);
+        }
+        return filtered;
     }
 
     public static final Creator<QuizMatch> CREATOR = new Creator<QuizMatch>() {

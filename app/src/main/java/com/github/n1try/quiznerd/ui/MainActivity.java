@@ -7,6 +7,7 @@ TODO: Widget
 
 Can do's:
 TODO: Tests
+TODO: Fix double questions
 TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
 TODO: Ability to add questions
 TODO: Clean questions
@@ -110,13 +111,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        mNewQuizFab.setVisibility(AndroidUtils.isNetworkConnected(this) ? View.VISIBLE : View.GONE);
 
         setReady(false); // Only show loading overlay initially, not on refresh
         init();
     }
 
     private void init() {
+        mNewQuizFab.setVisibility(AndroidUtils.isNetworkConnected(this) ? View.VISIBLE : View.GONE);
         mApiService.matchCache.clear();
         new FetchDataTask().execute();
     }

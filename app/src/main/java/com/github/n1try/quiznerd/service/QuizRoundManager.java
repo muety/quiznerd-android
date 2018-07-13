@@ -47,9 +47,11 @@ public class QuizRoundManager {
             questionIndex++;
         } else {
             if (!match.isOver()) {
-                match.nextRound();
-                apiService.updateQuizRound(match);
-                round = match.getCurrentRound();
+                if (match.getCurrentRound().hasPlayed(1) && match.getCurrentRound().hasPlayed(2)) {
+                    match.nextRound();
+                    apiService.updateQuizRound(match);
+                    round = match.getCurrentRound();
+                }
             } else {
                 match.setActive(false);
                 apiService.updateQuizState(match);
