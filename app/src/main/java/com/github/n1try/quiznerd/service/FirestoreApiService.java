@@ -2,11 +2,14 @@ package com.github.n1try.quiznerd.service;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.github.n1try.quiznerd.model.QuizAnswer;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
+import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.RandomString;
@@ -187,6 +190,12 @@ public class FirestoreApiService extends QuizApiService {
                         for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                             QuizMatch m = mGson.fromJson(mGson.toJsonTree(doc.getData()), QuizMatch.class);
                             m.setId(doc.getId());
+
+                            if (!isValid(m)) {
+                                Log.w(TAG, String.format("Found invalid match with id %s.", m.getId()));
+                                continue;
+                            }
+
                             userCache.put(m.getPlayer1().getId(), m.getPlayer1());
                             userCache.put(m.getPlayer2().getId(), m.getPlayer2());
                             matchCache.put(m.getId(), m);
@@ -279,5 +288,50 @@ public class FirestoreApiService extends QuizApiService {
                         callback.onError(e);
                     }
                 });
+    }
+
+    private static boolean isValid(QuizMatch match) {
+        if (TextUtils.isEmpty(match.getPlayer1().getId())) return false;
+        if (TextUtils.isEmpty(match.getPlayer2().getId())) return false;
+        if (TextUtils.isEmpty(match.getPlayer1().getAuthentication())) return false;
+        if (TextUtils.isEmpty(match.getPlayer2().getAuthentication())) return false;
+        if (match.getPlayer1().getGender() == null) return false;
+        if (match.getPlayer2().getGender() == null) return false;
+        if (match.getRound() < 1 || match.getRound() > Constants.NUM_ROUNDS) return false;
+        if (match.getRound() > match.getRounds().size()) return false;
+        if (!match.isActive() && !match.isOver()) return false;
+        if (!match.getAcknowledge().containsKey(match.getPlayer1().getId())) return false;
+        if (!match.getAcknowledge().containsKey(match.getPlayer2().getId())) return false;
+        if (match.getAcknowledge().size() != 2) return false;
+
+        for (int i = 0; i < match.getRounds().size(); i++) {
+            Log.d(TAG, "Round " + i);
+            QuizRound r = match.getRounds().get(i);
+            if (r.getQuestions().size() != Constants.NUM_QUESTIONS_PER_ROUND) return false;
+            if (r.getAnswers1().size() != r.getQuestions().size()) return false;
+            if (r.getAnswers2().size() != r.getQuestions().size()) return false;
+            if (r.getId() != i + 1) return false;
+
+            for (int j = 0; j < r.getQuestions().size(); j++) {
+                Log.d(TAG, "Question " + j);
+                QuizQuestion q = r.getQuestion(j);
+                if (TextUtils.isEmpty(q.getText())) return false;
+
+                for (int k = 0; k < q.getAnswers().size(); k++) {
+                    Log.d(TAG, "Answer " + k);
+                    QuizAnswer a = q.getAnswer(k);
+                    if (TextUtils.isEmpty(a.getText())) return false;
+                }
+            }
+
+            for (int l = 0; l < r.getAnswers1().size(); l++) {
+                Log.d(TAG, "User Answer " + l);
+                Long ua1 = r.getAnswers1().get(l);
+                Long ua2 = r.getAnswers2().get(l);
+                if (ua1 > r.getQuestions().size() || (ua1 < 0 && ua1 != QuizAnswer.EMPTY_ANSWER_ID && ua1 != QuizAnswer.TIMEOUT_ANSWER_ID)) return false;
+                if (ua2 > r.getQuestions().size() || (ua2 < 0 && ua2 != QuizAnswer.EMPTY_ANSWER_ID && ua2 != QuizAnswer.TIMEOUT_ANSWER_ID)) return false;
+            }
+        }
+        return true;
     }
 }
