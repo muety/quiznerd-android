@@ -5,8 +5,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /matches/{document=**} {
     	allow create, read: if request.auth != null;
-      allow update: if request.auth != null && get(resource.data.player1Reference).data.authentication == request.auth.uid;
-      allow update: if request.auth != null && get(resource.data.player2Reference).data.authentication == request.auth.uid;
+      allow update: if request.auth != null && resource.data.player1.authentication == request.auth.uid;
+      allow update: if request.auth != null && resource.data.player2.authentication == request.auth.uid;
     }
     
     match /questions/{document=**} {

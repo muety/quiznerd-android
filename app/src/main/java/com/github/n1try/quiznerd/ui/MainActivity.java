@@ -4,11 +4,10 @@ TODO: App icon
 TODO: Category-specific dark color
 TODO: Notifications
 TODO: Widget
-TODO: Tests
-TODO: Set database permissions (https://stackoverflow.com/a/46662736/3112139)
 TODO: Include license section
 
 Can do's:
+TODO: Tests
 TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
 TODO: Settings section (change username, change gender)
 TODO: Find opponent by QR code
@@ -21,7 +20,6 @@ package com.github.n1try.quiznerd.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -53,7 +51,6 @@ import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,13 +63,11 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "MainActivity";
-    private FirebaseUser mAuthentication;
     private QuizUser mUser;
     private QuizApiService mApiService;
     private List<QuizMatch> mMatches;
     private QuizMatchAdapter mMatchAdapter;
     private SharedPreferences mPrefs;
-    private String mUserNickname;
 
     @BindView(R.id.main_container)
     View mMainContainer;
@@ -100,10 +95,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
         mApiService = QuizApiService.getInstance();
         mPrefs = getSharedPreferences(Constants.KEY_PREFERENCES, MODE_PRIVATE);
-        mUserNickname = mPrefs.getString(Constants.KEY_USER_NICKNAME, "");
+        mUser = UserUtils.deserializeFromPreferences(this);
 
         mQuizList.setOnItemClickListener(this);
         mNewQuizFab.setOnClickListener(this);
@@ -133,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.logout:
-                mPrefs.edit().remove(Constants.KEY_USER_NICKNAME).commit();
+                mPrefs.edit().remove(Constants.KEY_ME).commit();
                 FirebaseAuth.getInstance().signOut();
                 mApiService.userCache.clear();
                 mApiService.matchCache.clear();
@@ -197,14 +191,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     class FetchDataTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
-        private List<QuizUser> users;
         private List<QuizMatch> matches;
         private Context context;
         private Stopwatch stopwatch;
 
         public FetchDataTask() {
             context = getApplicationContext();
-            latch = new CountDownLatch(3);
+            latch = new CountDownLatch(2);
             stopwatch = Stopwatch.createUnstarted();
             matches = Collections.synchronizedList(new ArrayList<QuizMatch>());
         }
@@ -212,9 +205,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... voids) {
             stopwatch.start();
-            mApiService.getUserById(mUserNickname, this);
-            mApiService.fetchActiveMatches(mUserNickname, this);
-            mApiService.fetchPastMatches(mUserNickname, this);
+            mApiService.fetchActiveMatches(mUser.getId(), this);
+            mApiService.fetchPastMatches(mUser.getId(), this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -225,21 +217,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (this.users != null &&
-                    this.matches != null &&
-                    this.users.size() == 1 &&
-                    this.users.get(0).getAuthentication().equals(mAuthentication.getUid())) {
-                mUser = this.users.get(0);
-                String winRatio = getString(R.string.score_template, (QuizUtils.getWinRatio(matches, mUser) * 100));
-                mUsernameTv.setText(mUser.getId());
-                mScoreTv.setText(winRatio);
-                UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
-
-                postMatchesLoad();
-            } else {
-                onError(new Resources.NotFoundException());
-            }
-
+            String winRatio = getString(R.string.score_template, (QuizUtils.getWinRatio(matches, mUser) * 100));
+            mUsernameTv.setText(mUser.getId());
+            mScoreTv.setText(winRatio);
+            UserUtils.loadUserAvatar(context, mUser, mAvatarIv);
+            postMatchesLoad();
             stopwatch.stop();
             setReady(true);
         }
@@ -252,11 +234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         @Override
-        public void onUsersFetched(List<QuizUser> users) {
-            Log.d(TAG, String.format("Own user fetched. Found %s after %s ms.", users.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
-            this.users = users;
-            latch.countDown();
-        }
+        public void onUsersFetched(List<QuizUser> users) {}
 
         @Override
         public void onRandomQuestionsFetched(List<QuizQuestion> questions) {

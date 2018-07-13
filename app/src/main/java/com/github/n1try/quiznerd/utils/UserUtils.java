@@ -1,12 +1,15 @@
 package com.github.n1try.quiznerd.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizUser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.pixplicity.sharp.Sharp;
 
 import java.io.IOException;
@@ -29,6 +32,22 @@ public class UserUtils {
         }
 
         new FetchAvatarTask(httpClient, user, target, context.getDrawable(R.drawable.ic_unknown_user)).execute();
+    }
+
+    public static void serializeToPreferences(Context context, QuizUser user) {
+        Gson gson = new GsonBuilder().create();
+        SharedPreferences prefs = context.getSharedPreferences(Constants.KEY_PREFERENCES, Context.MODE_PRIVATE);
+        prefs.edit().putString(Constants.KEY_ME, gson.toJson(user)).commit();
+    }
+
+    public static QuizUser deserializeFromPreferences(Context context) {
+        Gson gson = new GsonBuilder().create();
+        SharedPreferences prefs = context.getSharedPreferences(Constants.KEY_PREFERENCES, Context.MODE_PRIVATE);
+        try {
+            return gson.fromJson(prefs.getString(Constants.KEY_ME, null), QuizUser.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
 

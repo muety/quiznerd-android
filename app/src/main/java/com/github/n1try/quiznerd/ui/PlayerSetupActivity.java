@@ -2,7 +2,6 @@ package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
-import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -64,7 +62,6 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     private String selectedNickname;
     private FirebaseUser mAuthentication;
     private RandomNameGenerator mRandomNameGen;
-    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +72,6 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         mApiService = QuizApiService.getInstance();
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
         mRandomNameGen = new RandomNameGenerator(new Random().nextInt());
-        mPrefs = getSharedPreferences(Constants.KEY_PREFERENCES, MODE_PRIVATE);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -207,7 +203,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
             @Override
             public void onUserCreated(QuizUser user) {
                 mApiService.userCache.put(user.getId(), user);
-                mPrefs.edit().putString(Constants.KEY_USER_NICKNAME, user.getId()).commit();
+                UserUtils.serializeToPreferences(getApplicationContext(), user);
                 launchMain();
             }
 

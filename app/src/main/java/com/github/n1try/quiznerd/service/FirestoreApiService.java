@@ -2,14 +2,11 @@ package com.github.n1try.quiznerd.service;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.github.n1try.quiznerd.model.FirestoreQuizMatchDto;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
-import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.RandomString;
@@ -17,7 +14,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -196,15 +191,14 @@ public class FirestoreApiService extends QuizApiService {
                     }
                 })
                 .continueWith(new CreateQuizMatches())
-                .continueWithTask(new FetchPlayers())
                 .continueWith(new Cast())
                 .addOnSuccessListener(new OnSuccessListener<List<QuizMatch>>() {
                     @Override
-                    public void onSuccess(List<QuizMatch> firestoreQuizMatchResults) {
-                        for (QuizMatch m : firestoreQuizMatchResults) {
+                    public void onSuccess(List<QuizMatch> results) {
+                        for (QuizMatch m : results) {
                             matchCache.put(m.getId(), m);
                         }
-                        callback.onMatchesFetched(firestoreQuizMatchResults);
+                        callback.onMatchesFetched(results);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -242,15 +236,8 @@ public class FirestoreApiService extends QuizApiService {
     }
 
     public void createMatch(final QuizMatch match, final QuizApiCallbacks callback) {
-        DocumentReference ref1 = mFirestore.collection(COLL_USERS).document(match.getPlayer1().getId());
-        DocumentReference ref2 = mFirestore.collection(COLL_USERS).document(match.getPlayer2().getId());
-
         Map dto = mGson.fromJson(mGson.toJsonTree(match), Map.class);
-        dto.remove("player1");
-        dto.remove("player2");
         dto.remove("id");
-        dto.put("player1Reference", ref1);
-        dto.put("player2Reference", ref2);
         dto.put("updated", match.getUpdated()); // Firestore understands java.util.Date
 
         mFirestore.collection(COLL_MATCHES)
@@ -292,27 +279,14 @@ public class FirestoreApiService extends QuizApiService {
                 });
     }
 
-    private class CreateQuizMatches implements Continuation<QuerySnapshot, List<FirestoreQuizMatchDto>> {
+    private class CreateQuizMatches implements Continuation<QuerySnapshot, List<QuizMatch>> {
         @Override
-        public List<FirestoreQuizMatchDto> then(@NonNull Task<QuerySnapshot> task) {
-            List<FirestoreQuizMatchDto> matches = new ArrayList<>(task.getResult().size());
+        public List<QuizMatch> then(@NonNull Task<QuerySnapshot> task) {
+            List<QuizMatch> matches = new ArrayList<>(task.getResult().size());
             for (QueryDocumentSnapshot doc : task.getResult()) {
-                List<Map> roundReferences = (List<Map>) doc.get("rounds");
-                List<QuizRound> rounds = new ArrayList<>(roundReferences.size());
-                for (Map ref : roundReferences) {
-                    rounds.add(mGson.fromJson(mGson.toJsonTree(ref), QuizRound.class));
-                }
-
-                matches.add(FirestoreQuizMatchDto.builder()
-                        .id(doc.getId())
-                        .player1Reference(doc.getDocumentReference("player1Reference"))
-                        .player2Reference(doc.getDocumentReference("player2Reference"))
-                        .rounds(rounds)
-                        .quizCategory(QuizCategory.valueOf(doc.getString("category")))
-                        .round(doc.getLong("round").intValue())
-                        .active(doc.getBoolean("active"))
-                        .updated(doc.getDate("updated"))
-                        .build());
+                QuizMatch m = mGson.fromJson(mGson.toJsonTree(doc.getData()), QuizMatch.class);
+                m.setId(doc.getId());
+                matches.add(m);
             }
 
             Collections.sort(matches);
@@ -320,80 +294,11 @@ public class FirestoreApiService extends QuizApiService {
         }
     }
 
-    private class FetchPlayers implements Continuation<List<FirestoreQuizMatchDto>, Task<List<FirestoreQuizMatchDto>>> {
+    private class Cast implements Continuation<List<QuizMatch>, List<QuizMatch>> {
         @Override
-        public Task<List<FirestoreQuizMatchDto>> then(@NonNull Task<List<FirestoreQuizMatchDto>> task) {
-            List<Task<FirestoreQuizMatchDto>> tasks = new ArrayList<>();
-            for (FirestoreQuizMatchDto match : task.getResult()) {
-                Map<String, Integer> playerIndexes = new HashMap<>();
-                List<Task<DocumentSnapshot>> fetchPlayerTasks = new ArrayList<>();
-                if (!userCache.containsKey(match.getPlayer1Reference().getId())) {
-                    Log.d(TAG, String.format("Cache hit for player %s", match.getPlayer1Reference().getId()));
-                    fetchPlayerTasks.add(match.getPlayer1Reference().get());
-                }
-                if (!userCache.containsKey(match.getPlayer2Reference().getId())) {
-                    Log.d(TAG, String.format("Cache hit for player %s", match.getPlayer2Reference().getId()));
-                    fetchPlayerTasks.add(match.getPlayer2Reference().get());
-                }
-                playerIndexes.put(match.getPlayer1Reference().getId(), 1);
-                playerIndexes.put(match.getPlayer2Reference().getId(), 2);
-                tasks.add(Tasks.<DocumentSnapshot>whenAllSuccess(fetchPlayerTasks).continueWith(new AddPlayers(match, playerIndexes)));
-            }
-            return Tasks.whenAllSuccess(tasks);
-        }
-    }
-
-    private class AddPlayers implements Continuation<List<DocumentSnapshot>, FirestoreQuizMatchDto> {
-        private FirestoreQuizMatchDto match;
-        private Map<String, Integer> playerIndexes;
-
-        public AddPlayers(FirestoreQuizMatchDto match, @Nullable Map<String, Integer> playerIndexes) {
-            this.match = match;
-            this.playerIndexes = playerIndexes;
-        }
-
-        @Override
-        public FirestoreQuizMatchDto then(@NonNull Task<List<DocumentSnapshot>> task) {
-            List<DocumentSnapshot> docs = task.getResult();
-            QuizUser player1 = null;
-            QuizUser player2 = null;
-
-            for (Map.Entry<String, Integer> e : playerIndexes.entrySet()) {
-                if (e.getValue() == 1) player1 = userCache.get(e.getKey());
-                else if (e.getValue() == 2) player2 = userCache.get(e.getKey());
-            }
-
-            if (docs.size() == 2) {
-                player1 = docs.get(0).toObject(QuizUser.class);
-                player2 = docs.get(1).toObject(QuizUser.class);
-                player1.setId(docs.get(0).getId());
-                player2.setId(docs.get(1).getId());
-            } else if (docs.size() == 1) {
-                if (player1 == null) {
-                    player1 = docs.get(0).toObject(QuizUser.class);
-                    player1.setId(docs.get(0).getId());
-                } else if (player2 == null) {
-                    player2 = docs.get(0).toObject(QuizUser.class);
-                    player2.setId(docs.get(0).getId());
-                }
-            }
-
-            match.setPlayer1(player1);
-            match.setPlayer2(player2);
-            if (!userCache.containsKey(player1.getId()))
-                userCache.put(player1.getId(), player1);
-            if (!userCache.containsKey(player2.getId()))
-                userCache.put(player2.getId(), player2);
-
-            return match;
-        }
-    }
-
-    private class Cast implements Continuation<List<FirestoreQuizMatchDto>, List<QuizMatch>> {
-        @Override
-        public List<QuizMatch> then(@NonNull Task<List<FirestoreQuizMatchDto>> task) {
+        public List<QuizMatch> then(@NonNull Task<List<QuizMatch>> task) {
             List<QuizMatch> matches = new ArrayList<>();
-            for (FirestoreQuizMatchDto match : task.getResult()) {
+            for (QuizMatch match : task.getResult()) {
                 matches.add(match);
             }
             return matches;

@@ -15,5 +15,4 @@ public final class Constants {
     public static final String KEY_POSITION = "position";
     public static final String KEY_COUNTDOWN = "countdown";
     public static final String KEY_RANDOM_QUESTIONS = "random_questions";
-    public static final String KEY_USER_NICKNAME = "user_nick";
 }

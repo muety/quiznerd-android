@@ -1,7 +1,6 @@
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
-import com.github.n1try.quiznerd.utils.Constants;
+import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -26,14 +25,12 @@ import java.util.List;
 public class StartActivity extends AppCompatActivity implements QuizApiCallbacks {
     private static final String TAG = "StartActivity";
     private static final int RC_SIGN_IN = 100;
-    private SharedPreferences mPrefs;
     private QuizApiService mApiService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPrefs = getSharedPreferences(Constants.KEY_PREFERENCES, MODE_PRIVATE);
         mApiService = QuizApiService.getInstance();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -51,7 +48,7 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
                             .build(),
                     RC_SIGN_IN);
 
-        } else if (!mPrefs.contains(Constants.KEY_USER_NICKNAME)) {
+        } else if (UserUtils.deserializeFromPreferences(this) == null) {
             mApiService.getUserByAuthentication(user.getUid(), this);
         } else {
             launchMain();
@@ -87,12 +84,13 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
     }
 
     @Override
-    public void onMatchesFetched(List<QuizMatch> matches) {}
+    public void onMatchesFetched(List<QuizMatch> matches) {
+    }
 
     @Override
     public void onUsersFetched(List<QuizUser> users) {
         if (!users.isEmpty()) {
-            mPrefs.edit().putString(Constants.KEY_USER_NICKNAME, users.get(0).getId()).commit();
+            UserUtils.serializeToPreferences(this, users.get(0));
             launchMain();
         } else {
             launchSetup();
@@ -100,13 +98,16 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
     }
 
     @Override
-    public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+    public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+    }
 
     @Override
-    public void onMatchCreated(QuizMatch match) {}
+    public void onMatchCreated(QuizMatch match) {
+    }
 
     @Override
-    public void onUserCreated(QuizUser user) {}
+    public void onUserCreated(QuizUser user) {
+    }
 
     @Override
     public void onError(Exception e) {
