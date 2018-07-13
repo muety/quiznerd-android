@@ -11,7 +11,7 @@ const PATH_CATEGORIES = './data/quizzes.json';
 const PATH_QUESTIONS = './data/questions.json';
 const CREATOR_ID = 'vPFq7bm4MX5EyecNSlvn';
 const RANDOM_STRING_LENGTH = 20;
-const LIMIT = 80; // Number.MAX_VALUE
+const LIMIT = Number.MAX_VALUE;
 const SHUFFLE = true;
 const DUMP_JSON = false;
 
@@ -79,7 +79,7 @@ Object.values(categoryMap).forEach(c => {
 });
 
 let promises = [];
-for (let i = 0; i < LIMIT; i++) {
+for (let i = 0; i < Math.min(LIMIT, questions.length); i++) {
     promises.push(() => {
         let q = questions[i];
         console.log(`Creating question ${i} of category ${q.category}.`);
@@ -100,7 +100,7 @@ function promiseSerial(funcs) {
 }
 
 function strip(text) {
-    return text.replace(/&hellip;/, '...').striptags(text).replace(/&.+;/g, '')
+    return striptags(text.replace(/&hellip;/, '...')).replace(/&.+;/g, '')
 }
 
 /* https://stackoverflow.com/a/1349426/3112139 */
