@@ -73,7 +73,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingame_question_code_tv"
-            app:useDefaultMargins="false">
+            app:useDefaultMargins="true">
 
             <!-- Button here -->
 
