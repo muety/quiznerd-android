@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void init() {
+        mApiService.matchCache.clear();
         new FetchDataTask().execute();
     }
 

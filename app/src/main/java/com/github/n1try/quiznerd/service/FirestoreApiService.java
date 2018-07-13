@@ -190,6 +190,8 @@ public class FirestoreApiService extends QuizApiService {
                     @Override
                     public void onSuccess(List<QuizMatch> results) {
                         for (QuizMatch m : results) {
+                            userCache.put(m.getPlayer1().getId(), m.getPlayer1());
+                            userCache.put(m.getPlayer2().getId(), m.getPlayer2());
                             matchCache.put(m.getId(), m);
                         }
                         callback.onMatchesFetched(results);
