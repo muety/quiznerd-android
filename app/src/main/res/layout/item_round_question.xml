@@ -46,5 +46,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/question_status1_iv"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_wrong" />
+        app:srcCompat="@drawable/ic_exposure_zero" />
 </android.support.constraint.ConstraintLayout>

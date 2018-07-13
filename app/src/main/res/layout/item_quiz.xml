@@ -57,6 +57,16 @@
         app:layout_constraintStart_toStartOf="@+id/quiz_username_tv"
         app:layout_constraintTop_toBottomOf="@+id/quiz_username_tv" />
 
+    <ImageView
+        android:id="@+id/quiz_result_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/quiz_turn_tv"
+        app:layout_constraintEnd_toStartOf="@+id/quiz_turn_tv"
+        app:layout_constraintTop_toTopOf="@+id/quiz_turn_tv"
+        app:srcCompat="@drawable/ic_wrong" />
+
     <TextView
         android:id="@+id/quiz_turn_tv"
         style="@style/AppTheme.Text.Light.LabelText"
