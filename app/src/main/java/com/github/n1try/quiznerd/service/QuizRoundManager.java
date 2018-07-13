@@ -54,6 +54,7 @@ public class QuizRoundManager {
                 }
             } else {
                 match.setActive(false);
+                match.acknowledge(user);
                 apiService.updateQuizState(match);
                 round = null;
             }

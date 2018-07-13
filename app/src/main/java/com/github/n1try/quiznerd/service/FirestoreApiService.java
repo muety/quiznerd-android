@@ -166,7 +166,7 @@ public class FirestoreApiService extends QuizApiService {
         fetchMatches(false, userId, callback);
     }
 
-    private void fetchMatches(boolean active, String userId, final QuizApiCallbacks callback) {
+    private void fetchMatches(boolean active, final String userId, final QuizApiCallbacks callback) {
         Task<QuerySnapshot> task;
         if (active) {
             task = mFirestore.collection(COLL_MATCHES)
@@ -176,8 +176,6 @@ public class FirestoreApiService extends QuizApiService {
             task = mFirestore.collection(COLL_MATCHES)
                     .whereEqualTo(String.format("acknowledge.%s", userId), true)
                     .whereEqualTo("active", false)
-                    .whereEqualTo("archived", false)
-                    .limit(Constants.NUM_PAST_MATCHES)
                     .get(Source.CACHE);
         }
 
@@ -193,6 +191,11 @@ public class FirestoreApiService extends QuizApiService {
                             userCache.put(m.getPlayer2().getId(), m.getPlayer2());
                             matchCache.put(m.getId(), m);
                             matches.add(m);
+
+                            if (!m.getAcknowledge().get(userId) && !m.isActive()) {
+                                m.acknowledge(QuizUser.builder().id(userId).build());
+                                updateQuizState(m);
+                            }
                         }
 
                         Collections.sort(matches);
@@ -229,7 +232,8 @@ public class FirestoreApiService extends QuizApiService {
         mFirestore.collection(COLL_MATCHES)
                 .document(match.getId())
                 .update(
-                        "active", match.isActive()
+                        "active", match.isActive(),
+                        "acknowledge", match.getAcknowledge()
                 );
     }
 

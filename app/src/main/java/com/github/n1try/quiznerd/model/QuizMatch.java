@@ -29,10 +29,17 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
     private QuizUser player2;
     private int round; // starts at 1
     private boolean active;
-    private boolean archived;
     private Date updated;
     private List<QuizRound> rounds;
     private Map<String, Boolean> acknowledge; // Dirty hack; see https://firebase.google.com/docs/firestore/solutions/arrays
+
+    /*
+    Acknowledge state is false for both players until the end of the last round.
+    The user, who sets active = false after the last round also sets acknowledge = true for himself, while leaving acknowledge = false
+    for the opponent. After the opponent has fetched that match and noticed, that it's not active anymore, he also sets acknowledge = true
+    for himself. Since users only request non-acknowledged matches from Firestore, he won't be fetching that match from the server again,
+    but only from local cache.
+     */
 
     public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, QuizUser player1, QuizUser player2, List<QuizRound> rounds) {
         this.id = id;
@@ -142,6 +149,10 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
 
     public void nextRound() {
         round = Math.min(round + 1, Constants.NUM_ROUNDS);
+    }
+
+    public void acknowledge(QuizUser me) {
+        acknowledge.put(me.getId(), true);
     }
 
     public List<QuizRound> getDisplayRounds(QuizUser me) {
