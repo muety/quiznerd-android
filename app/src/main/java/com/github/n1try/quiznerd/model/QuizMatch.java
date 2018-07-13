@@ -32,7 +32,7 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
     private boolean archived;
     private Date updated;
     private List<QuizRound> rounds;
-    private Map<String, Boolean> players; // Dirty hack; see https://firebase.google.com/docs/firestore/solutions/arrays
+    private Map<String, Boolean> acknowledge; // Dirty hack; see https://firebase.google.com/docs/firestore/solutions/arrays
 
     public QuizMatch(String id, QuizCategory quizCategory, int round, boolean active, Date updated, QuizUser player1, QuizUser player2, List<QuizRound> rounds) {
         this.id = id;
@@ -43,9 +43,9 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
         this.rounds = rounds;
         this.player1 = player1;
         this.player2 = player2;
-        this.players = ImmutableMap.of(
-                player1.getId(), true,
-                player2.getId(), true
+        this.acknowledge = ImmutableMap.of(
+                player1.getId(), false,
+                player2.getId(), false
         );
     }
 
@@ -151,7 +151,8 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
             QuizRound r = rounds.get(i);
             if (r.hasPlayed(playerIdx)) filtered.add(r);
             else if (r.getId() == round) filtered.add(r);
-            else if (round > 0 && r.getId() == round + 1 && getRounds().get(round - 1).hasPlayed(playerIdx)) filtered.add(r);
+            else if (round > 0 && r.getId() == round + 1 && getRounds().get(round - 1).hasPlayed(playerIdx))
+                filtered.add(r);
         }
         return filtered;
     }

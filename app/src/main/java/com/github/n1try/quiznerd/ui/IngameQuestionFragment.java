@@ -129,7 +129,7 @@ public class IngameQuestionFragment extends Fragment implements QuizCategoryAwar
     }
 
     private Button inflateAnswerButtons(final QuizAnswer answer) {
-        Button button = (Button) mInflater.inflate(R.layout.button_answer, null);
+        Button button = (Button) mInflater.inflate(R.layout.include_button_answer, null);
         button.setText(answer.getText());
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
         params.height = GridLayout.LayoutParams.WRAP_CONTENT;
