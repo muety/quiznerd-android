@@ -49,6 +49,11 @@ public class QuizRound implements Parcelable {
         return questions.get(0).getCategory();
     }
 
+    public boolean isQuestionAnswered(int questionIdx, int playerIdx) {
+        List<Long> answers = playerIdx == 1 ? answers1 : answers2;
+        return answers.get(questionIdx).intValue() != QuizAnswer.EMPTY_ANSWER_ID;
+    }
+
     public int[] getScores() {
         int[] scores = new int[]{0, 0};
         for (int i = 0; i < questions.size(); i++) {

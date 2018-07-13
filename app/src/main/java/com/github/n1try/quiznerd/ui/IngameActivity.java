@@ -61,8 +61,6 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         mQuizRoundManager = new QuizRoundManager(mMatch, mUser);
         setSupportActionBar(mToolbar);
         setTitle(getString(R.string.round_template, mMatch.getRound()));
-
-        mNextButton.setVisibility(View.GONE);
         mNextButton.setOnClickListener(this);
 
         long countdownState = bundle.containsKey(Constants.KEY_COUNTDOWN)
@@ -89,6 +87,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     }
 
     private void displayQuestion(QuizQuestion question) {
+        mNextButton.setVisibility(View.GONE);
         mCurrentFragment = IngameQuestionFragment.newInstance(mUser, question, mMatch.getCurrentRound().getQuestionIndex(question));
         mFragmentManager.beginTransaction().replace(R.id.ingame_question_container, mCurrentFragment, TAG_QUESTION_FRAGMENT).commit();
     }
