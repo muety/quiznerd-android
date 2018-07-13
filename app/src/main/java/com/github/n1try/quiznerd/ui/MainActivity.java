@@ -20,6 +20,7 @@ package com.github.n1try.quiznerd.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -49,6 +50,7 @@ import com.github.n1try.quiznerd.utils.AndroidUtils;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -131,6 +133,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.bug:
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setType("text/html");
+                intent.setData(Uri.parse("mailto:"));
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {getString(R.string.mail)});
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.bug_subject));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.bug_body));
+                startActivity(Intent.createChooser(intent, getString(R.string.send_mail)));
+                break;
+            case R.id.about:
+                startActivity(new Intent(this, AboutActivity.class));
+                break;
+            case R.id.licenses:
+                OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_title));
+                startActivity(new Intent(this, OssLicensesMenuActivity.class));
+                break;
             case R.id.logout:
                 mPrefs.edit().remove(Constants.KEY_ME).commit();
                 FirebaseAuth.getInstance().signOut();
@@ -138,8 +156,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mApiService.matchCache.clear();
                 startActivity(new Intent(this, StartActivity.class));
                 break;
-            case R.id.debug_logout:
-                startActivity(new Intent(this, PlayerSetupActivity.class));
+            /*case R.id.debug_logout:
+                startActivity(new Intent(this, PlayerSetupActivity.class));*/
         }
         return false;
     }
@@ -244,7 +262,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         @Override
-        public void onUsersFetched(List<QuizUser> users) {}
+        public void onUsersFetched(List<QuizUser> users) {
+        }
 
         @Override
         public void onRandomQuestionsFetched(List<QuizQuestion> questions) {

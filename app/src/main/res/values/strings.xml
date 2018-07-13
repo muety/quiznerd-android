@@ -54,4 +54,14 @@
     <string name="slogan">... created for nerds who like quizzes.</string>
     <string name="featuring">Currently featuring</string>
     <string name="beta">Beta</string>
+    <string name="title_activity_credits">CreditsActivity</string>
+    <string name="license_title">Software Licenses</string>
+    <string name="action_licenses">Licenses</string>
+    <string name="about">About</string>
+    <string name="action_bug">Report bug</string>
+    <string name="mail">mail@ferdinand-muetsch.de</string>
+    <string name="bug_subject">QuizNerd Bug Report</string>
+    <string name="bug_body">Hello Ferdinand!\n\nI found a bug in QuizNerd.\n\nDESCRIBE YOUR BUG HERE\n\n- A happy nerd</string>
+    <string name="send_mail">Send mail ...</string>
+
 </resources>
