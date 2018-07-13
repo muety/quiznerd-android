@@ -10,6 +10,7 @@
         android:id="@+id/quiz_category_iv"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:contentDescription="@string/desc_category"
         app:srcCompat="@drawable/ic_cat_android" />
 
     <TextView

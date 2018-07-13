@@ -63,5 +63,20 @@
     <string name="bug_subject">QuizNerd Bug Report</string>
     <string name="bug_body">Hello Ferdinand!\n\nI found a bug in QuizNerd.\n\nDESCRIBE YOUR BUG HERE\n\n- A happy nerd</string>
     <string name="send_mail">Send mail ...</string>
+    <string name="desc_avatar">User Avatar</string>
+    <string name="desc_female">Female Nerd Avatar</string>
+    <string name="desc_male">Male Nerd Avatar</string>
+    <string name="desc_avatar_own">Your own user avatar</string>
+    <string name="desc_avatar_opp">Your opponents user avatar</string>
+    <string name="desc_wrong">A red forbidden sign</string>
+    <string name="desc_category">The category\'s icon</string>
+    <string name="desc_logo">The logo</string>
+    <string name="desc_android">Android logo</string>
+    <string name="desc_java">Java logo</string>
+    <string name="desc_python">Python logo</string>
+    <string name="desc_csharp">C Sharp logo</string>
+    <string name="desc_cpp">C++ logo</string>
+    <string name="desc_html">HTML logo</string>
+    <string name="desc_swift">Swift logo</string>
 
 </resources>

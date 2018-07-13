@@ -50,6 +50,7 @@
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_marginTop="16dp"
+                        android:contentDescription="@string/desc_avatar"
                         android:src="@drawable/ic_unknown_user"
                         app:civ_border_color="@android:color/white"
                         app:civ_border_width="3dp"
@@ -117,6 +118,7 @@
                                 android:layout_marginTop="8dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/select_female_toggle"
+                                android:contentDescription="@string/desc_female"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -144,6 +146,7 @@
                                 android:layout_marginTop="8dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/select_male_toggle"
+                                android:contentDescription="@string/desc_male"
                                 android:textOff=""
                                 android:textOn="" />
 

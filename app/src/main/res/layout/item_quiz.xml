@@ -13,6 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/desc_category"
         app:srcCompat="@drawable/ic_cat_android" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -24,6 +25,7 @@
         app:civ_circle_background_color="@color/colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/desc_avatar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -65,6 +67,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/quiz_turn_tv"
         app:layout_constraintEnd_toStartOf="@+id/quiz_turn_tv"
         app:layout_constraintTop_toTopOf="@+id/quiz_turn_tv"
+        android:contentDescription="@string/desc_wrong"
         app:srcCompat="@drawable/ic_wrong" />
 
     <TextView

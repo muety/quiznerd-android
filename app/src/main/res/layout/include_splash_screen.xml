@@ -11,6 +11,7 @@
         android:id="@+id/imageView"
         android:layout_width="128dp"
         android:layout_height="128dp"
+        android:contentDescription="@string/desc_logo"
         app:srcCompat="@drawable/ic_appicon" />
 
     <LinearLayout
@@ -62,30 +63,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_android"
             app:srcCompat="@drawable/ic_cat_android" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_java"
             app:srcCompat="@drawable/ic_cat_java" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_python"
             app:srcCompat="@drawable/ic_cat_python" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_csharp"
             app:srcCompat="@drawable/ic_cat_csharp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_cpp"
             app:srcCompat="@drawable/ic_cat_cpp" />
 
         <ImageView
@@ -98,6 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_html"
             app:srcCompat="@drawable/ic_cat_html" />
 
         <ImageView
@@ -110,6 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/desc_swift"
             app:srcCompat="@drawable/ic_cat_swift" />
 
     </android.support.v7.widget.GridLayout>

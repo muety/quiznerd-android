@@ -24,6 +24,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
+            android:contentDescription="@string/desc_wrong"
             app:layout_constraintBottom_toBottomOf="@+id/ingame_question_title_tv"
             app:layout_constraintStart_toEndOf="@+id/ingame_question_title_tv"
             app:layout_constraintTop_toTopOf="@+id/ingame_question_title_tv"
@@ -33,6 +34,7 @@
             android:id="@+id/ingame_category_iv"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:contentDescription="@string/desc_category"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_cat_android" />

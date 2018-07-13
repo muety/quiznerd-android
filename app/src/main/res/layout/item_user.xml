@@ -14,6 +14,7 @@
         app:civ_circle_background_color="@color/colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/desc_avatar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
