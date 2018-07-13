@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorBackground"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/appbar"
@@ -122,114 +123,9 @@
         android:background="@android:color/white"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            app:srcCompat="@drawable/ic_appicon" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView"
-                style="@style/AppTheme.Text.Background.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/app_name" />
-
-            <TextView
-                style="@style/AppTheme.Text.Dark.SectionHeading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="2dp"
-                android:text="@string/beta"
-                android:textAllCaps="true" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/slogan" />
-
-        <TextView
-            style="@style/AppTheme.Text.Dark.SectionHeading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/featuring" />
-
-        <android.support.v7.widget.GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:columnCount="3">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_android" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_java" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_python" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_csharp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_cpp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_js" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_html" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_php" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:srcCompat="@drawable/ic_cat_swift" />
-
-        </android.support.v7.widget.GridLayout>
+        <include layout="@layout/include_splash_screen" />
 
         <ProgressBar
             android:id="@+id/loading_spinner"

@@ -11,6 +11,7 @@ TODO: Fix double questions
 TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
 TODO: Ability to add questions
 TODO: Clean questions
+TODO: Stats
  */
 
 package com.github.n1try.quiznerd.ui;

@@ -1,6 +1,7 @@
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,24 +16,47 @@ import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiCallbacks;
 import com.github.n1try.quiznerd.service.QuizApiService;
+import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StartActivity extends AppCompatActivity implements QuizApiCallbacks {
     private static final String TAG = "StartActivity";
     private static final int RC_SIGN_IN = 100;
     private QuizApiService mApiService;
+    SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mApiService = QuizApiService.getInstance();
+        mPrefs = getSharedPreferences(Constants.KEY_PREFERENCES, MODE_PRIVATE);
 
+        if (mPrefs.contains(Constants.KEY_INITIALIZED)) {
+            start();
+        } else {
+            setContentView(R.layout.activity_start);
+            mPrefs.edit().putBoolean(Constants.KEY_INITIALIZED, true).commit();
+            Timer timer = new Timer();
+            timer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            start();
+                        }
+                    }, Constants.INITIAL_SPLASH_SECS * 1000
+            );
+        }
+    }
+
+    private void start() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user == null) {
