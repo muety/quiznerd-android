@@ -1,7 +1,7 @@
+// Launcher icon: https://www.flaticon.com/free-icon/nerd_626580#term=nerd&page=1&position=54
+
 /*
 Must-do's:
-TODO: App icon
-TODO: Category-specific dark color
 TODO: Notifications
 TODO: Widget
 TODO: Include license section
