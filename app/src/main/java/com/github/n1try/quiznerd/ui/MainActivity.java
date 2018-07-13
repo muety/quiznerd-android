@@ -8,8 +8,6 @@ TODO: Widget
 Can do's:
 TODO: Tests
 TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
-TODO: Settings section (change username, change gender)
-TODO: Find opponent by QR code
 TODO: Ability to add questions
 TODO: Clean questions
  */
