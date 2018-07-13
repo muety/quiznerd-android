@@ -19,6 +19,16 @@
     <color name="categoryPhp">#4F5D95</color>
     <color name="categorySwift">#FFAC45</color>
 
+    <color name="categoryAndroidDark">#778F2A</color>
+    <color name="categoryJavaDark">#7F5312</color>
+    <color name="categoryPythonDark">#265378</color>
+    <color name="categoryCsharpDark">#116100</color>
+    <color name="categoryCppDark">#B5385D</color>
+    <color name="categoryJsDark">#B0A442</color>
+    <color name="categoryHtmlDark">#B53D1E</color>
+    <color name="categoryPhpDark">#3D4873</color>
+    <color name="categorySwiftDark">#CC8A37</color>
+
     <color name="success">#A1CE6F</color>
     <color name="danger">#F97146</color>
 

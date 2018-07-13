@@ -26,9 +26,11 @@ public class QuizUtils {
         return context.getDrawable(id);
     }
 
-    public static int getCategoryColorId(Context context, QuizCategory category) {
+    public static int getCategoryColorId(Context context, QuizCategory category, boolean dark) {
         String languageId = category.name().substring(0, 1).toUpperCase() + category.name().substring(1).toLowerCase();
-        int id = context.getResources().getIdentifier("category" + languageId, "color", context.getPackageName());
+        int id = dark
+                ? context.getResources().getIdentifier("category" + languageId + "Dark", "color", context.getPackageName())
+                : context.getResources().getIdentifier("category" + languageId, "color", context.getPackageName());
         return ContextCompat.getColor(context, id);
     }
 

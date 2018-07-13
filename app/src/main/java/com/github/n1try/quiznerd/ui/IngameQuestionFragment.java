@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /* CAUTION: Can only be attached by activities that also implement OnAnsweredListener */
-public class IngameQuestionFragment extends Fragment {
+public class IngameQuestionFragment extends Fragment implements QuizCategoryAware {
     private static final String TAG = "IngameQuestionFragment";
 
     @BindView(R.id.ingame_question_title_tv)
@@ -51,13 +51,18 @@ public class IngameQuestionFragment extends Fragment {
     private Context mContext;
     private OnAnsweredListener mAnsweredListener;
     private LayoutInflater mInflater;
-    private QuizUser mUser;
     private QuizQuestion mQuestion;
     private int mPosition;
     private List<Button> mAnswerButtons;
 
     private int colorSuccess;
     private int colorFailed;
+
+    @Override
+    public void setColors() {
+        int color = QuizUtils.getCategoryColorId(mContext, mQuestion.getCategory(), false);
+        mTitleTv.setTextColor(color);
+    }
 
     protected interface OnAnsweredListener {
         public void onAnswered(QuizAnswer answer);
@@ -78,7 +83,6 @@ public class IngameQuestionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mUser = getArguments().getParcelable(Constants.KEY_ME);
         mQuestion = getArguments().getParcelable(Constants.KEY_QUESTION);
         mPosition = getArguments().getInt(Constants.KEY_POSITION);
     }
@@ -108,6 +112,8 @@ public class IngameQuestionFragment extends Fragment {
             mAnswerButtons.add(b);
             mAnswerButtonGrid.addView(b);
         }
+
+        setColors();
 
         return view;
     }

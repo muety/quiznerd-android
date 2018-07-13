@@ -41,13 +41,15 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
     private QuizUser mUser;
     private QuizMatch mMatch;
     private int color;
+    private int colorDark;
 
     public QuizRoundAdapter(@NonNull Context context, @NonNull QuizMatch match, @NonNull QuizUser user) {
         super(context, 0, match.getRounds());
         this.context = context;
         this.mUser = user;
         this.mMatch = match;
-        this.color = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory());
+        this.color = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory(), false);
+        this.colorDark = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory(), true);
     }
 
     @NonNull

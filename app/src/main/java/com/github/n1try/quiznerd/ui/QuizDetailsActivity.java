@@ -25,7 +25,7 @@ import com.github.n1try.quiznerd.utils.UserUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class QuizDetailsActivity extends AppCompatActivity {
+public class QuizDetailsActivity extends AppCompatActivity implements QuizCategoryAware {
     @BindView(R.id.details_avatar1_iv)
     ImageView mAvatar1Iv;
     @BindView(R.id.details_avatar2_iv)
@@ -45,6 +45,7 @@ public class QuizDetailsActivity extends AppCompatActivity {
     private QuizUser mUser;
     private QuizMatch mMatch;
     private int color;
+    private int colorDark;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,9 +62,8 @@ public class QuizDetailsActivity extends AppCompatActivity {
         mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
         mUser = bundle.getParcelable(Constants.KEY_ME);
         setTitle(mMatch.getOpponent(mUser).getId());
+        setColors();
 
-        color = QuizUtils.getCategoryColorId(this, mMatch.getCategory());
-        mAppbar.setBackgroundColor(QuizUtils.getCategoryColorId(this, mMatch.getCategory()));
         UserUtils.loadUserAvatar(this, mUser, mAvatar1Iv);
         UserUtils.loadUserAvatar(this, mMatch.getOpponent(mUser), mAvatar2Iv);
     }
@@ -104,5 +104,13 @@ public class QuizDetailsActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putString(Constants.KEY_MATCH_ID, mMatch.getId());
         outState.putParcelable(Constants.KEY_ME, mUser);
+    }
+
+    @Override
+    public void setColors() {
+        color = QuizUtils.getCategoryColorId(this, mMatch.getCategory(), false);
+        colorDark = QuizUtils.getCategoryColorId(this, mMatch.getCategory(), true);
+        mAppbar.setBackgroundColor(color);
+        getWindow().setStatusBarColor(colorDark);
     }
 }

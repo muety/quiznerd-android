@@ -1,5 +1,6 @@
 package com.github.n1try.quiznerd.ui;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -19,11 +20,12 @@ import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.service.QuizRoundManager;
 import com.github.n1try.quiznerd.utils.Constants;
+import com.github.n1try.quiznerd.utils.QuizUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IngameActivity extends AppCompatActivity implements IngameQuestionFragment.OnAnsweredListener, View.OnClickListener {
+public class IngameActivity extends AppCompatActivity implements IngameQuestionFragment.OnAnsweredListener, View.OnClickListener, QuizCategoryAware {
     private static final String TAG_QUESTION_FRAGMENT = "question_fragment";
 
     @BindView(R.id.ingame_question_container)
@@ -48,7 +50,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.actvity_ingame);
+        setContentView(R.layout.activity_ingame);
         ButterKnife.bind(this);
 
         mApiService = QuizApiService.getInstance();
@@ -69,6 +71,8 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         restartCountdown(countdownState);
 
         displayQuestion(mQuizRoundManager.playCurrentRound().getCurrentQuestion());
+
+        setColors();
     }
 
     private void restartCountdown(long state) {
@@ -125,5 +129,14 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
                 }
                 break;
         }
+    }
+
+    @Override
+    public void setColors() {
+        int color = QuizUtils.getCategoryColorId(this, mMatch.getCategory(), false);
+        int colorDark = QuizUtils.getCategoryColorId(this, mMatch.getCategory(), true);
+        mAppbar.setBackgroundColor(color);
+        mNextButton.setBackgroundTintList(ColorStateList.valueOf(color));
+        getWindow().setStatusBarColor(colorDark);
     }
 }
