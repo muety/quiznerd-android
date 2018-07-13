@@ -7,3 +7,4 @@
 .externalNativeBuild
 app/secrets.properties
 .idea
+.firebaserc

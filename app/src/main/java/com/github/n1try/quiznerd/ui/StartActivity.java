@@ -58,7 +58,6 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
 
     private void start() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         if (user == null) {
             List<AuthUI.IdpConfig> providers = Arrays.asList(
                     new AuthUI.IdpConfig.EmailBuilder().build(),

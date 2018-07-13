@@ -37,6 +37,7 @@ ext {
     firebaseFirestoreVersion = '17.0.1'
     firebaseAuthVersion = '16.0.1'
     firebaseUiVersion = '4.0.0'
+    firebaseMessagingVersion = '17.1.0'
 }
 
 dependencies {
@@ -51,6 +52,7 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-database:$firebaseUiVersion"
     implementation "com.google.firebase:firebase-firestore:$firebaseFirestoreVersion"
     implementation "com.google.firebase:firebase-auth:$firebaseAuthVersion"
+    implementation "com.google.firebase:firebase-messaging:$firebaseMessagingVersion"
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"

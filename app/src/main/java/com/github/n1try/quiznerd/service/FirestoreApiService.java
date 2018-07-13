@@ -305,7 +305,6 @@ public class FirestoreApiService extends QuizApiService {
         if (match.getAcknowledge().size() != 2) return false;
 
         for (int i = 0; i < match.getRounds().size(); i++) {
-            Log.d(TAG, "Round " + i);
             QuizRound r = match.getRounds().get(i);
             if (r.getQuestions().size() != Constants.NUM_QUESTIONS_PER_ROUND) return false;
             if (r.getAnswers1().size() != r.getQuestions().size()) return false;
@@ -313,19 +312,16 @@ public class FirestoreApiService extends QuizApiService {
             if (r.getId() != i + 1) return false;
 
             for (int j = 0; j < r.getQuestions().size(); j++) {
-                Log.d(TAG, "Question " + j);
                 QuizQuestion q = r.getQuestion(j);
                 if (TextUtils.isEmpty(q.getText())) return false;
 
                 for (int k = 0; k < q.getAnswers().size(); k++) {
-                    Log.d(TAG, "Answer " + k);
                     QuizAnswer a = q.getAnswer(k);
                     if (TextUtils.isEmpty(a.getText())) return false;
                 }
             }
 
             for (int l = 0; l < r.getAnswers1().size(); l++) {
-                Log.d(TAG, "User Answer " + l);
                 Long ua1 = r.getAnswers1().get(l);
                 Long ua2 = r.getAnswers2().get(l);
                 if (ua1 > r.getQuestions().size() || (ua1 < 0 && ua1 != QuizAnswer.EMPTY_ANSWER_ID && ua1 != QuizAnswer.TIMEOUT_ANSWER_ID)) return false;

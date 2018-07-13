@@ -2,7 +2,6 @@
 
 /*
 Must-do's:
-TODO: Notifications
 TODO: Widget
 
 Can do's:
@@ -52,6 +51,8 @@ import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,12 +116,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         setReady(false); // Only show loading overlay initially, not on refresh
         init();
+        initMessaging();
     }
 
     private void init() {
         mNewQuizFab.setVisibility(AndroidUtils.isNetworkConnected(this) ? View.VISIBLE : View.GONE);
         mApiService.matchCache.clear();
         new FetchDataTask().execute();
+    }
+
+    private void initMessaging() {
+        String token = FirebaseInstanceId.getInstance().getToken();
+        FirebaseMessaging.getInstance().subscribeToTopic(mUser.getId());
+        Log.d(TAG, token);
     }
 
     @Override
