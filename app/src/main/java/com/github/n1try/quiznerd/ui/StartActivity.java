@@ -85,7 +85,8 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
                 IdpResponse response = IdpResponse.fromResultIntent(data);
 
                 if (resultCode == RESULT_OK) {
-                    launchSetup();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    mApiService.getUserByAuthentication(user.getUid(), this);
                 } else {
                     Log.e(TAG, response.getError().getMessage());
                     Toast.makeText(this, getString(R.string.sign_in_failed), Toast.LENGTH_SHORT).show();

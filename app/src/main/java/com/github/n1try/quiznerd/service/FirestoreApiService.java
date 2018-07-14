@@ -146,6 +146,7 @@ public class FirestoreApiService extends QuizApiService {
                         List<DocumentSnapshot> docs = snapshot.getDocuments();
                         if (docs.isEmpty()) {
                             callback.onError(new Resources.NotFoundException("User not found"));
+                            return;
                         }
                         QuizUser user = docs.get(0).toObject(QuizUser.class);
                         user.setId(docs.get(0).getId());
