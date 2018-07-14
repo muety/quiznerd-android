@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
@@ -93,6 +92,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.n1try.quiznerd.ui.MainActivity" />
         </activity>
+
+        <receiver android:name=".provider.QuizHistoryWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quiz_history_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@
     <string name="question_template">Question %1$s</string>
     <string name="round_template">Round %1$s</string>
     <string name="round_with_score_template">Round %1$s (%2$s : %3$s)</string>
+    <string name="score_short_template">%1$s : %2$s</string>
     <string name="round_score_template">%1$s vs. %2$s</string>
     <string name="score_no_round_template">%1$s : %2$s</string>
     <string name="loading">Loading ...</string>
@@ -51,6 +52,7 @@
     <string name="nickname_max_length_template">Nickname must be at least %1$s characters</string>
     <string name="action_logout">Logout</string>
     <string name="no_matches">You don\'t have any matches, yet. Go start one!</string>
+    <string name="no_active_matches">You don\'t have any active quizzes. Go start one!</string>
     <string name="slogan">... created for nerds who like quizzes.</string>
     <string name="featuring">Currently featuring</string>
     <string name="beta">Beta</string>
@@ -78,5 +80,7 @@
     <string name="desc_cpp">C++ logo</string>
     <string name="desc_html">HTML logo</string>
     <string name="desc_swift">Swift logo</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

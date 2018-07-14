@@ -21,9 +21,12 @@ import com.github.n1try.quiznerd.model.QuizUser;
 import java.util.List;
 
 public class QuizUtils {
+    public static int getCategoryIconId(Context context, QuizCategory category) {
+        return context.getResources().getIdentifier(String.format("ic_cat_%s", category.name().toLowerCase()), "drawable", context.getPackageName());
+    }
+
     public static Drawable getCategoryIcon(Context context, QuizCategory category) {
-        int id = context.getResources().getIdentifier(String.format("ic_cat_%s", category.name().toLowerCase()), "drawable", context.getPackageName());
-        return context.getDrawable(id);
+        return context.getDrawable(getCategoryIconId(context, category));
     }
 
     public static int getCategoryColorId(Context context, QuizCategory category, boolean dark) {
