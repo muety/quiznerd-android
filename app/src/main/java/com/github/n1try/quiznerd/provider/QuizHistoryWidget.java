@@ -52,10 +52,10 @@ public class QuizHistoryWidget extends AppWidgetProvider implements QuizApiCallb
         Gson gson = new GsonBuilder().create();
         if (!prefs.contains(Constants.KEY_ME)) {
             displayEmptyView();
+            applyAll();
         } else {
             this.me = gson.fromJson(prefs.getString(Constants.KEY_ME, null), QuizUser.class);
             apiService.fetchActiveMatches(me.getId(), this);
-            applyAll();
         }
     }
 

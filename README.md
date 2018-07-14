@@ -21,3 +21,14 @@ My implementation of the final Capstone project from the [Udacity Android Develo
 
 ## Additional developer's notes
 * [Firebase project information](https://console.firebase.google.com/project/quiznerd-49e4f/settings/general/android:com.github.n1try.quiznerd) and `google-services.json`
+* Create SHA1 fingerprint for Google login
+```
+# Debug
+keytool -exportcert -list -v \
+-alias androiddebugkey -keystore ~/.android/debug.keystore
+
+# Release
+keytool -exportcert -list -v \
+-alias quiznerd_keystore -keystore quiznerd_keystore.jks
+
+```
