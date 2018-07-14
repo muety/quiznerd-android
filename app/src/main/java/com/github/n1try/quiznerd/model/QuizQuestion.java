@@ -23,6 +23,7 @@ public class QuizQuestion implements Parcelable {
     private String creatorId;
     private String code;
     private QuizCategory category;
+    private String random;
     private List<QuizAnswer> answers;
 
     protected QuizQuestion(Parcel in) {

@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +63,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
     View opponentControlsContainer;
     @BindView(R.id.new_selected_opponent_container)
     ViewGroup selectedOpponentContainer;
+    @BindView(R.id.new_loading_spinner)
+    ProgressBar mLoadingSpinner;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.appbar)
@@ -283,7 +286,13 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
+        protected void onPreExecute() {
+            mLoadingSpinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid) {
+            mLoadingSpinner.setVisibility(View.GONE);
             if (userResult == null || userResult.equals(mUser)) {
                 Toast.makeText(context, R.string.user_not_found, Toast.LENGTH_LONG).show();
             } else {
@@ -343,12 +352,14 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         protected void onPreExecute() {
+            mLoadingSpinner.setVisibility(View.VISIBLE);
             if (mRandomQuestions != null) mRandomQuestions.clear();
             supportInvalidateOptionsMenu();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            mLoadingSpinner.setVisibility(View.GONE);
             supportInvalidateOptionsMenu();
         }
 
