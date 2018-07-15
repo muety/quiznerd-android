@@ -14,6 +14,7 @@ const RANDOM_STRING_LENGTH = 20;
 const LIMIT = Number.MAX_VALUE;
 const SHUFFLE = true;
 const DUMP_JSON = false;
+const DRY = false;
 
 admin.initializeApp({
     credential: admin.credential.cert(credentials)
@@ -59,15 +60,23 @@ let questions = raw.questions
         }
 
         for (let i = 0; i < q.options.length; i++) {
+            let text = strip(q.options[i]);
+            if (!text || text === '') {
+                question.answers = null;
+                console.log('Skipping question because of empty answer text.');
+                break;
+            }
             question.answers.push({
                 id: i,
-                text: strip(q.options[i]),
+                text: text,
                 correct: i == q.answer[0]
             })
         }
 
         return question
-    });
+    })
+    .filter(q => q.text && q.text !== '')
+    .filter(q => q.answers);
 
 if (SHUFFLE) questions = shuffle(questions);
 if (DUMP_JSON) fs.writeFileSync('data/out.json', JSON.stringify(questions, null, 4));
@@ -78,18 +87,20 @@ Object.values(categoryMap).forEach(c => {
     console.log(`${c}: ${sub.length}`)
 });
 
-let promises = [];
-for (let i = 0; i < Math.min(LIMIT, questions.length); i++) {
-    promises.push(() => {
-        let q = questions[i];
-        console.log(`Creating question ${i} of category ${q.category}.`);
-        return collection.doc(i.toString()).set(q);
-    });
-}
+if (!DRY) {
+    let promises = [];
+    for (let i = 0; i < Math.min(LIMIT, questions.length); i++) {
+        promises.push(() => {
+            let q = questions[i];
+            console.log(`Creating question ${i} of category ${q.category}.`);
+            return collection.doc(i.toString()).set(q);
+        });
+    }
 
-promiseSerial(promises)
-    .then(console.log.bind(console))
-    .catch(console.error.bind(console))
+    promiseSerial(promises)
+        .then(console.log.bind(console))
+        .catch(console.error.bind(console))
+}
 
 /* FUNCTIONS */
 
@@ -100,7 +111,12 @@ function promiseSerial(funcs) {
 }
 
 function strip(text) {
-    return striptags(text.replace(/&hellip;/, '...')).replace(/&.+;/g, '')
+    return striptags(text)
+        .replace(/&hellip;/, '...')
+        .replace(/&lt;/, '<')
+        .replace(/&gt;/, '>')
+        .replace(/&.+;/g, '')
+        .trim();
 }
 
 /* https://stackoverflow.com/a/1349426/3112139 */

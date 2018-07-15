@@ -1,0 +1,16 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "import_questions.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^5.12.1",
+    "striptags": "^3.1.1"
+  }
+}
