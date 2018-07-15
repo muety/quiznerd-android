@@ -111,10 +111,6 @@ public class IngameQuestionFragment extends Fragment implements QuizCategoryAwar
             b.setTag(answer.getId());
             mAnswerButtons.add(b);
             mAnswerButtonGrid.addView(b);
-
-            // TODO: debug
-            mAnswerButtons.add(b);
-            mAnswerButtonGrid.addView(b);
         }
 
         setColors();

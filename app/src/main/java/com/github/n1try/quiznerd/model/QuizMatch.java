@@ -191,6 +191,6 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
 
     @Override
     public int compareTo(@NonNull QuizMatch match) {
-        return updated.compareTo(match.getUpdated());
+        return match.getUpdated().compareTo(updated);
     }
 }
