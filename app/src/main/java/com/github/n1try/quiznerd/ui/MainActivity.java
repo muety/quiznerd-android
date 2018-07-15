@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public void onError(Exception e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(context, getString(R.string.error_fetch_matches), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
     }
 }

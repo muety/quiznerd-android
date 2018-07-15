@@ -1,11 +1,13 @@
 package com.github.n1try.quiznerd.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.utils.AndroidUtils;
@@ -15,9 +17,17 @@ import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
+
+    private Context context;
+
     @BindView(R.id.about_text_tv)
     TextView mTextTv;
     @BindView(R.id.toolbar)
@@ -32,14 +42,33 @@ public class AboutActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.about);
+        context = this;
 
-        try {
-            InputStream fileStream = getAssets().open("about.html");
-            String html = AndroidUtils.streamToString(fileStream);
-            mTextTv.setText(Html.fromHtml(html));
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
+        OkHttpClient httpClient = AndroidUtils.createOrGetHttpClient(this);
+        Request request = new Request.Builder().url("https://storage.ferdinand-muetsch.de/quiznerd_about.html").build();
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, e.getMessage());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                InputStream stream = response.body().byteStream();
+                final String html = AndroidUtils.streamToString(stream);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTextTv.setText(Html.fromHtml(html));
+                    }
+                });
+            }
+        });
     }
-
 }

@@ -15,22 +15,15 @@ import com.pixplicity.sharp.Sharp;
 import java.io.IOException;
 import java.io.InputStream;
 
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class UserUtils {
     public static final String AVATAR_URL_TEMPLATE = "https://avatars.dicebear.com/v2/%s/%s.svg";
-    static OkHttpClient httpClient;
 
     public static void loadUserAvatar(Context context, final QuizUser user, final ImageView target) {
-        if (httpClient == null) {
-            httpClient = new OkHttpClient.Builder()
-                    .cache(new Cache(context.getCacheDir(), 5 * 1024 * 1014))
-                    .build();
-        }
-
+        OkHttpClient httpClient = AndroidUtils.createOrGetHttpClient(context);
         new FetchAvatarTask(httpClient, user, target, context.getDrawable(R.drawable.ic_unknown_user)).execute();
     }
 

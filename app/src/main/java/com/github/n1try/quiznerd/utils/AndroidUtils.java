@@ -8,7 +8,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
+
 public class AndroidUtils {
+    private static OkHttpClient httpClient;
+
+    public static OkHttpClient createOrGetHttpClient(Context context) {
+        if (httpClient == null) {
+            httpClient = new OkHttpClient.Builder()
+                    .cache(new Cache(context.getCacheDir(), 5 * 1024 * 1014))
+                    .build();
+        }
+        return httpClient;
+    }
+
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
