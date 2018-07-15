@@ -58,6 +58,11 @@ class FetchAvatarTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
+    protected void onPreExecute() {
+        target.setImageDrawable(fallback);
+    }
+
+    @Override
     protected Void doInBackground(Void... objects) {
         try {
             OkHttpClient httpClient = this.httpClient;
@@ -73,10 +78,7 @@ class FetchAvatarTask extends AsyncTask<Void, Void, Void> {
                 InputStream stream = response.body().byteStream();
                 Sharp.loadInputStream(stream).into(target);
                 stream.close();
-            } else {
-                target.setImageDrawable(fallback);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
