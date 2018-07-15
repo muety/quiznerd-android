@@ -84,5 +84,6 @@
     <string name="add_widget">Add widget</string>
     <string name="no_internet">Sorry, it seems like you do not have internet connection ...</string>
     <string name="refresh">Refresh</string>
+    <string name="avatar_note">Note: Your avatar is generated based on your nickname.</string>
 
 </resources>

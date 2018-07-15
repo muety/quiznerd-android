@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ public class AboutActivity extends AppCompatActivity {
 
     @BindView(R.id.about_text_tv)
     TextView mTextTv;
+    @BindView(R.id.new_loading_spinner)
+    ProgressBar mLoadingSpinner;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -46,9 +50,11 @@ public class AboutActivity extends AppCompatActivity {
 
         OkHttpClient httpClient = AndroidUtils.createOrGetHttpClient(this);
         Request request = new Request.Builder().url("https://storage.ferdinand-muetsch.de/quiznerd_about.html").build();
+        mLoadingSpinner.setVisibility(View.VISIBLE);
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                mLoadingSpinner.setVisibility(View.GONE);
                 Log.e(TAG, e.getMessage());
                 runOnUiThread(new Runnable() {
                     @Override
@@ -60,6 +66,7 @@ public class AboutActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) {
+                mLoadingSpinner.setVisibility(View.GONE);
                 InputStream stream = response.body().byteStream();
                 final String html = AndroidUtils.streamToString(stream);
                 runOnUiThread(new Runnable() {

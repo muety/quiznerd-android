@@ -12,8 +12,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -54,6 +56,8 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     TextView femaleLabelTv;
     @BindView(R.id.setup_male_label)
     TextView maleLabelTv;
+    @BindView(R.id.setup_loading_spinner)
+    ProgressBar mLoadingSpinner;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -131,6 +135,10 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     }
 
     @Override
+    public void onBackPressed() {
+    }
+
+    @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         switch (compoundButton.getId()) {
             case R.id.setup_female_button:
@@ -138,10 +146,13 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
                     maleToggle.setChecked(false);
                     selectedGender = GenderType.FEMALE;
                     femaleLabelTv.setTypeface(null, Typeface.BOLD);
+                    femaleLabelTv.setTextColor(getResources().getColor(R.color.colorAccent));
                     maleLabelTv.setTypeface(null, Typeface.NORMAL);
+                    maleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
                 } else {
                     selectedGender = null;
                     femaleLabelTv.setTypeface(null, Typeface.NORMAL);
+                    femaleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
                 }
                 setReadyState();
                 break;
@@ -150,10 +161,13 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
                     femaleToggle.setChecked(false);
                     selectedGender = GenderType.MALE;
                     maleLabelTv.setTypeface(null, Typeface.BOLD);
+                    maleLabelTv.setTextColor(getResources().getColor(R.color.colorAccent));
                     femaleLabelTv.setTypeface(null, Typeface.NORMAL);
+                    femaleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
                 } else {
                     selectedGender = null;
                     maleLabelTv.setTypeface(null, Typeface.NORMAL);
+                    maleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
                 }
                 setReadyState();
                 break;
@@ -242,13 +256,29 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         }
 
         @Override
+        protected void onPreExecute() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoadingSpinner.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid) {
             if (userResult == null || userResult.getAuthentication().equals(mAuthentication.getUid())) {
                 selectedNickname = nicknameInput.getText().toString();
             } else {
                 selectedNickname = "";
             }
-            setReadyState();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoadingSpinner.setVisibility(View.GONE);
+                    setReadyState();
+                }
+            });
         }
 
         @Override
