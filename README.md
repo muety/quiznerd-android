@@ -32,3 +32,4 @@ keytool -exportcert -list -v \
 -alias key0 -keystore quiznerd_keystore.jks
 
 ```
+* Additionally, Google Play Store creates also a dinferprint [here](https://play.google.com/apps/publish/?account=6059045896101218926#KeyManagementPlace:p=com.github.n1try.quiznerd&appid=4972146644198950455)

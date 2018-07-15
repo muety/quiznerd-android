@@ -54,6 +54,8 @@ public class QuizQuestion implements Parcelable {
     }
 
     public QuizAnswer getAnswer(int index) {
+        if (index == QuizAnswer.EMPTY_ANSWER_ID) return QuizAnswer.EMPTY_ANSWER;
+        if (index == QuizAnswer.TIMEOUT_ANSWER_ID) return QuizAnswer.TIMEOUT_ANSWER;
         return answers.get(index);
     }
 
