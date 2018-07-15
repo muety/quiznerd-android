@@ -68,6 +68,7 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setAvailableProviders(providers)
+                            .setIsSmartLockEnabled(false)
                             .build(),
                     RC_SIGN_IN);
 
