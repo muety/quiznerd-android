@@ -24,7 +24,6 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -95,12 +94,7 @@ public class QuizHistoryWidget extends AppWidgetProvider implements QuizApiCallb
             matches = new ArrayList<>(matches); // Clone
             views.setViewVisibility(R.id.match_no_matches_tv, View.GONE);
             views.setViewVisibility(R.id.match_logo_iv, View.GONE);
-            Collections.sort(matches, new Comparator<QuizMatch>() {
-                @Override
-                public int compare(QuizMatch t1, QuizMatch t2) {
-                    return t2.getUpdated().compareTo(t1.getUpdated());
-                }
-            });
+            Collections.sort(matches);
 
             for (int i = 0; i < 3; i++) {
                 int containerId = context.getResources().getIdentifier(String.format("match_container_%s", String.valueOf(i + 1)), "id", context.getPackageName());

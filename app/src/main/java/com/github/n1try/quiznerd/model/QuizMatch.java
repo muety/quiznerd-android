@@ -190,6 +190,8 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
     }
 
     @Override
+    /* < 0 means argument is greater than object */
+    /* Sort by active, then by updated */
     public int compareTo(@NonNull QuizMatch match) {
         return match.getUpdated().compareTo(updated);
     }

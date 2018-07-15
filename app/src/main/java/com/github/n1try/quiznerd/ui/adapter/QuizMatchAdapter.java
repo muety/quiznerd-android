@@ -17,14 +17,22 @@ import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
 
     public static List<ListItem> generateItemList(Context context, List<QuizMatch> objects, QuizUser me) {
         List<QuizMatch> sorted = new ArrayList<>(objects);
-        Collections.sort(sorted);
-        List<ListItem> items = new ArrayList<>(sorted.size() + 2);
+        Collections.sort(sorted, new Comparator<QuizMatch>() {
+            @Override
+            public int compare(QuizMatch t1, QuizMatch t2) {
+                if (t1.isActive() && !t2.isActive()) return -1;
+                if (!t1.isActive() && t2.isActive()) return 1;
+                return t1.compareTo(t2);
+            }
+        });
+        List<ListItem> items = new ArrayList<>(sorted.size() + 1);
 
         boolean headerAdded = false;
         for (QuizMatch m : sorted) {
