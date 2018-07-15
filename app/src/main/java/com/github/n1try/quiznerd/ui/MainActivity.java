@@ -137,7 +137,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.bug:
+            case R.id.menu_refresh:
+                mRefreshLayout.setRefreshing(true);
+                mRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        init();
+                    }
+                });
+                break;
+            case R.id.menu_bug:
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setType("text/html");
                 intent.setData(Uri.parse("mailto:"));
@@ -146,14 +155,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.bug_body));
                 startActivity(Intent.createChooser(intent, getString(R.string.send_mail)));
                 break;
-            case R.id.about:
+            case R.id.menu_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 break;
-            case R.id.licenses:
+            case R.id.menu_licenses:
                 OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_title));
                 startActivity(new Intent(this, OssLicensesMenuActivity.class));
                 break;
-            case R.id.logout:
+            case R.id.menu_logout:
                 mPrefs.edit().remove(Constants.KEY_ME).commit();
                 FirebaseAuth.getInstance().signOut();
                 mApiService.userCache.clear();

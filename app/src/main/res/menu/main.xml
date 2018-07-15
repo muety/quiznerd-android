@@ -2,17 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/about"
+        android:id="@+id/menu_refresh"
+        android:title="@string/refresh"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_about"
         android:title="@string/about"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/licenses"
+        android:id="@+id/menu_licenses"
         android:title="@string/action_licenses"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/bug"
+        android:id="@+id/menu_bug"
         android:title="@string/action_bug"
         app:showAsAction="never" />
     <!--
@@ -22,7 +27,7 @@
         app:showAsAction="never" />
     -->
     <item
-        android:id="@+id/logout"
+        android:id="@+id/menu_logout"
         android:title="@string/action_logout"
         app:showAsAction="never" />
 </menu>
