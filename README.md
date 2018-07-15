@@ -29,6 +29,6 @@ keytool -exportcert -list -v \
 
 # Release
 keytool -exportcert -list -v \
--alias quiznerd_keystore -keystore quiznerd_keystore.jks
+-alias key0 -keystore quiznerd_keystore.jks
 
 ```

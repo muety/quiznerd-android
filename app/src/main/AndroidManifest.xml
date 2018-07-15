@@ -93,6 +93,7 @@
                 android:value="com.github.n1try.quiznerd.ui.MainActivity" />
         </activity>
 
+        <!--
         <receiver android:name=".provider.QuizHistoryWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -102,6 +103,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/quiz_history_widget_info" />
         </receiver>
+        -->
     </application>
 
 </manifest>
