@@ -13,7 +13,7 @@ const CREATOR_ID = 'vPFq7bm4MX5EyecNSlvn';
 const RANDOM_STRING_LENGTH = 20;
 const LIMIT = Number.MAX_VALUE;
 const SHUFFLE = true;
-const DUMP_JSON = false;
+const DUMP_JSON = true;
 const DRY = false;
 
 admin.initializeApp({
@@ -122,7 +122,7 @@ function strip(text) {
 /* https://stackoverflow.com/a/1349426/3112139 */
 function randomString(length) {
     var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     for (var i = 0; i < length; i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
