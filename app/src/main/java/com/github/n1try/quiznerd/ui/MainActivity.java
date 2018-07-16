@@ -192,6 +192,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onBackPressed() {
+        Dialogs.showQuitAppDialog(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finishAffinity();
+                System.exit(0);
+            }
+        });
     }
 
     private void setReady(boolean ready) {

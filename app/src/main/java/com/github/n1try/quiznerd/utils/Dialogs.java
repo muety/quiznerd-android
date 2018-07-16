@@ -25,4 +25,22 @@ public class Dialogs {
 
         dialog.create().show();
     }
+
+    public static void showQuitAppDialog(Context context, DialogInterface.OnClickListener onYes) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setCancelable(false);
+        dialog.setTitle(R.string.quit_app);
+        dialog.setMessage(R.string.quit_app_confirm);
+
+        dialog.setPositiveButton(R.string.quit, onYes);
+
+        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        dialog.create().show();
+    }
 }

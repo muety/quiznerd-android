@@ -89,7 +89,10 @@
     <string name="delete_match">Delete match</string>
     <string name="delete_match_confirm">You are about to delete this match. This cannot be reversed. Are you sure?</string>
     <string name="yes">Yes</string>
-    <string name="cancel">Canel</string>
+    <string name="cancel">Cancel</string>
     <string name="error_delete_match">Sorry, an error has occurred while deleting the match.</string>
+    <string name="quit">Quit</string>
+    <string name="quit_app">Exit</string>
+    <string name="quit_app_confirm">Do you want to quit QuizNerd?</string>
 
 </resources>

@@ -61,6 +61,7 @@ public class QuizDetailsActivity extends AppCompatActivity implements QuizCatego
         Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
         mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
         mUser = bundle.getParcelable(Constants.KEY_ME);
+        if (mMatch == null || mUser == null) return;
         setTitle(mMatch.getOpponent(mUser).getId());
         setColors();
 
