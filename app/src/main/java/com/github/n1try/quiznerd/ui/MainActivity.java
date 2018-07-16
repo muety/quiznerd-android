@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (mRefreshLayout.isRefreshing()) return;
         ListItem item = (ListItem) adapterView.getItemAtPosition(i);
         if (item instanceof QuizMatchListItem) {
             QuizMatch match = ((QuizMatchListItem) item).getMatch();
