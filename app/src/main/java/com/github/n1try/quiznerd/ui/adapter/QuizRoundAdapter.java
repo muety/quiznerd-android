@@ -17,6 +17,7 @@ import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
+import com.github.n1try.quiznerd.utils.Dialogs;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
             mQuestionsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    QuizUtils.showQuestionDialog(context,
+                    Dialogs.showQuestionDialog(context,
                             round.getQuestion(i),
                             round.getAnswersByPlayerIndex(playerIdx).get(i).intValue(),
                             round.getAnswersByPlayerIndex((playerIdx % 2) + 1).get(i).intValue()

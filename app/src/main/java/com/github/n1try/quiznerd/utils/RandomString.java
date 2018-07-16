@@ -26,6 +26,8 @@ public class RandomString {
 
     public static final String alphanum = upper + lower + digits;
 
+    public static final String lowerAlphanum = lower + digits;
+
     private final Random random;
 
     private final char[] symbols;
@@ -52,6 +54,10 @@ public class RandomString {
      */
     public RandomString(int length) {
         this(length, new SecureRandom());
+    }
+
+    public RandomString(int length, String symbols) {
+        this(length, new SecureRandom(), symbols);
     }
 
     /**

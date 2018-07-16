@@ -60,7 +60,7 @@ public class FirestoreApiService extends QuizApiService {
     }
 
     private Task<QuerySnapshot> tryFetchRandomQuestions(int n, QuizCategory category) {
-        String rand = new RandomString(Constants.RANDOM_ID_LENGTH).nextString();
+        String rand = new RandomString(Constants.RANDOM_ID_LENGTH, RandomString.lowerAlphanum).nextString();
         return mFirestore.collection(COLL_QUESTIONS)
                 .whereEqualTo("category", category.name())
                 .whereGreaterThan("random", rand)

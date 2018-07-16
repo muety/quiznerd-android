@@ -19,6 +19,7 @@ import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.ui.adapter.QuizRoundAdapter;
 import com.github.n1try.quiznerd.utils.Constants;
+import com.github.n1try.quiznerd.utils.Dialogs;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
 
@@ -61,7 +62,7 @@ public class QuizDetailsActivity extends AppCompatActivity implements QuizCatego
         Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
         mMatch = mApiService.matchCache.get(bundle.getString(Constants.KEY_MATCH_ID));
         mUser = bundle.getParcelable(Constants.KEY_ME);
-        if (mMatch == null || mUser == null) return;
+        if (mMatch == null || mUser == null)
         setTitle(mMatch.getOpponent(mUser).getId());
         setColors();
 
@@ -97,7 +98,7 @@ public class QuizDetailsActivity extends AppCompatActivity implements QuizCatego
         QuizRoundAdapter roundAdapter = new QuizRoundAdapter(this, mMatch, mUser);
         mRoundCardList.setAdapter(roundAdapter);
 
-        if (!mMatch.isActive()) QuizUtils.showPostMatchDialog(this, mMatch.getResult(mUser));
+        if (!mMatch.isActive()) Dialogs.showPostMatchDialog(this, mMatch.getResult(mUser));
     }
 
     @Override
