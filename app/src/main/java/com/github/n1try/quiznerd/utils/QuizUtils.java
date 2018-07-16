@@ -71,7 +71,7 @@ public class QuizUtils {
         dialog.create().show();
     }
 
-    public static void showQuestionDialog(Context context, QuizQuestion question, int userAnswerId) {
+    public static void showQuestionDialog(Context context, QuizQuestion question, int userAnswerId, int opponentAnswerId) {
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_question);
 
@@ -80,6 +80,7 @@ public class QuizUtils {
         TextView codeTv = dialog.findViewById(R.id.dialog_code_tv);
         TextView answersTv = dialog.findViewById(R.id.dialog_answers_tv);
         TextView yourAnswerTv = dialog.findViewById(R.id.dialog_your_answer_tv);
+        TextView opponentAnswerTv = dialog.findViewById(R.id.dialog_opponent_answser_tv);
         TextView correctAnswerTv = dialog.findViewById(R.id.dialog_correct_answser_tv);
 
         if (TextUtils.isEmpty(question.getCode())) {
@@ -101,6 +102,7 @@ public class QuizUtils {
         answersTv.setText(answers.toString());
         correctAnswerTv.setText(question.getCorrectAnswer().getText());
         yourAnswerTv.setText(question.getAnswer(userAnswerId).getText());
+        opponentAnswerTv.setText(question.getAnswer(opponentAnswerId).getText());
 
         dialog.show();
     }

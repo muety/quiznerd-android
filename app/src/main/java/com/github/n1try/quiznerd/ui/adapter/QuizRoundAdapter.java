@@ -51,7 +51,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         this.mMatch = match;
         this.color = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory(), false);
         this.colorDark = QuizUtils.getCategoryColorId(context, match.getRounds().get(0).getCategory(), true);
-        playerIdx = mMatch.getMyPlayerIndex(mUser);
+        this.playerIdx = mMatch.getMyPlayerIndex(mUser);
     }
 
     @NonNull
@@ -77,7 +77,11 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
             mQuestionsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    QuizUtils.showQuestionDialog(context, round.getQuestion(i), round.getAnswersByPlayerIndex(playerIdx).get(i).intValue());
+                    QuizUtils.showQuestionDialog(context,
+                            round.getQuestion(i),
+                            round.getAnswersByPlayerIndex(playerIdx).get(i).intValue(),
+                            round.getAnswersByPlayerIndex((playerIdx % 2) + 1).get(i).intValue()
+                    );
                 }
             });
             mQuestionsLv.setVisibility(View.VISIBLE);
