@@ -84,14 +84,14 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
         switch (requestCode) {
             case RC_SIGN_IN:
                 IdpResponse response = IdpResponse.fromResultIntent(data);
-
-                if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK && response != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     mApiService.getUserByAuthentication(user.getUid(), this);
                 } else {
-                    Log.e(TAG, response.getError().getMessage());
+                    Log.e(TAG, String.format("Result Code: %s", String.valueOf(resultCode)));
                     Toast.makeText(this, getString(R.string.sign_in_failed), Toast.LENGTH_SHORT).show();
                 }
+                break;
         }
     }
 
