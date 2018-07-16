@@ -32,7 +32,7 @@ public class AboutActivity extends AppCompatActivity {
 
     @BindView(R.id.about_text_tv)
     TextView mTextTv;
-    @BindView(R.id.new_loading_spinner)
+    @BindView(R.id.about_loading_spinner)
     ProgressBar mLoadingSpinner;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -66,12 +66,12 @@ public class AboutActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) {
-                mLoadingSpinner.setVisibility(View.GONE);
                 InputStream stream = response.body().byteStream();
                 final String html = AndroidUtils.streamToString(stream);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mLoadingSpinner.setVisibility(View.GONE);
                         mTextTv.setText(Html.fromHtml(html));
                     }
                 });
