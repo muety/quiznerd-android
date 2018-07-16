@@ -247,6 +247,26 @@ public class FirestoreApiService extends QuizApiService {
                 );
     }
 
+    @Override
+    public void deleteMatch(final QuizMatch match, final QuizApiCallbacks callback) {
+        mFirestore.collection(COLL_MATCHES)
+                .document(match.getId())
+                .delete()
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                matchCache.remove(match);
+                callback.onMatchDeleted(match);
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onError(e);
+            }
+        });
+    }
+
     public void createMatch(final QuizMatch match, final QuizApiCallbacks callback) {
         Map dto = mGson.fromJson(mGson.toJsonTree(match), Map.class);
         dto.remove("id");

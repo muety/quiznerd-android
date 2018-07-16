@@ -29,7 +29,7 @@
     <string name="error_create_match">Could not create new match, sorry.</string>
     <string name="dialog_title_won">You won!</string>
     <string name="dialog_title_lost">You lost</string>
-    <string name="dialog_message_won">Congratulation! You won this round.</string>
+    <string name="dialog_message_won">Congratulations! You won this round.</string>
     <string name="dialog_message_lost">Unfortunately, you lost the match. Maybe better luck next time?</string>
     <string name="dialog_button_won">Wohoo!</string>
     <string name="dialog_button_lost">Sure</string>
@@ -86,5 +86,10 @@
     <string name="refresh">Refresh</string>
     <string name="avatar_note">Note: Your avatar is generated based on your nickname.</string>
     <string name="opponent_answer">Opponent\'s answer:</string>
+    <string name="delete_match">Delete match</string>
+    <string name="delete_match_confirm">You are about to delete this match. This cannot be reversed. Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Canel</string>
+    <string name="error_delete_match">Sorry, an error has occurred while deleting the match.</string>
 
 </resources>

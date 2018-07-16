@@ -3,16 +3,17 @@
 /*
 Can do's:
 TODO: Tests
+TODO: Refactor QuizApiCallbacks
 TODO: Fix double questions
 TODO: Use live-updates with snapshot listeners to speed up initial loading time and maintain consistency
 TODO: Ability to add questions
-TODO: Clean questions
 TODO: Stats
  */
 
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -23,7 +24,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,6 +46,7 @@ import com.github.n1try.quiznerd.ui.adapter.entity.ListItem;
 import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
 import com.github.n1try.quiznerd.utils.AndroidUtils;
 import com.github.n1try.quiznerd.utils.Constants;
+import com.github.n1try.quiznerd.utils.Dialogs;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
@@ -65,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String TAG = "MainActivity";
     private QuizUser mUser;
     private QuizApiService mApiService;
-    private List<QuizMatch> mMatches;
     private QuizMatchAdapter mMatchAdapter;
     private SharedPreferences mPrefs;
 
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mUser = UserUtils.deserializeFromPreferences(this);
 
         mQuizList.setOnItemClickListener(this);
+        mQuizList.setOnCreateContextMenuListener(this);
         mNewQuizFab.setOnClickListener(this);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -128,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d(TAG, token);
     }
 
+    private void revokeMessaging() {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(mUser.getId());
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -150,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setType("text/html");
                 intent.setData(Uri.parse("mailto:"));
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {getString(R.string.mail)});
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.mail)});
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.bug_subject));
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.bug_body));
                 startActivity(Intent.createChooser(intent, getString(R.string.send_mail)));
@@ -167,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 FirebaseAuth.getInstance().signOut();
                 mApiService.userCache.clear();
                 mApiService.matchCache.clear();
+                revokeMessaging();
                 startActivity(new Intent(this, StartActivity.class));
                 break;
             /*case R.id.debug_logout:
@@ -207,6 +216,72 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.putExtra(Constants.KEY_MATCH_ID, match.getId());
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        switch (v.getId()) {
+            case R.id.main_quiz_lv:
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.context_quiz_list, menu);
+                break;
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_delete_match:
+                AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                ListItem listItem = mMatchAdapter.getItem(menuInfo.position);
+                if (!(listItem instanceof QuizMatchListItem)) return false;
+                final QuizMatch selectedMatch = ((QuizMatchListItem) listItem).getMatch();
+                Dialogs.showDeleteDialog(this, selectedMatch, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mApiService.deleteMatch(selectedMatch, new QuizApiCallbacks() {
+                            @Override
+                            public void onMatchesFetched(List<QuizMatch> matches) {
+                            }
+
+                            @Override
+                            public void onUsersFetched(List<QuizUser> users) {
+                            }
+
+                            @Override
+                            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+                            }
+
+                            @Override
+                            public void onMatchCreated(QuizMatch match) {
+                            }
+
+                            @Override
+                            public void onUserCreated(QuizUser user) {
+                            }
+
+                            @Override
+                            public void onMatchDeleted(QuizMatch match) {
+                                mRefreshLayout.setRefreshing(true);
+                                mRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        init();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Toast.makeText(getApplicationContext(), R.string.error_delete_match, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+                return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     private void postMatchesLoad(Collection<QuizMatch> matches) {
@@ -289,6 +364,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         public void onUserCreated(QuizUser user) {
+        }
+
+        @Override
+        public void onMatchDeleted(QuizMatch match) {
+
         }
 
         @Override

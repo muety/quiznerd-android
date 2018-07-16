@@ -222,6 +222,11 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
             }
 
             @Override
+            public void onMatchDeleted(QuizMatch match) {
+
+            }
+
+            @Override
             public void onError(Exception e) {
                 Toast.makeText(getApplicationContext(), R.string.error_create_user, Toast.LENGTH_LONG).show();
             }
@@ -303,6 +308,11 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
 
         @Override
         public void onUserCreated(QuizUser user) {
+        }
+
+        @Override
+        public void onMatchDeleted(QuizMatch match) {
+
         }
 
         @Override

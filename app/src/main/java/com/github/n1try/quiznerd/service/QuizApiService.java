@@ -36,4 +36,6 @@ public abstract class QuizApiService {
     public abstract void updateQuizRounds(QuizMatch match);
 
     public abstract void updateQuizState(QuizMatch match);
+
+    public abstract void deleteMatch(QuizMatch match, QuizApiCallbacks callback);
 }

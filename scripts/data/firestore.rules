@@ -7,7 +7,7 @@ service cloud.firestore {
     	allow create, read: if request.auth != null;
 
       // TODO: Add further checks to prevent user modifying opponent's answers
-      allow update: if request.auth != null
+      allow update, delete: if request.auth != null
       							&& (resource.data.player1.authentication == request.auth.uid || resource.data.player2.authentication == request.auth.uid);
     }
 

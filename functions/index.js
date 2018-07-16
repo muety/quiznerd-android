@@ -10,13 +10,36 @@ admin.initializeApp();
 exports.notifyNewMatch = functions.firestore
   .document('matches/{matchId}')
   .onCreate((snap, context) => {
+    let value = snap.data();
     const payload = {
       notification: {
         title: 'New quiz match!',
-        body: `${snap.data().player1.id} wants to challenge you.`
+        body: `${value.player1.id} wants to challenge you.`
       }
     };
-    return admin.messaging().sendToTopic(snap.data().player2.id, payload);
+    return admin.messaging().sendToTopic(value.player2.id, payload);
+  });
+
+exports.notifyMatchDeleted = functions.firestore
+  .document('matches/{matchId}')
+  .onDelete((snap, context) => {
+    let value = snap.data();
+    let title = 'Quiz deleted';
+    let promises = [
+      admin.messaging().sendToTopic(value.player1.id, {
+        notification: {
+          title: title,
+          body: `A quiz match against ${value.player2.id} was deleted.`
+        }
+      }),
+      admin.messaging().sendToTopic(value.player2.id, {
+        notification: {
+          title: title,
+          body: `A quiz match against ${value.player1.id} was deleted.`
+        }
+      })
+    ];
+    return Promise.all(promises);
   });
 
 exports.notifyMatchStateChange = functions.firestore

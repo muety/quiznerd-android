@@ -134,6 +134,11 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
     }
 
     @Override
+    public void onMatchDeleted(QuizMatch match) {
+
+    }
+
+    @Override
     public void onError(Exception e) {
         launchSetup();
     }

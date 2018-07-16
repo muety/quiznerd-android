@@ -13,7 +13,9 @@ import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import lombok.Getter;
 
+@Getter
 public class QuizMatchListItem implements ListItem {
     private Context context;
     private QuizUser user;

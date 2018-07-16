@@ -17,11 +17,13 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
     private String id;
     private QuizCategory category;

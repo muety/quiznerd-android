@@ -137,6 +137,11 @@ public class QuizHistoryWidget extends AppWidgetProvider implements QuizApiCallb
     }
 
     @Override
+    public void onMatchDeleted(QuizMatch match) {
+
+    }
+
+    @Override
     public void onError(Exception e) {
         Log.e(TAG, e.getMessage());
     }

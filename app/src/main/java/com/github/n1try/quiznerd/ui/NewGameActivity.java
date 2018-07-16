@@ -258,6 +258,11 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
             public void onUserCreated(QuizUser user) {}
 
             @Override
+            public void onMatchDeleted(QuizMatch match) {
+
+            }
+
+            @Override
             public void onError(Exception e) {
                 Toast.makeText(mContext, R.string.error_create_match, Toast.LENGTH_LONG).show();
             }
@@ -323,6 +328,11 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         public void onUserCreated(QuizUser user) {}
 
         @Override
+        public void onMatchDeleted(QuizMatch match) {
+
+        }
+
+        @Override
         public void onError(Exception e) {
             latch.countDown();
         }
@@ -384,6 +394,11 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         public void onUserCreated(QuizUser user) {}
+
+        @Override
+        public void onMatchDeleted(QuizMatch match) {
+
+        }
 
         @Override
         public void onError(Exception e) {

@@ -18,5 +18,7 @@ public interface QuizApiCallbacks {
 
     void onUserCreated(QuizUser user);
 
+    void onMatchDeleted(QuizMatch match);
+
     void onError(Exception e);
 }
