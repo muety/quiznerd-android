@@ -44,15 +44,23 @@ let categoryMap = Object.assign({}, ...raw.categories
     .filter(k => categoryAliases.hasOwnProperty(k.name))
     .map(k => ({ [k.id]: categoryAliases[k.name] })));
 
+let categoryCount = {};
+
 let questions = raw.questions
     .filter(q => q.type == 'single_select')
     .filter(q => categoryMap.hasOwnProperty(q.quiz_id))
     .filter(q => q.options.length >= 2 && q.options.length <= 4)
     .map(q => {
+        let cat = categoryMap[q.quiz_id];
+        if (!categoryCount.hasOwnProperty(cat)) {
+            categoryCount[cat] = 0;
+        }
+
         let question = {
             text: strip(q.question),
             code: q.code,
-            category: categoryMap[q.quiz_id],
+            category: cat,
+            catInc: categoryCount[cat]++,
             creatorId: CREATOR_ID,
             random: randomString(RANDOM_STRING_LENGTH),
             updated: new Date(),

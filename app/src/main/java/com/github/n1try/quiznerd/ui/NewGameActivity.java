@@ -137,7 +137,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
     }
 
@@ -240,13 +241,16 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         QuizMatch match = new QuizMatch("", category, 1, true, new Date(), player1, player2, rounds);
         mApiService.createMatch(match, new QuizApiCallbacks() {
             @Override
-            public void onMatchesFetched(List<QuizMatch> matches) {}
+            public void onMatchesFetched(List<QuizMatch> matches) {
+            }
 
             @Override
-            public void onUsersFetched(List<QuizUser> users) {}
+            public void onUsersFetched(List<QuizUser> users) {
+            }
 
             @Override
-            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+            }
 
             @Override
             public void onMatchCreated(QuizMatch match) {
@@ -255,7 +259,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
             }
 
             @Override
-            public void onUserCreated(QuizUser user) {}
+            public void onUserCreated(QuizUser user) {
+            }
 
             @Override
             public void onMatchDeleted(QuizMatch match) {
@@ -308,7 +313,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
-        public void onMatchesFetched(List<QuizMatch> matches) {}
+        public void onMatchesFetched(List<QuizMatch> matches) {
+        }
 
         @Override
         public void onUsersFetched(List<QuizUser> users) {
@@ -319,13 +325,16 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
-        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {}
+        public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+        }
 
         @Override
-        public void onMatchCreated(QuizMatch match) {}
+        public void onMatchCreated(QuizMatch match) {
+        }
 
         @Override
-        public void onUserCreated(QuizUser user) {}
+        public void onUserCreated(QuizUser user) {
+        }
 
         @Override
         public void onMatchDeleted(QuizMatch match) {
@@ -350,7 +359,12 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < Constants.NUM_ROUNDS; i++) {
-                mApiService.fetchRandomQuestions(Constants.NUM_QUESTIONS_PER_ROUND, (QuizCategory) mCategorySpinner.getSelectedItem(), this);
+                mApiService.fetchRandomQuestions(
+                        Constants.NUM_QUESTIONS_PER_ROUND,
+                        (QuizCategory) mCategorySpinner.getSelectedItem(),
+                        Constants.CATEGORY_QUESTION_COUNT,
+                        this
+                );
             }
             try {
                 latch.await();
@@ -374,10 +388,12 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
-        public void onMatchesFetched(List<QuizMatch> matches) {}
+        public void onMatchesFetched(List<QuizMatch> matches) {
+        }
 
         @Override
-        public void onUsersFetched(List<QuizUser> users) {}
+        public void onUsersFetched(List<QuizUser> users) {
+        }
 
         @Override
         public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
@@ -390,10 +406,12 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
-        public void onMatchCreated(QuizMatch match) {}
+        public void onMatchCreated(QuizMatch match) {
+        }
 
         @Override
-        public void onUserCreated(QuizUser user) {}
+        public void onUserCreated(QuizUser user) {
+        }
 
         @Override
         public void onMatchDeleted(QuizMatch match) {

@@ -12,7 +12,6 @@ import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.Constants;
-import com.github.n1try.quiznerd.utils.RandomString;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirestoreApiService extends QuizApiService {
@@ -59,20 +59,20 @@ public class FirestoreApiService extends QuizApiService {
         mGson = new Gson();
     }
 
-    private Task<QuerySnapshot> tryFetchRandomQuestions(int n, QuizCategory category) {
-        String rand = new RandomString(Constants.RANDOM_ID_LENGTH, RandomString.lowerAlphanum).nextString();
+    private Task<QuerySnapshot> tryFetchRandomQuestions(int n, QuizCategory category, Map<QuizCategory, Integer> categoryCount) {
+        int rand = new Random().nextInt(categoryCount.get(category)) - 1;
         return mFirestore.collection(COLL_QUESTIONS)
                 .whereEqualTo("category", category.name())
-                .whereGreaterThan("random", rand)
-                .orderBy("random")
+                .whereGreaterThan("catInc", rand)
+                .orderBy("catInc")
                 .limit(n)
                 .get();
     }
 
     /* Based on https://stackoverflow.com/a/46801925/3112139 */
-    public void fetchRandomQuestions(final int n, final QuizCategory category, final QuizApiCallbacks callback) {
+    public void fetchRandomQuestions(final int n, final QuizCategory category, final Map<QuizCategory, Integer> categoryCount, final QuizApiCallbacks callback) {
         final List<QuizQuestion> questions = new ArrayList<>(n);
-        final Task fetchTask = tryFetchRandomQuestions(n, category);
+        final Task fetchTask = tryFetchRandomQuestions(n, category, categoryCount);
         final AtomicInteger tries = new AtomicInteger(0);
 
         class OnQuestionsFetchedFailed implements OnFailureListener {
@@ -89,7 +89,9 @@ public class FirestoreApiService extends QuizApiService {
                 for (DocumentSnapshot doc : o.getDocuments()) {
                     QuizQuestion q = doc.toObject(QuizQuestion.class);
                     q.setId(doc.getId());
-                    questions.add(q);
+                    if (!questions.contains(q)) {
+                        questions.add(q);
+                    }
                 }
 
                 if (questions.size() < n && tries.incrementAndGet() <= RETRY_FETCH_QUESTIONS) {
@@ -97,7 +99,7 @@ public class FirestoreApiService extends QuizApiService {
                     fetchTask.continueWithTask(new Continuation<QuerySnapshot, Task<QuerySnapshot>>() {
                         @Override
                         public Task<QuerySnapshot> then(@NonNull Task<QuerySnapshot> task) {
-                            return tryFetchRandomQuestions(n, category);
+                            return tryFetchRandomQuestions(n, category, categoryCount);
                         }
                     }).addOnSuccessListener(new OnQuestionsFetchedSuccess()).addOnFailureListener(new OnQuestionsFetchedFailed());
                 } else {

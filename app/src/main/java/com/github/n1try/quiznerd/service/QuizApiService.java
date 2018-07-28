@@ -25,7 +25,7 @@ public abstract class QuizApiService {
 
     public abstract void fetchPastMatches(String userId, QuizApiCallbacks callback);
 
-    public abstract void fetchRandomQuestions(int n, QuizCategory category, QuizApiCallbacks callback);
+    public abstract void fetchRandomQuestions(int n, QuizCategory category, Map<QuizCategory, Integer> categoryCount, QuizApiCallbacks callback);
 
     public abstract void createMatch(QuizMatch match, QuizApiCallbacks callback);
 

@@ -11,27 +11,24 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(of = {"id"})
 public class QuizQuestion implements Parcelable {
     private String id;
+    private long inc;
+    private long catInc;
     private String text;
     private String creatorId;
     private String code;
     private QuizCategory category;
     private String random;
     private List<QuizAnswer> answers;
-
-    protected QuizQuestion(Parcel in) {
-        id = in.readString();
-        text = in.readString();
-        code = in.readString();
-        answers = in.createTypedArrayList(QuizAnswer.CREATOR);
-    }
 
     public static final Creator<QuizQuestion> CREATOR = new Creator<QuizQuestion>() {
         @Override
