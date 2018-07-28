@@ -22,11 +22,6 @@ public class QuizUser implements Parcelable {
     private String authentication;
     private GenderType gender = GenderType.MALE;
 
-    protected QuizUser(Parcel in) {
-        id = in.readString();
-        authentication = in.readString();
-    }
-
     public static final Creator<QuizUser> CREATOR = new Creator<QuizUser>() {
         @Override
         public QuizUser createFromParcel(Parcel in) {

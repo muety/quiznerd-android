@@ -27,11 +27,6 @@ public class QuizRound implements Parcelable {
     private List<Long> answers1 = new ArrayList<>();
     private List<Long> answers2 = new ArrayList<>();
 
-    protected QuizRound(Parcel in) {
-        id = in.readInt();
-        questions = in.createTypedArrayList(QuizQuestion.CREATOR);
-    }
-
     public static final Creator<QuizRound> CREATOR = new Creator<QuizRound>() {
         @Override
         public QuizRound createFromParcel(Parcel in) {
@@ -89,10 +84,14 @@ public class QuizRound implements Parcelable {
         }
     }
 
-    public boolean hasPlayed(int playerIdx) {
+    public boolean hasPlayedRound(int playerIdx, int questionIdx) {
         List<Long> answers = playerIdx == 1 ? answers1 : answers2;
-        for (Long a : answers) {
-            if (a.intValue() == QuizAnswer.EMPTY_ANSWER_ID) return false;
+        return answers.get(questionIdx).intValue() != QuizAnswer.EMPTY_ANSWER_ID;
+    }
+
+    public boolean hasPlayed(int playerIdx) {
+        for (int i = 0; i < questions.size(); i++) {
+            if (!hasPlayedRound(playerIdx, i)) return false;
         }
         return true;
     }

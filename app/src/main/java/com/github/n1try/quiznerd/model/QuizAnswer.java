@@ -22,14 +22,8 @@ public class QuizAnswer implements Parcelable {
 
     public static int EMPTY_ANSWER_ID = -1;
     public static int TIMEOUT_ANSWER_ID = -2;
-    public static QuizAnswer EMPTY_ANSWER = new QuizAnswer(EMPTY_ANSWER_ID, "", false);
+    public static QuizAnswer EMPTY_ANSWER = new QuizAnswer(EMPTY_ANSWER_ID, "(not answered)", false);
     public static QuizAnswer TIMEOUT_ANSWER = new QuizAnswer(TIMEOUT_ANSWER_ID, "(timeout)", false);
-
-    protected QuizAnswer(Parcel in) {
-        id = in.readInt();
-        text = in.readString();
-        correct = in.readByte() != 0;
-    }
 
     public static final Creator<QuizAnswer> CREATOR = new Creator<QuizAnswer>() {
         @Override

@@ -72,7 +72,13 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
             List<QuizRoundQuestion> roundQuestions = new ArrayList<>();
             for (int i = 0; i < round.getQuestions().size(); i++) {
                 QuizQuestion q = round.getQuestions().get(i);
-                roundQuestions.add(new QuizRoundQuestion(q, round.isQuestionCorrect(i, 1), round.isQuestionCorrect(i, 2)));
+                roundQuestions.add(new QuizRoundQuestion(
+                        q,
+                        round.isQuestionCorrect(i, 1),
+                        round.isQuestionCorrect(i, 2),
+                        round.hasPlayedRound(1, i),
+                        round.hasPlayedRound(2, i)
+                ));
             }
             mQuestionsLv.setAdapter(new QuizRoundQuestionAdapter(context, roundQuestions));
             mQuestionsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,6 +126,8 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         private QuizQuestion question;
         private boolean correct1;
         private boolean correct2;
+        private boolean answered1;
+        private boolean answered2;
     }
 
     private class QuizRoundQuestionAdapter extends ArrayAdapter<QuizRoundQuestion> {
@@ -144,11 +152,15 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
             currentStateIv = mMatch.getMyPlayerIndex(mUser) == 1 ? state1Iv : state2Iv;
             if (question.isCorrect1())
                 currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            else if (!question.isAnswered1())
+                currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_help));
             else currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
 
             currentStateIv = mMatch.getMyPlayerIndex(mUser) == 1 ? state2Iv : state1Iv;
             if (question.isCorrect2())
                 currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_check));
+            else if (!question.isAnswered2())
+                currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_help));
             else currentStateIv.setImageDrawable(context.getDrawable(R.drawable.ic_wrong));
 
             textTv.setText(question.question.getText());

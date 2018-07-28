@@ -67,12 +67,6 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
         this.rounds = rounds;
     }
 
-    protected QuizMatch(Parcel in) {
-        id = in.readString();
-        round = in.readInt();
-        active = in.readByte() != 0;
-    }
-
     public QuizUser getOpponent(QuizUser me) {
         if (getPlayer1().getAuthentication().equals(me.getAuthentication())) return getPlayer2();
         return getPlayer1();
