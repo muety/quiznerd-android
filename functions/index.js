@@ -48,6 +48,8 @@ exports.notifyMatchStateChange = functions.firestore
     const oldVal = change.before.data();
     const newVal = change.after.data();
 
+    if (!oldVal || !newVal) return null;
+
     let player = null;
     let opponent = null;
     if (hasPlayed(1, oldVal, newVal)) {
