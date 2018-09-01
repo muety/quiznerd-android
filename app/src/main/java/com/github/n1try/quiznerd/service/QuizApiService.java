@@ -4,6 +4,7 @@ import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizUser;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,6 +17,8 @@ public abstract class QuizApiService {
     public Map<String, QuizMatch> matchCache = new ConcurrentHashMap<>();
 
     public Map<String, QuizUser> userCache = new ConcurrentHashMap<>();
+
+    public Map<QuizUser, Date> pokeCache = new ConcurrentHashMap<>();
 
     public abstract void getUserById(String id, QuizApiCallbacks callback);
 
@@ -38,4 +41,6 @@ public abstract class QuizApiService {
     public abstract void updateQuizState(QuizMatch match);
 
     public abstract void deleteMatch(QuizMatch match, QuizApiCallbacks callback);
+
+    public abstract void pokeOpponent(QuizMatch match, QuizUser me);
 }

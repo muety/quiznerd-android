@@ -23,12 +23,14 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -44,6 +46,7 @@ public class FirestoreApiService extends QuizApiService {
     private final int RETRY_FETCH_QUESTIONS = 10;
 
     private FirebaseFirestore mFirestore;
+    private FirebaseFunctions mFunctions;
     private Gson mGson;
 
     public static FirestoreApiService getInstance() {
@@ -56,6 +59,7 @@ public class FirestoreApiService extends QuizApiService {
                 .build();
         mFirestore = FirebaseFirestore.getInstance();
         mFirestore.setFirestoreSettings(settings);
+        mFunctions = FirebaseFunctions.getInstance();
         mGson = new Gson();
     }
 
@@ -267,6 +271,15 @@ public class FirestoreApiService extends QuizApiService {
                 callback.onError(e);
             }
         });
+    }
+
+    @Override
+    public void pokeOpponent(QuizMatch match, QuizUser me) {
+        Map<String, String> data = new HashMap<>();
+        data.put("playerId", me.getId());
+        data.put("opponentId", match.getOpponent(me).getId());
+        data.put("category", match.getCategory().getDisplayName());
+        mFunctions.getHttpsCallable("poke").call(data);
     }
 
     public void createMatch(final QuizMatch match, final QuizApiCallbacks callback) {

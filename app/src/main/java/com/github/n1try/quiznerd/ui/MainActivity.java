@@ -58,6 +58,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -238,12 +239,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ListItem listItem = mMatchAdapter.getItem(menuInfo.position);
+        if (!(listItem instanceof QuizMatchListItem)) return false;
+        final QuizMatch selectedMatch = ((QuizMatchListItem) listItem).getMatch();
+        final QuizUser opponent = selectedMatch.getOpponent(mUser);
+
         switch (item.getItemId()) {
             case R.id.menu_delete_match:
-                AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                ListItem listItem = mMatchAdapter.getItem(menuInfo.position);
-                if (!(listItem instanceof QuizMatchListItem)) return false;
-                final QuizMatch selectedMatch = ((QuizMatchListItem) listItem).getMatch();
                 Dialogs.showDeleteDialog(this, selectedMatch, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -286,6 +289,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         });
                     }
                 });
+                return true;
+
+            case R.id.menu_poke_opponent:
+                Date lastPoked = mApiService.pokeCache.get(opponent);
+                long secondsSinceLastPoke = lastPoked == null
+                        ? Integer.MAX_VALUE
+                        : (new Date().getTime() - lastPoked.getTime()) / 1000;
+                if (secondsSinceLastPoke > 60) {
+                    mApiService.pokeOpponent(selectedMatch, mUser);
+                    mApiService.pokeCache.put(opponent, new Date());
+                    Toast.makeText(this, getString(R.string.poked_template, opponent.getId()), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, getString(R.string.not_poked_template, opponent.getId()), Toast.LENGTH_SHORT).show();
+                }
                 return true;
         }
         return super.onContextItemSelected(item);

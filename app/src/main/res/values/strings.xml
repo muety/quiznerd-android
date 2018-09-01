@@ -41,6 +41,8 @@
     <string name="your_answer">Your answer:</string>
     <string name="correct_answer">Correct answer:</string>
     <string name="choose_nickname">Choose a nickname</string>
+    <string name="poked_template">%1$s has been poked.</string>
+    <string name="not_poked_template">You already poked %1$s.</string>
     <string name="nickname">Your nickname</string>
     <string name="gender">Your Gender</string>
     <string name="female">Female</string>
@@ -94,5 +96,6 @@
     <string name="quit">Quit</string>
     <string name="quit_app">Exit</string>
     <string name="quit_app_confirm">Do you want to quit QuizNerd?</string>
+    <string name="poke_opponent">Poke</string>
 
 </resources>

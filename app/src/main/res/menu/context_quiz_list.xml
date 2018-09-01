@@ -7,4 +7,9 @@
         android:title="@string/delete_match"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_poke_opponent"
+        android:title="@string/poke_opponent"
+        app:showAsAction="never" />
+
 </menu>
