@@ -1,5 +1,7 @@
 'use strict'
 
+// Import questions from format exported by CodingQuiz API
+
 // Get credentials from https://console.cloud.google.com/iam-admin/serviceaccounts?project=quiznerd-49e4f&authuser=0
 
 const admin = require('firebase-admin'),

@@ -21,6 +21,7 @@ My implementation of the final Capstone project from the [Udacity Android Develo
 
 ## Additional developer's notes
 * [Firebase project information](https://console.firebase.google.com/project/quiznerd-49e4f/settings/general/android:com.github.n1try.quiznerd) and `google-services.json`
+* [Credentials](https://console.firebase.google.com/u/0/project/quiznerd-49e4f/settings/serviceaccounts/adminsdk)
 * Create SHA1 fingerprint for Google login (see below) and add to [Firebase project settings](https://console.firebase.google.com/u/0/project/quiznerd-49e4f/settings/general/android:com.github.n1try.quiznerd)
 ```
 # Debug
