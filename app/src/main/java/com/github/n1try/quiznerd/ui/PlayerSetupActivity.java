@@ -13,12 +13,11 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.GenderType;
@@ -43,15 +42,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PlayerSetupActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class PlayerSetupActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.setup_avatar_iv)
     CircleImageView avatarIv;
     @BindView(R.id.setup_nickname_input)
     EditText nicknameInput;
     @BindView(R.id.setup_female_button)
-    ToggleButton femaleToggle;
+    Button femaleToggle;
     @BindView(R.id.setup_male_button)
-    ToggleButton maleToggle;
+    Button maleToggle;
     @BindView(R.id.setup_female_label)
     TextView femaleLabelTv;
     @BindView(R.id.setup_male_label)
@@ -81,9 +80,10 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         setTitle(R.string.create_profile);
 
-        maleToggle.setOnCheckedChangeListener(this);
-        femaleToggle.setOnCheckedChangeListener(this);
-        femaleToggle.toggle();
+        setGender(GenderType.FEMALE);
+
+        maleToggle.setOnClickListener(this);
+        femaleToggle.setOnClickListener(this);
         nicknameInput.addTextChangedListener(new TextWatcher() {
             private Timer timer = new Timer();
             private final long DELAY = 1000;
@@ -139,40 +139,39 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        switch (compoundButton.getId()) {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.setup_female_button:
-                if (checked) {
-                    maleToggle.setChecked(false);
-                    selectedGender = GenderType.FEMALE;
-                    femaleLabelTv.setTypeface(null, Typeface.BOLD);
-                    femaleLabelTv.setTextColor(getResources().getColor(R.color.colorAccent));
-                    maleLabelTv.setTypeface(null, Typeface.NORMAL);
-                    maleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
-                } else {
-                    selectedGender = null;
-                    femaleLabelTv.setTypeface(null, Typeface.NORMAL);
-                    femaleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
-                }
-                setReadyState();
+                setGender(GenderType.FEMALE);
                 break;
             case R.id.setup_male_button:
-                if (checked) {
-                    femaleToggle.setChecked(false);
-                    selectedGender = GenderType.MALE;
-                    maleLabelTv.setTypeface(null, Typeface.BOLD);
-                    maleLabelTv.setTextColor(getResources().getColor(R.color.colorAccent));
-                    femaleLabelTv.setTypeface(null, Typeface.NORMAL);
-                    femaleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
-                } else {
-                    selectedGender = null;
-                    maleLabelTv.setTypeface(null, Typeface.NORMAL);
-                    maleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
-                }
-                setReadyState();
+                setGender(GenderType.MALE);
                 break;
         }
     }
+
+    private void setGender(GenderType gender) {
+        if (selectedGender != null && selectedGender.equals(gender)) return;
+
+        switch (gender) {
+            case FEMALE:
+                selectedGender = GenderType.FEMALE;
+                femaleLabelTv.setTypeface(null, Typeface.BOLD);
+                femaleLabelTv.setTextColor(getResources().getColor(R.color.colorAccent));
+                maleLabelTv.setTypeface(null, Typeface.NORMAL);
+                maleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
+                break;
+            case MALE:
+                selectedGender = GenderType.MALE;
+                maleLabelTv.setTypeface(null, Typeface.BOLD);
+                maleLabelTv.setTextColor(getResources().getColor(R.color.colorAccent));
+                femaleLabelTv.setTypeface(null, Typeface.NORMAL);
+                femaleLabelTv.setTextColor(getResources().getColor(R.color.textColorSecondary));
+                break;
+        }
+        setReadyState();
+    }
+
 
     private boolean checkReady() {
         return !TextUtils.isEmpty(selectedNickname) && selectedGender != null;
@@ -238,6 +237,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements CompoundBu
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
 
     private class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;

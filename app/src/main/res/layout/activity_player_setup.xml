@@ -121,7 +121,7 @@
                             android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <ToggleButton
+                            <Button
                                 android:id="@+id/setup_female_button"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
@@ -149,7 +149,7 @@
                             android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <ToggleButton
+                            <Button
                                 android:id="@+id/setup_male_button"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
