@@ -119,8 +119,8 @@
                                     android:id="@+id/new_nickname_input"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="8dp"
                                     android:layout_marginTop="8dp"
+                                    android:layout_marginRight="8dp"
                                     android:layout_weight="10"
                                     android:ems="10"
                                     android:hint="@string/find_by_nickname"
@@ -131,9 +131,16 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:src="@drawable/ic_search"
-                                    android:text="Button" />
+                                    android:src="@drawable/ic_search" />
                             </LinearLayout>
+
+                            <Button
+                                android:id="@+id/new_random_opponent_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:drawableLeft="@drawable/ic_renew"
+                                android:text="@string/random_opponent" />
 
                             <TextView
                                 android:id="@+id/new_friends_label"

@@ -97,5 +97,6 @@
     <string name="quit_app">Exit</string>
     <string name="quit_app_confirm">Do you want to quit QuizNerd?</string>
     <string name="poke_opponent">Poke</string>
+    <string name="random_opponent">Random Opponent</string>
 
 </resources>

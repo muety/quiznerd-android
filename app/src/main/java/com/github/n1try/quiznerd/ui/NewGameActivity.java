@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -40,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 import butterknife.BindView;
@@ -55,6 +57,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
     EditText mNicknameInput;
     @BindView(R.id.new_find_opponent_button)
     ImageButton mSearchButton;
+    @BindView(R.id.new_random_opponent_button)
+    Button mRandomButton;
     @BindView(R.id.new_friends_label)
     TextView mFriendsLabel;
     @BindView(R.id.new_friends_lv)
@@ -76,6 +80,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
     private QuizUser currentSelectedOpponent;
     private QuizUserAdapter mUserAdapter;
     private List<QuizQuestion> mRandomQuestions;
+    private String[] mBotPlayers;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +95,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         mApiService = QuizApiService.getInstance();
         mContext = this;
+
+        mBotPlayers = getResources().getStringArray(R.array.bot_player_names);
 
         Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
         mUser = bundle.getParcelable(Constants.KEY_ME);
@@ -127,6 +134,7 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         });
         mSearchButton.setEnabled(false);
         mSearchButton.setOnClickListener(this);
+        mRandomButton.setOnClickListener(this);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -215,7 +223,10 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
                 hideCurrentSelectedOpponent();
                 break;
             case R.id.new_find_opponent_button:
-                new FetchUserTask().execute();
+                new FetchUserTask(mNicknameInput.getText().toString()).execute();
+                break;
+            case R.id.new_random_opponent_button:
+                new FetchUserTask(getRandomBot()).execute();
                 break;
         }
     }
@@ -274,19 +285,25 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
+    private String getRandomBot() {
+        return mBotPlayers[new Random().nextInt(mBotPlayers.length)];
+    }
+
     private class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
         private final Context context;
         private QuizUser userResult;
+        private String userName;
 
-        public FetchUserTask() {
+        public FetchUserTask(String userName) {
             latch = new CountDownLatch(1);
             context = getApplicationContext();
+            this.userName = userName;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mApiService.getUserById(mNicknameInput.getText().toString(), this);
+            mApiService.getUserById(userName, this);
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -297,12 +314,19 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         protected void onPreExecute() {
+            mNicknameInput.setEnabled(false);
+            mSearchButton.setEnabled(false);
+            mRandomButton.setEnabled(false);
             mLoadingSpinner.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            mNicknameInput.setEnabled(true);
+            mSearchButton.setEnabled(true);
+            mRandomButton.setEnabled(true);
             mLoadingSpinner.setVisibility(View.GONE);
+
             if (userResult == null || userResult.equals(mUser)) {
                 Toast.makeText(context, R.string.user_not_found, Toast.LENGTH_LONG).show();
             } else {
