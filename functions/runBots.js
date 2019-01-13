@@ -15,15 +15,17 @@ let allMatches = {};
 let allPending = {};
 let playQueue = {};
 
-function run(data, context) {
-    if (data.token !== TOKEN) return;
+function run(req, res) {
+    if (req.query.token !== TOKEN) return res.status(401).end();
 
-    bots.forEach((bot) => {
-        fetchMatches(bot)
+    Promise.all(bots.map((bot) => {
+        return fetchMatches(bot)
             .then(fetchPending)
             .then(schedule)
             .then(play);
-    });
+    }))
+    .then(() => res.status(200).end())
+    .catch(() => res.status(500).end());
 }
 
 function fetchMatches(bot) {
@@ -81,6 +83,7 @@ function schedule(bot) {
 
     promises = promises.concat(
         allPending[bot.id]
+            .filter(d => !!playQueue[bot.id].find(p => p.id === d.id))
             .map(d => {
                 let matchData = allMatches[bot.id].find(m => m.id === d.data().match.id).data();
                 let timeOffset = randInt(bot.intervalMinutesMin, bot.intervalMinutesMax + 1);
@@ -98,23 +101,23 @@ function schedule(bot) {
 function play(bot) {
     return Promise.all(
         playQueue[bot.id]
-        .map(d => {
-            let match = allMatches[bot.id].find(m => m.id === d.data().match.id);
-            let matchData = match.data();
-            let currentRound = matchData.rounds[matchData.round - 1];
-            let myAnswers = currentRound.questions.map(q => {
-                let correct = q.answers.find(a => a.correct).id;
-                let succeed = Array(100).fill(0).map(() => randInt(0, 2)).reduce((a, b) => a + b, 0) < bot.successRate * 100;
-                let answer = succeed
-                    ? correct
-                    : shuffle(Array(q.answers.length).fill(0).map((x, y) => x + y).filter(a => a !== correct))[0];
-                return answer;
-            });
+            .map(d => {
+                let match = allMatches[bot.id].find(m => m.id === d.data().match.id);
+                let matchData = match.data();
+                let currentRound = matchData.rounds[matchData.round - 1];
+                let myAnswers = currentRound.questions.map(q => {
+                    let correct = q.answers.find(a => a.correct).id;
+                    let succeed = Array(100).fill(0).map(() => randInt(0, 2)).reduce((a, b) => a + b, 0) < bot.successRate * 100;
+                    let answer = succeed
+                        ? correct
+                        : shuffle(Array(q.answers.length).fill(0).map((x, y) => x + y).filter(a => a !== correct))[0];
+                    return answer;
+                });
 
-            let newRoundData = matchData.rounds;
-            newRoundData[currentRound.id - 1].answers2 = myAnswers;
-            return match.ref.update({ rounds: newRoundData });
-        })
+                let newRoundData = matchData.rounds;
+                newRoundData[currentRound.id - 1].answers2 = myAnswers;
+                return match.ref.update({ rounds: newRoundData });
+            })
     ).then(() => bot);
 }
 
@@ -152,4 +155,4 @@ function isBotsTurn(match) {
     return false;
 }
 
-exports.fn = functions.https.onCall(run);
+exports.fn = functions.https.onRequest(run);
