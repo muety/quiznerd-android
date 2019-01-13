@@ -1,0 +1,10 @@
+[
+    {
+        "id": "CrazyQuizzer94",
+        "authentication": "bot_z2ZaHxQXLj2U",
+        "gender": "MALE",
+        "successRate": 0.6,
+        "intervalMinutesMin": 10,
+        "intervalMinutesMax": 120
+    }
+]
