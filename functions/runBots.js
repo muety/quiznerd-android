@@ -41,8 +41,8 @@ function fetchMatches(bot) {
 }
 
 function fetchPending(bot) {
+    // TODO: At some point, this will be too much data. Records from botdata table should be deleted instead of inactived.
     return botdata
-        .where('active', '==', true)
         .where('botid', '==', bot.id)
         .get()
         .then(querySnapshot => {
@@ -55,12 +55,12 @@ function fetchPending(bot) {
 function schedule(bot) {
     let promises = [];
 
-    let pendingIds = allPending[bot.id]
-        .map(d => d.data())
-        .map(d => d.match.id);
+    let allIds = allPending[bot.id]
+        .map(d => d.data().match.id);
 
     playQueue[bot.id] = allPending[bot.id]
         .filter(d => d.data().nextExecution <= new Date())
+        .filter(d => d.data().active)
         .filter(d => {
             let match = allMatches[bot.id].find(m => m.id === d.data().match.id);
             return isBotsTurn(match.data());
@@ -68,7 +68,7 @@ function schedule(bot) {
 
     promises = promises.concat(
         allMatches[bot.id]
-            .filter(d => !pendingIds.includes(d.id))
+            .filter(d => !allIds.includes(d.id))
             .map(d => {
                 let timeOffset = randInt(bot.intervalMinutesMin, bot.intervalMinutesMax + 1);
 
@@ -93,6 +93,13 @@ function schedule(bot) {
                     nextExecution: addMinutes(new Date(), timeOffset)
                 })
             })
+    );
+
+    // Clean up for deleted matches
+    promises = promises.concat(
+        allPending[bot.id]
+            .filter(d => !allMatches[bot.id].find(m => m.id === d.data().match.id))
+            .map(d => d.ref.update({ active: false }))
     );
 
     return Promise.all(promises).then(() => bot);

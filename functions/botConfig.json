@@ -3,7 +3,7 @@
         "id": "e1nste1n",
         "authentication": "bot_z2ZaHxQXLj2U",
         "gender": "MALE",
-        "successRate": 0.65,
+        "successRate": 0.6,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -11,7 +11,7 @@
         "id": "Ted",
         "authentication": "bot_gMEZgj2ZKrbj",
         "gender": "MALE",
-        "successRate": 0.55,
+        "successRate": 0.6,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -19,7 +19,7 @@
         "id": "lets_playbob",
         "authentication": "bot_Dgq4Q3gbcbYu",
         "gender": "MALE",
-        "successRate": 0.35,
+        "successRate": 0.5,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -44,7 +44,7 @@
         "id": "yahya179",
         "authentication": "bot_DzjwkXCXX3FV",
         "gender": "MALE",
-        "successRate": 0.75,
+        "successRate": 0.6,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -52,7 +52,7 @@
         "id": "Peachy",
         "authentication": "bot_RK97znbxABfB",
         "gender": "FEMALE",
-        "successRate": 0.45,
+        "successRate": 0.55,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -60,7 +60,7 @@
         "id": "siddo",
         "authentication": "bot_4CpaTpwc7AYt",
         "gender": "MALE",
-        "successRate": 0.7,
+        "successRate": 0.6,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -68,7 +68,7 @@
         "id": "kazzaro",
         "authentication": "bot_V6eYRT9Xva7u",
         "gender": "MALE",
-        "successRate": 0.55,
+        "successRate": 0.5,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -76,7 +76,7 @@
         "id": "Maarten93",
         "authentication": "bot_XEmeVUbD2WAM",
         "gender": "MALE",
-        "successRate": 0.8,
+        "successRate": 0.6,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
@@ -84,7 +84,7 @@
         "id": "XxAligatorXx",
         "authentication": "bot_9PweXP46ZSVR",
         "gender": "MALE",
-        "successRate": 0.6,
+        "successRate": 0.5,
         "intervalMinutesMin": 10,
         "intervalMinutesMax": 120
     },
