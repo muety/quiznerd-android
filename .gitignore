@@ -8,7 +8,6 @@
 app/secrets.properties
 .idea
 .firebaserc
-*.jks
 quiznerd-*.json
 .settings
 .project
