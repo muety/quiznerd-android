@@ -4,9 +4,10 @@
 // firebase deploy --only functions --project quiznerd
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./quiznerd-49e4f-b71719dfd03a.json');
+const serviceAccount = require('./quiznerd-49e4f-firebase-adminsdk-3kssd-48052345cf.json');
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://quiznerd-49e4f.firebaseio.com'
 });
 
 // https://us-central1-quiznerd-49e4f.cloudfunctions.net/runBots
