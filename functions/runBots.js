@@ -59,7 +59,7 @@ function schedule(bot) {
         .map(d => d.data().match.id);
 
     playQueue[bot.id] = allPending[bot.id]
-        .filter(d => d.data().nextExecution <= new Date())
+        .filter(d => d.data().nextExecution.toDate() <= new Date())
         .filter(d => d.data().active)
         .filter(d => {
             let match = allMatches[bot.id].find(m => m.id === d.data().match.id);
@@ -106,6 +106,7 @@ function schedule(bot) {
 }
 
 function play(bot) {
+    console.log(`Playing ${playQueue[bot.id].length} matches for bot ${bot.id}.`)
     return Promise.all(
         playQueue[bot.id]
             .map(d => {
