@@ -74,7 +74,7 @@ class FetchAvatarTask extends AsyncTask<Void, Void, Void> {
                     ))
                     .build();
             Response response = httpClient.newCall(request).execute();
-            if (response.isSuccessful() && response.body().contentLength() > 0) {
+            if (response.isSuccessful()) {
                 InputStream stream = response.body().byteStream();
                 Sharp.loadInputStream(stream).into(target);
                 stream.close();
