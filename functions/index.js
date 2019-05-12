@@ -1,7 +1,7 @@
 'use strict';
 
 // https://firebase.google.com/docs/functions/firestore-events
-// firebase deploy --only functions --project quiznerd
+// firebase deploy --only functions
 
 const admin = require('firebase-admin');
 const serviceAccount = require('./quiznerd-49e4f-firebase-adminsdk-3kssd-48052345cf.json');
