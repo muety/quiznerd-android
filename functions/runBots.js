@@ -25,7 +25,10 @@ function run(req, res) {
             .then(play);
     }))
     .then(() => res.status(200).end())
-    .catch(() => res.status(500).end());
+    .catch((e) => {
+        console.error(e);
+        res.status(500).end();
+    })
 }
 
 function fetchMatches(bot) {
@@ -63,7 +66,7 @@ function schedule(bot) {
         .filter(d => d.data().active)
         .filter(d => {
             let match = allMatches[bot.id].find(m => m.id === d.data().match.id);
-            return isBotsTurn(match.data());
+            return !!match && isBotsTurn(match.data());
         });
 
     promises = promises.concat(
