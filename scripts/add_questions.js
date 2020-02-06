@@ -23,6 +23,8 @@ let dataDir = 'data/new'
 let filelist = fs.readdirSync(dataDir)
 let newQuestions = filelist.map(f => JSON.parse(fs.readFileSync(`${dataDir}/${f}`)))
 
+// TODO: Use batch operations (https://cloud.google.com/firestore/docs/manage-data/transactions#batched-writes)
+
 getMaxInc()
     .then(incs => {
         let promises = []
