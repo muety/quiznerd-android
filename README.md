@@ -3,6 +3,8 @@
 
 My implementation of the final Capstone project from the [Udacity Android Developer Nanodegree Program](https://classroom.udacity.com/nanodegrees/nd801), which I was able to participate in thanks to a scholarship by Udacity and Google 🤗.
 
+[![](assets/badge.png)](https://play.google.com/store/apps/details?id=com.github.n1try.quiznerd)
+
 ## 📱 Screenshots
 ![](assets/screenshot-1.png)![](assets/screenshot-2.png)
 
