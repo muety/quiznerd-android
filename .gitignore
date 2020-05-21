@@ -13,3 +13,4 @@ quiznerd-*.json
 .project
 .classpath
 *.jks
+**/.vscode
