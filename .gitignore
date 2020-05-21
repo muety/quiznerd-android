@@ -12,3 +12,4 @@ quiznerd-*.json
 .settings
 .project
 .classpath
+*.jks
