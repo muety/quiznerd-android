@@ -56,4 +56,4 @@ keytool -exportcert -list -v \
 * Additionally, Google Play Store creates also a fingerprint [here](https://play.google.com/apps/publish/?account=6059045896101218926#KeyManagementPlace:p=com.github.n1try.quiznerd&appid=4972146644198950455)
 
 ## 📓 License
-MIT
+Apache 2.0
