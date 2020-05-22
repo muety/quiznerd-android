@@ -1,3 +1,4 @@
 node_modules
 quiznerd-*.json
 *.vscode
+*.log
