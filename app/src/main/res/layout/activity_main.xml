@@ -68,18 +68,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/main_no_matches_label"
-                style="@style/AppTheme.Text.Background.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="32dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:gravity="center"
-                android:text="@string/no_matches" />
-
             <android.support.v7.widget.CardView
                 android:id="@+id/main_quiz_list_container"
                 android:layout_width="match_parent"
@@ -101,6 +89,19 @@
                 </android.support.v4.widget.SwipeRefreshLayout>
 
             </android.support.v7.widget.CardView>
+
+            <TextView
+                android:id="@+id/main_no_matches_label"
+                style="@style/AppTheme.Text.Background.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:elevation="64dp"
+                android:gravity="center"
+                android:text="@string/no_matches" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/main_new_fab"

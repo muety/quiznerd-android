@@ -3,12 +3,12 @@ apply plugin: 'com.google.gms.oss.licenses.plugin'
 apply plugin: 'io.fabric'
 
 Properties props = new Properties()
-File propsFile = file('secrets.properties')
+File propsFile = file('../secrets.properties')
 if (propsFile.exists()) {
     props.load(propsFile.newDataInputStream())
-} else {
-    if (System.env.SOME_PROPERTY_HERE != null) props.setProperty("SOME_PROPERTY_HERE", System.env.SOME_PROPERTY_HERE)
 }
+
+println(props.entrySet())
 
 android {
     compileSdkVersion 28
@@ -16,16 +16,16 @@ android {
         applicationId "com.github.n1try.quiznerd"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 9
-        versionName "0.9-beta"
+        versionCode 10
+        versionName "0.10-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         release {
-            keyAlias 'quiznerd_keystore'
-            keyPassword '<INSERT_HERE>'
+            keyAlias props.getProperty("keyAlias")
+            keyPassword props.getProperty("keyPassword")
             storeFile file('../quiznerd_keystore.jks')
-            storePassword '<INSERT_HERE>'
+            storePassword props.getProperty("storePassword")
         }
     }
     buildTypes {

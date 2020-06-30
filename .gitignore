@@ -14,3 +14,4 @@ quiznerd-*.json
 .classpath
 *.jks
 **/.vscode
+secrets.properties

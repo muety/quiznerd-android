@@ -52,7 +52,6 @@ import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -61,7 +60,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView mUsernameTv;
     @BindView(R.id.main_score_tv)
     TextView mScoreTv;
+    @BindView(R.id.main_no_matches_label)
+    TextView mNoMatchesLabelTv;
     @BindView(R.id.main_new_fab)
     FloatingActionButton mNewQuizFab;
     @BindView(R.id.main_quiz_lv)
@@ -128,9 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initMessaging() {
-        String token = FirebaseInstanceId.getInstance().getToken();
         FirebaseMessaging.getInstance().subscribeToTopic(mUser.getId());
-        Log.d(TAG, token);
     }
 
     private void revokeMessaging() {
@@ -311,11 +309,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void postMatchesLoad(Collection<QuizMatch> matches) {
         if (matches.isEmpty()) {
             mMatchAdapter = null;
-            mQuizListContainer.setVisibility(View.GONE);
+            mNoMatchesLabelTv.setVisibility(View.VISIBLE);
         } else {
             mMatchAdapter = new QuizMatchAdapter(this, QuizMatchAdapter.generateItemList(this, new ArrayList<>(matches), mUser));
             mQuizList.setAdapter(mMatchAdapter);
-            mQuizListContainer.setVisibility(View.VISIBLE);
+            mNoMatchesLabelTv.setVisibility(View.GONE);
         }
     }
 
@@ -369,7 +367,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         public void onMatchesFetched(List<QuizMatch> matches) {
-            Log.d(TAG, String.format("%s matches fetched after %s ms.", matches.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS)));
             this.matches.addAll(matches);
             latch.countDown();
         }

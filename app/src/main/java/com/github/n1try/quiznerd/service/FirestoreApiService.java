@@ -99,7 +99,6 @@ public class FirestoreApiService extends QuizApiService {
                 }
 
                 if (questions.size() < n && tries.incrementAndGet() <= RETRY_FETCH_QUESTIONS) {
-                    Log.d(TAG, String.format("Retry %s for category %s", tries.get(), category));
                     fetchTask.continueWithTask(new Continuation<QuerySnapshot, Task<QuerySnapshot>>() {
                         @Override
                         public Task<QuerySnapshot> then(@NonNull Task<QuerySnapshot> task) {
