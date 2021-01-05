@@ -1,5 +1,13 @@
-# quiznerd-android
 ![](assets/logo.png)
+
+# quiznerd-android
+
+![License](https://badges.fw-web.space/github/license/muety/quiznerd-android)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/muety/quiznerd-android)
+![GitHub issues](https://img.shields.io/github/issues/muety/quiznerd-android)
+![GitHub last commit](https://img.shields.io/github/last-commit/muety/quiznerd-android)
+[![Say thanks](https://badges.fw-web.space/badge/SayThanks.io-%E2%98%BC-1EAEDB.svg)](https://saythanks.io/to/n1try)
+[![](https://badges.fw-web.space/liberapay/receives/muety.svg?logo=liberapay)](https://liberapay.com/muety/)
 
 My implementation of the final Capstone project from the [Udacity Android Developer Nanodegree Program](https://classroom.udacity.com/nanodegrees/nd801), which I was able to participate in thanks to a scholarship by Udacity and Google 🤗.
 
