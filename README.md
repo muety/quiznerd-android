@@ -2,7 +2,6 @@
 
 # quiznerd-android
 
-![License](https://badges.fw-web.space/github/license/muety/quiznerd-android)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/muety/quiznerd-android)
 ![GitHub issues](https://img.shields.io/github/issues/muety/quiznerd-android)
 ![GitHub last commit](https://img.shields.io/github/last-commit/muety/quiznerd-android)
