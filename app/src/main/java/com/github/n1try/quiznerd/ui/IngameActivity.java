@@ -3,16 +3,16 @@ package com.github.n1try.quiznerd.ui;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizAnswer;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
@@ -21,6 +21,8 @@ import com.github.n1try.quiznerd.service.QuizApiService;
 import com.github.n1try.quiznerd.service.QuizRoundManager;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.QuizUtils;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,18 +30,17 @@ import butterknife.ButterKnife;
 public class IngameActivity extends AppCompatActivity implements IngameQuestionFragment.OnAnsweredListener, View.OnClickListener, QuizCategoryAware {
     private static final String TAG_QUESTION_FRAGMENT = "question_fragment";
 
-    @BindView(R.id.ingame_question_container)
+    @BindView(R2.id.ingame_question_container)
     View mQuestionContainer;
-    @BindView(R.id.ingame_next_fab)
+    @BindView(R2.id.ingame_next_fab)
     FloatingActionButton mNextButton;
-    @BindView(R.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.appbar)
+    @BindView(R2.id.appbar)
     AppBarLayout mAppbar;
-    @BindView(R.id.ingame_countdown)
+    @BindView(R2.id.ingame_countdown)
     ProgressBar mProgressBar;
 
-    private QuizApiService mApiService;
     private QuizRoundManager mQuizRoundManager;
     private FragmentManager mFragmentManager;
     private IngameQuestionFragment mCurrentFragment;
@@ -53,7 +54,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
         setContentView(R.layout.activity_ingame);
         ButterKnife.bind(this);
 
-        mApiService = QuizApiService.getInstance();
+        QuizApiService mApiService = QuizApiService.getInstance();
         mFragmentManager = getSupportFragmentManager();
 
         Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
@@ -62,7 +63,7 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
 
         mQuizRoundManager = new QuizRoundManager(mMatch, mUser);
         setSupportActionBar(mToolbar);
-        setTitle(getString(R.string.round_template, mMatch.getRound()));
+        setTitle(getString(R.string.round_template, String.valueOf(mMatch.getRound())));
         mNextButton.setOnClickListener(this);
 
         long countdownState = bundle.containsKey(Constants.KEY_COUNTDOWN)
@@ -119,15 +120,14 @@ public class IngameActivity extends AppCompatActivity implements IngameQuestionF
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ingame_next_fab:
-                QuizQuestion nextQuestion = mQuizRoundManager.getCurrentQuestion();
-                if (nextQuestion == null) super.onBackPressed();
-                else {
-                    displayQuestion(nextQuestion);
-                    restartCountdown(getResources().getInteger(R.integer.countdown_millis));
-                }
-                break;
+        // http://tools.android.com/tips/non-constant-fields
+        if (view.getId() == R.id.ingame_next_fab) {
+            QuizQuestion nextQuestion = mQuizRoundManager.getCurrentQuestion();
+            if (nextQuestion == null) super.onBackPressed();
+            else {
+                displayQuestion(nextQuestion);
+                restartCountdown(getResources().getInteger(R.integer.countdown_millis));
+            }
         }
     }
 

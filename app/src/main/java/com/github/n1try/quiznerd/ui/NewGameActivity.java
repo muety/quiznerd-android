@@ -3,10 +3,6 @@ package com.github.n1try.quiznerd.ui;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -23,7 +19,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
@@ -35,6 +36,7 @@ import com.github.n1try.quiznerd.ui.adapter.QuizCategoryAdapter;
 import com.github.n1try.quiznerd.ui.adapter.QuizUserAdapter;
 import com.github.n1try.quiznerd.utils.Constants;
 import com.github.n1try.quiznerd.utils.UserUtils;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,29 +51,27 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewGameActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
-    private static final String TAG = "NewGameActivity";
-
-    @BindView(R.id.new_category_spinner)
+    @BindView(R2.id.new_category_spinner)
     Spinner mCategorySpinner;
-    @BindView(R.id.new_nickname_input)
+    @BindView(R2.id.new_nickname_input)
     EditText mNicknameInput;
-    @BindView(R.id.new_find_opponent_button)
+    @BindView(R2.id.new_find_opponent_button)
     ImageButton mSearchButton;
-    @BindView(R.id.new_random_opponent_button)
+    @BindView(R2.id.new_random_opponent_button)
     Button mRandomButton;
-    @BindView(R.id.new_friends_label)
+    @BindView(R2.id.new_friends_label)
     TextView mFriendsLabel;
-    @BindView(R.id.new_friends_lv)
+    @BindView(R2.id.new_friends_lv)
     ListView mFriendsList;
-    @BindView(R.id.new_opponent_controls_container)
+    @BindView(R2.id.new_opponent_controls_container)
     View opponentControlsContainer;
-    @BindView(R.id.new_selected_opponent_container)
+    @BindView(R2.id.new_selected_opponent_container)
     ViewGroup selectedOpponentContainer;
-    @BindView(R.id.new_loading_spinner)
+    @BindView(R2.id.new_loading_spinner)
     ProgressBar mLoadingSpinner;
-    @BindView(R.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.appbar)
+    @BindView(R2.id.appbar)
     AppBarLayout mAppbar;
 
     private Context mContext;
@@ -170,12 +170,10 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.start:
-                createMatch();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.start) {
+            createMatch();
+        } else {
+            return super.onOptionsItemSelected(item);
         }
         return false;
     }
@@ -217,17 +215,14 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.clear_button:
-                currentSelectedOpponent = null;
-                hideCurrentSelectedOpponent();
-                break;
-            case R.id.new_find_opponent_button:
-                new FetchUserTask(mNicknameInput.getText().toString()).execute();
-                break;
-            case R.id.new_random_opponent_button:
-                new FetchUserTask(getRandomBot()).execute();
-                break;
+        int id = view.getId();
+        if (id == R.id.clear_button) {
+            currentSelectedOpponent = null;
+            hideCurrentSelectedOpponent();
+        } else if (id == R.id.new_find_opponent_button) {
+            new FetchUserTask(mNicknameInput.getText().toString()).execute();
+        } else if (id == R.id.new_random_opponent_button) {
+            new FetchUserTask(getRandomBot()).execute();
         }
     }
 
@@ -292,8 +287,8 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
     private class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
         private final Context context;
+        private final String userName;
         private QuizUser userResult;
-        private String userName;
 
         public FetchUserTask(String userName) {
             latch = new CountDownLatch(1);
@@ -372,12 +367,10 @@ public class NewGameActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private class FetchRandomQuestionsTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
-        private CountDownLatch latch;
-        private Context context;
+        private final CountDownLatch latch;
 
         public FetchRandomQuestionsTask() {
             latch = new CountDownLatch(Constants.NUM_ROUNDS);
-            context = getApplicationContext();
         }
 
         @Override

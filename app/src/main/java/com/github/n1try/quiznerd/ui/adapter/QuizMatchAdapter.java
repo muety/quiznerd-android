@@ -1,12 +1,13 @@
 package com.github.n1try.quiznerd.ui.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.github.n1try.quiznerd.R;
 import com.github.n1try.quiznerd.model.QuizMatch;
@@ -17,20 +18,18 @@ import com.github.n1try.quiznerd.ui.adapter.entity.QuizMatchListItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
 
-    public static List<ListItem> generateItemList(Context context, List<QuizMatch> objects, QuizUser me) {
+    public static List<ListItem> generateItemList(Context context, List<QuizMatch> objects, final QuizUser me) {
         List<QuizMatch> sorted = new ArrayList<>(objects);
-        Collections.sort(sorted, new Comparator<QuizMatch>() {
-            @Override
-            public int compare(QuizMatch t1, QuizMatch t2) {
-                if (t1.isActive() && !t2.isActive()) return -1;
-                if (!t1.isActive() && t2.isActive()) return 1;
-                return t1.compareTo(t2);
-            }
+        Collections.sort(sorted, (t1, t2) -> {
+            if (t1.isActive() != t2.isActive()) return Boolean.compare(t1.isActive(), t2.isActive());
+            boolean myTurn1 = t1.isMyTurn(me);
+            boolean myTurn2 = t2.isMyTurn(me);
+            if (myTurn1 != myTurn2) return Boolean.compare(myTurn2, myTurn1);
+            return t2.getUpdated().compareTo(t1.getUpdated());
         });
         List<ListItem> items = new ArrayList<>(sorted.size() + 1);
 
@@ -45,7 +44,7 @@ public class QuizMatchAdapter extends ArrayAdapter<ListItem> {
         return items;
     }
 
-    private Context context;
+    private final Context context;
 
     public QuizMatchAdapter(@NonNull Context context, List<ListItem> objects) {
         super(context, 0, objects);

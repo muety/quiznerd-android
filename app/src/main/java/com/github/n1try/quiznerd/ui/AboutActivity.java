@@ -2,8 +2,6 @@ package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +9,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.utils.AndroidUtils;
 
 import java.io.IOException;
@@ -30,11 +32,11 @@ public class AboutActivity extends AppCompatActivity {
 
     private Context context;
 
-    @BindView(R.id.about_text_tv)
+    @BindView(R2.id.about_text_tv)
     TextView mTextTv;
-    @BindView(R.id.about_loading_spinner)
+    @BindView(R2.id.about_loading_spinner)
     ProgressBar mLoadingSpinner;
-    @BindView(R.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar mToolbar;
 
     @Override
@@ -49,31 +51,23 @@ public class AboutActivity extends AppCompatActivity {
         context = this;
 
         OkHttpClient httpClient = AndroidUtils.createOrGetHttpClient(this);
-        Request request = new Request.Builder().url("https://storage.ferdinand-muetsch.de/quiznerd_about.html").build();
+        Request request = new Request.Builder().url("https://storage.muetsch.io/quiznerd_about.html").build();
         mLoadingSpinner.setVisibility(View.VISIBLE);
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 mLoadingSpinner.setVisibility(View.GONE);
                 Log.e(TAG, e.getMessage());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) {
                 InputStream stream = response.body().byteStream();
                 final String html = AndroidUtils.streamToString(stream);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mLoadingSpinner.setVisibility(View.GONE);
-                        mTextTv.setText(Html.fromHtml(html));
-                    }
+                runOnUiThread(() -> {
+                    mLoadingSpinner.setVisibility(View.GONE);
+                    mTextTv.setText(Html.fromHtml(html));
                 });
             }
         });

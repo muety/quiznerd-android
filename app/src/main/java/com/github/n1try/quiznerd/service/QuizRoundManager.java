@@ -7,12 +7,13 @@ import com.github.n1try.quiznerd.model.QuizRound;
 import com.github.n1try.quiznerd.model.QuizUser;
 
 public class QuizRoundManager {
-    private QuizApiService apiService;
-    private QuizMatch match;
-    private QuizUser user;
-    private QuizRound round;
-    private int playerIndex;
+    private final QuizApiService apiService;
+    private final QuizMatch match;
+    private final QuizUser user;
+    private final int playerIndex;
+
     private int questionIndex;
+    private QuizRound round;
 
     public QuizRoundManager(QuizMatch match, QuizUser user) {
         this.apiService = QuizApiService.getInstance();

@@ -17,9 +17,9 @@ import lombok.Getter;
 
 @Getter
 public class QuizMatchListItem implements ListItem {
-    private Context context;
-    private QuizUser user;
-    private QuizMatch match;
+    private final Context context;
+    private final QuizUser user;
+    private final QuizMatch match;
 
     public QuizMatchListItem(Context context, QuizMatch match, QuizUser user) {
         this.context = context;
@@ -53,8 +53,8 @@ public class QuizMatchListItem implements ListItem {
         int[] scores = match.getSortedScores(user);
         usernameTv.setText(match.getOpponent(user).getId());
         UserUtils.loadUserAvatar(context, match.getOpponent(user), avatarIv);
-        roundTv.setText(context.getString(R.string.round_with_score_template, match.getRound(), scores[0], scores[1]));
-        scoreTv.setText(context.getString(R.string.score_no_round_template, scores[0], scores[1]));
+        roundTv.setText(context.getString(R.string.round_with_score_template, String.valueOf(match.getRound()), String.valueOf(scores[0]), String.valueOf(scores[1])));
+        scoreTv.setText(context.getString(R.string.score_no_round_template, String.valueOf(scores[0]), String.valueOf(scores[1])));
         if (match.isActive()) {
             roundTv.setVisibility(View.VISIBLE);
             scoreTv.setVisibility(View.GONE);

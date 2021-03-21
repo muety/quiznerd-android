@@ -3,10 +3,11 @@ package com.github.n1try.quiznerd.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -81,17 +82,16 @@ public class StartActivity extends AppCompatActivity implements QuizApiCallbacks
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case RC_SIGN_IN:
-                IdpResponse response = IdpResponse.fromResultIntent(data);
-                if (resultCode == RESULT_OK && response != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    mApiService.getUserByAuthentication(user.getUid(), this);
-                } else {
-                    Log.e(TAG, String.format("Result Code: %s", String.valueOf(resultCode)));
-                    Toast.makeText(this, getString(R.string.sign_in_failed), Toast.LENGTH_SHORT).show();
-                }
-                break;
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+            if (resultCode == RESULT_OK && response != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                mApiService.getUserByAuthentication(user.getUid(), this);
+            } else {
+                Log.e(TAG, String.format("Result Code: %s", resultCode));
+                Toast.makeText(this, getString(R.string.sign_in_failed), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

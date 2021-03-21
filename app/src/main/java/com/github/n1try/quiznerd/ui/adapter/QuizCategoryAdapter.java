@@ -1,8 +1,6 @@
 package com.github.n1try.quiznerd.ui.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizCategory;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 
@@ -18,9 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class QuizCategoryAdapter extends ArrayAdapter<QuizCategory> {
-    @BindView(R.id.quiz_category_tv)
+    @BindView(R2.id.quiz_category_tv)
     TextView mCategoryTv;
-    @BindView(R.id.quiz_category_iv)
+    @BindView(R2.id.quiz_category_iv)
     ImageView mCategoryIv;
 
     private final Context context;

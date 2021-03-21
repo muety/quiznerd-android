@@ -1,18 +1,19 @@
 package com.github.n1try.quiznerd.ui.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizRound;
@@ -29,21 +30,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
-    @BindView(R.id.quiz_round_tv)
+    @BindView(R2.id.quiz_round_tv)
     TextView mRoundTv;
-    @BindView(R.id.quiz_category_iv)
+    @BindView(R2.id.quiz_category_iv)
     ImageView mCategoryIv;
-    @BindView(R.id.quiz_questions_lv)
+    @BindView(R2.id.quiz_questions_lv)
     ListView mQuestionsLv;
-    @BindView(R.id.quiz_progress_tv)
+    @BindView(R2.id.quiz_progress_tv)
     TextView mProgressTv;
 
-    private Context context;
-    private QuizUser mUser;
-    private QuizMatch mMatch;
-    private int color;
-    private int colorDark;
-    private int playerIdx;
+    private final Context context;
+    private final QuizUser mUser;
+    private final QuizMatch mMatch;
+    private final int color;
+    private final int colorDark;
+    private final int playerIdx;
 
     public QuizRoundAdapter(@NonNull Context context, @NonNull QuizMatch match, @NonNull QuizUser user) {
         super(context, 0, match.getDisplayRounds(user));
@@ -64,7 +65,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
         ButterKnife.bind(this, convertView);
 
         final QuizRound round = getItem(position);
-        mRoundTv.setText(context.getString(R.string.round_template, round.getId()));
+        mRoundTv.setText(context.getString(R.string.round_template, String.valueOf(round.getId())));
         mRoundTv.setTextColor(color);
         mCategoryIv.setImageDrawable(QuizUtils.getCategoryIcon(context, round.getCategory()));
 
@@ -81,16 +82,11 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
                 ));
             }
             mQuestionsLv.setAdapter(new QuizRoundQuestionAdapter(context, roundQuestions));
-            mQuestionsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Dialogs.showQuestionDialog(context,
-                            round.getQuestion(i),
-                            round.getAnswersByPlayerIndex(playerIdx).get(i).intValue(),
-                            round.getAnswersByPlayerIndex((playerIdx % 2) + 1).get(i).intValue()
-                    );
-                }
-            });
+            mQuestionsLv.setOnItemClickListener((adapterView, view, i, l) -> Dialogs.showQuestionDialog(context,
+                    round.getQuestion(i),
+                    round.getAnswersByPlayerIndex(playerIdx).get(i).intValue(),
+                    round.getAnswersByPlayerIndex((playerIdx % 2) + 1).get(i).intValue()
+            ));
             mQuestionsLv.setVisibility(View.VISIBLE);
 
             if (round.hasPlayed(playerIdx) && !round.hasPlayed((playerIdx % 2) + 1)) {
@@ -122,7 +118,7 @@ public class QuizRoundAdapter extends ArrayAdapter<QuizRound> {
 
     @Data
     @AllArgsConstructor
-    private class QuizRoundQuestion {
+    private static class QuizRoundQuestion {
         private QuizQuestion question;
         private boolean correct1;
         private boolean correct2;

@@ -1,12 +1,9 @@
 package com.github.n1try.quiznerd.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,7 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.GenderType;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
@@ -43,28 +44,27 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlayerSetupActivity extends AppCompatActivity implements View.OnClickListener {
-    @BindView(R.id.setup_avatar_iv)
+    @BindView(R2.id.setup_avatar_iv)
     CircleImageView avatarIv;
-    @BindView(R.id.setup_nickname_input)
+    @BindView(R2.id.setup_nickname_input)
     EditText nicknameInput;
-    @BindView(R.id.setup_female_button)
+    @BindView(R2.id.setup_female_button)
     Button femaleToggle;
-    @BindView(R.id.setup_male_button)
+    @BindView(R2.id.setup_male_button)
     Button maleToggle;
-    @BindView(R.id.setup_female_label)
+    @BindView(R2.id.setup_female_label)
     TextView femaleLabelTv;
-    @BindView(R.id.setup_male_label)
+    @BindView(R2.id.setup_male_label)
     TextView maleLabelTv;
-    @BindView(R.id.setup_loading_spinner)
+    @BindView(R2.id.setup_loading_spinner)
     ProgressBar mLoadingSpinner;
-    @BindView(R.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
     private QuizApiService mApiService;
     private GenderType selectedGender;
     private String selectedNickname;
     private FirebaseUser mAuthentication;
-    private RandomNameGenerator mRandomNameGen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements View.OnCli
 
         mApiService = QuizApiService.getInstance();
         mAuthentication = FirebaseAuth.getInstance().getCurrentUser();
-        mRandomNameGen = new RandomNameGenerator(new Random().nextInt());
+        RandomNameGenerator mRandomNameGen = new RandomNameGenerator(new Random().nextInt());
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -124,12 +124,10 @@ public class PlayerSetupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.create:
-                createUser();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.create) {
+            createUser();
+        } else {
+            return super.onOptionsItemSelected(item);
         }
         return false;
     }
@@ -140,13 +138,11 @@ public class PlayerSetupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.setup_female_button:
-                setGender(GenderType.FEMALE);
-                break;
-            case R.id.setup_male_button:
-                setGender(GenderType.MALE);
-                break;
+        final int id = v.getId();
+        if (id == R.id.setup_female_button) {
+            setGender(GenderType.FEMALE);
+        } else if (id == R.id.setup_male_button) {
+            setGender(GenderType.MALE);
         }
     }
 
@@ -241,12 +237,10 @@ public class PlayerSetupActivity extends AppCompatActivity implements View.OnCli
 
     private class FetchUserTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
-        private final Context context;
         private QuizUser userResult;
 
         public FetchUserTask() {
             latch = new CountDownLatch(1);
-            context = getApplicationContext();
         }
 
         @Override
@@ -262,12 +256,7 @@ public class PlayerSetupActivity extends AppCompatActivity implements View.OnCli
 
         @Override
         protected void onPreExecute() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingSpinner.setVisibility(View.VISIBLE);
-                }
-            });
+            runOnUiThread(() -> mLoadingSpinner.setVisibility(View.VISIBLE));
         }
 
         @Override
@@ -277,12 +266,9 @@ public class PlayerSetupActivity extends AppCompatActivity implements View.OnCli
             } else {
                 selectedNickname = "";
             }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingSpinner.setVisibility(View.GONE);
-                    setReadyState();
-                }
+            runOnUiThread(() -> {
+                mLoadingSpinner.setVisibility(View.GONE);
+                setReadyState();
             });
         }
 

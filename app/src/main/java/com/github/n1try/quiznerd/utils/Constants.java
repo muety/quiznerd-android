@@ -18,7 +18,7 @@ public final class Constants {
     public static final String KEY_INITIALIZED = "initialized";
 
     // TODO: Fetch actual count values from database
-    public static final ImmutableMap CATEGORY_QUESTION_COUNT = new ImmutableMap.Builder()
+    public static final ImmutableMap<QuizCategory, Integer> CATEGORY_QUESTION_COUNT = new ImmutableMap.Builder<QuizCategory, Integer>()
             .put(QuizCategory.PYTHON, 108)
             .put(QuizCategory.SWIFT, 131)
             .put(QuizCategory.JAVA, 102)

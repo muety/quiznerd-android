@@ -1,15 +1,17 @@
 package com.github.n1try.quiznerd.ui.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizUser;
 import com.github.n1try.quiznerd.utils.UserUtils;
 
@@ -18,12 +20,12 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class QuizUserAdapter extends ArrayAdapter<QuizUser> {
-    @BindView(R.id.quiz_avatar_iv)
+    @BindView(R2.id.quiz_avatar_iv)
     CircleImageView avatarIv;
-    @BindView(R.id.quiz_username_tv)
+    @BindView(R2.id.quiz_username_tv)
     TextView usernameTv;
 
-    private Context context;
+    private final Context context;
 
     public QuizUserAdapter(@NonNull Context context, @NonNull QuizUser[] objects) {
         super(context, 0, objects);

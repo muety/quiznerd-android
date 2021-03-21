@@ -13,16 +13,11 @@ TODO: Stats
 package com.github.n1try.quiznerd.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -35,7 +30,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
@@ -50,6 +50,7 @@ import com.github.n1try.quiznerd.utils.Dialogs;
 import com.github.n1try.quiznerd.utils.QuizUtils;
 import com.github.n1try.quiznerd.utils.UserUtils;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -71,25 +72,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private QuizMatchAdapter mMatchAdapter;
     private SharedPreferences mPrefs;
 
-    @BindView(R.id.main_container)
+    @BindView(R2.id.main_container)
     View mMainContainer;
-    @BindView(R.id.main_loading_container)
+    @BindView(R2.id.main_loading_container)
     View mLoadingContainer;
-    @BindView(R.id.main_avatar_iv)
+    @BindView(R2.id.main_avatar_iv)
     ImageView mAvatarIv;
-    @BindView(R.id.main_username_tv)
+    @BindView(R2.id.main_username_tv)
     TextView mUsernameTv;
-    @BindView(R.id.main_score_tv)
+    @BindView(R2.id.main_score_tv)
     TextView mScoreTv;
-    @BindView(R.id.main_no_matches_label)
+    @BindView(R2.id.main_no_matches_label)
     TextView mNoMatchesLabelTv;
-    @BindView(R.id.main_new_fab)
+    @BindView(R2.id.main_new_fab)
     FloatingActionButton mNewQuizFab;
-    @BindView(R.id.main_quiz_lv)
+    @BindView(R2.id.main_quiz_lv)
     ListView mQuizList;
-    @BindView(R.id.main_quiz_list_container)
+    @BindView(R2.id.main_quiz_list_container)
     View mQuizListContainer;
-    @BindView(R.id.main_refresh_layout)
+    @BindView(R2.id.main_refresh_layout)
     SwipeRefreshLayout mRefreshLayout;
 
     @Override
@@ -108,12 +109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mQuizList.setOnItemClickListener(this);
         mQuizList.setOnCreateContextMenuListener(this);
         mNewQuizFab.setOnClickListener(this);
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                init();
-            }
-        });
+        mRefreshLayout.setOnRefreshListener(this::init);
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         setReady(false); // Only show loading overlay initially, not on refresh
@@ -143,42 +139,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                mRefreshLayout.setRefreshing(true);
-                mRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        init();
-                    }
-                });
-                break;
-            case R.id.menu_bug:
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setType("text/html");
-                intent.setData(Uri.parse("mailto:"));
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.mail)});
-                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.bug_subject));
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.bug_body));
-                startActivity(Intent.createChooser(intent, getString(R.string.send_mail)));
-                break;
-            case R.id.menu_about:
-                startActivity(new Intent(this, AboutActivity.class));
-                break;
-            case R.id.menu_licenses:
-                OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_title));
-                startActivity(new Intent(this, OssLicensesMenuActivity.class));
-                break;
-            case R.id.menu_logout:
-                mPrefs.edit().remove(Constants.KEY_ME).commit();
-                FirebaseAuth.getInstance().signOut();
-                mApiService.userCache.clear();
-                mApiService.matchCache.clear();
-                revokeMessaging();
-                startActivity(new Intent(this, StartActivity.class));
-                break;
-            /*case R.id.debug_logout:
-                startActivity(new Intent(this, PlayerSetupActivity.class));*/
+        // http://tools.android.com/tips/non-constant-fields
+        final int itemId = item.getItemId();
+        if (itemId == R.id.menu_refresh) {
+            mRefreshLayout.setRefreshing(true);
+            mRefreshLayout.post(this::init);
+        } else if (itemId == R.id.menu_bug) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setDataAndType(Uri.parse("mailto:"), "text/html");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.mail)});
+            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.bug_subject));
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.bug_body));
+            startActivity(Intent.createChooser(intent, getString(R.string.send_mail)));
+        } else if (itemId == R.id.menu_about) {
+            startActivity(new Intent(this, AboutActivity.class));
+        } else if (itemId == R.id.menu_licenses) {
+            OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_title));
+            startActivity(new Intent(this, OssLicensesMenuActivity.class));
+        } else if (itemId == R.id.menu_logout) {
+            mPrefs.edit().remove(Constants.KEY_ME).commit();
+            FirebaseAuth.getInstance().signOut();
+            mApiService.userCache.clear();
+            mApiService.matchCache.clear();
+            revokeMessaging();
+            startActivity(new Intent(this, StartActivity.class));
         }
         return false;
     }
@@ -191,12 +175,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onBackPressed() {
-        Dialogs.showQuitAppDialog(this, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finishAffinity();
-                System.exit(0);
-            }
+        Dialogs.showQuitAppDialog(this, (dialogInterface, i) -> {
+            finishAffinity();
+            System.exit(0);
         });
     }
 
@@ -227,11 +208,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        switch (v.getId()) {
-            case R.id.main_quiz_lv:
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.context_quiz_list, menu);
-                break;
+        if (v.getId() == R.id.main_quiz_lv) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.context_quiz_list, menu);
         }
     }
 
@@ -243,65 +222,54 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final QuizMatch selectedMatch = ((QuizMatchListItem) listItem).getMatch();
         final QuizUser opponent = selectedMatch.getOpponent(mUser);
 
-        switch (item.getItemId()) {
-            case R.id.menu_delete_match:
-                Dialogs.showDeleteDialog(this, selectedMatch, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mApiService.deleteMatch(selectedMatch, new QuizApiCallbacks() {
-                            @Override
-                            public void onMatchesFetched(List<QuizMatch> matches) {
-                            }
-
-                            @Override
-                            public void onUsersFetched(List<QuizUser> users) {
-                            }
-
-                            @Override
-                            public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
-                            }
-
-                            @Override
-                            public void onMatchCreated(QuizMatch match) {
-                            }
-
-                            @Override
-                            public void onUserCreated(QuizUser user) {
-                            }
-
-                            @Override
-                            public void onMatchDeleted(QuizMatch match) {
-                                mRefreshLayout.setRefreshing(true);
-                                mRefreshLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        init();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                Toast.makeText(getApplicationContext(), R.string.error_delete_match, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
-                return true;
-
-            case R.id.menu_poke_opponent:
-                Date lastPoked = mApiService.pokeCache.get(opponent);
-                long secondsSinceLastPoke = lastPoked == null
-                        ? Integer.MAX_VALUE
-                        : (new Date().getTime() - lastPoked.getTime()) / 1000;
-                if (secondsSinceLastPoke > 60) {
-                    mApiService.pokeOpponent(selectedMatch, mUser);
-                    mApiService.pokeCache.put(opponent, new Date());
-                    Toast.makeText(this, getString(R.string.poked_template, opponent.getId()), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, getString(R.string.not_poked_template, opponent.getId()), Toast.LENGTH_SHORT).show();
+        final int itemId = item.getItemId();
+        if (itemId == R.id.menu_delete_match) {
+            Dialogs.showDeleteDialog(this, (dialogInterface, i) -> mApiService.deleteMatch(selectedMatch, new QuizApiCallbacks() {
+                @Override
+                public void onMatchesFetched(List<QuizMatch> matches) {
                 }
-                return true;
+
+                @Override
+                public void onUsersFetched(List<QuizUser> users) {
+                }
+
+                @Override
+                public void onRandomQuestionsFetched(List<QuizQuestion> questions) {
+                }
+
+                @Override
+                public void onMatchCreated(QuizMatch match) {
+                }
+
+                @Override
+                public void onUserCreated(QuizUser user) {
+                }
+
+                @Override
+                public void onMatchDeleted(QuizMatch match) {
+                    mRefreshLayout.setRefreshing(true);
+                    mRefreshLayout.post(() -> init());
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(getApplicationContext(), R.string.error_delete_match, Toast.LENGTH_LONG).show();
+                }
+            }));
+            return true;
+        } else if (itemId == R.id.menu_poke_opponent) {
+            Date lastPoked = mApiService.pokeCache.get(opponent);
+            long secondsSinceLastPoke = lastPoked == null
+                    ? Integer.MAX_VALUE
+                    : (new Date().getTime() - lastPoked.getTime()) / 1000;
+            if (secondsSinceLastPoke > 60) {
+                mApiService.pokeOpponent(selectedMatch, mUser);
+                mApiService.pokeCache.put(opponent, new Date());
+                Toast.makeText(this, getString(R.string.poked_template, opponent.getId()), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.not_poked_template, opponent.getId()), Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
         return super.onContextItemSelected(item);
     }
@@ -319,26 +287,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.main_new_fab:
-                Intent intent = new Intent(this, NewGameActivity.class);
-                intent.putExtra(Constants.KEY_ME, mUser);
-                startActivity(intent);
-                break;
+        if (view.getId() == R.id.main_new_fab) {
+            Intent intent = new Intent(this, NewGameActivity.class);
+            intent.putExtra(Constants.KEY_ME, mUser);
+            startActivity(intent);
         }
     }
 
     class FetchDataTask extends AsyncTask<Void, Void, Void> implements QuizApiCallbacks {
         private final CountDownLatch latch;
-        private List<QuizMatch> matches;
-        private Context context;
-        private Stopwatch stopwatch;
+        private final List<QuizMatch> matches;
+        private final Context context;
+        private final Stopwatch stopwatch;
 
         public FetchDataTask() {
             context = getApplicationContext();
             latch = new CountDownLatch(2);
             stopwatch = Stopwatch.createUnstarted();
-            matches = Collections.synchronizedList(new ArrayList<QuizMatch>());
+            matches = Collections.synchronizedList(new ArrayList<>());
         }
 
         @Override

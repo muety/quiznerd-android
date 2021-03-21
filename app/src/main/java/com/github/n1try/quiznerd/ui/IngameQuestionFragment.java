@@ -3,11 +3,6 @@ package com.github.n1try.quiznerd.ui;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayout;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,7 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.gridlayout.widget.GridLayout;
+
 import com.github.n1try.quiznerd.R;
+import com.github.n1try.quiznerd.R2;
 import com.github.n1try.quiznerd.model.QuizAnswer;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizUser;
@@ -33,19 +35,17 @@ import butterknife.ButterKnife;
 
 /* CAUTION: Can only be attached by activities that also implement OnAnsweredListener */
 public class IngameQuestionFragment extends Fragment implements QuizCategoryAware {
-    private static final String TAG = "IngameQuestionFragment";
-
-    @BindView(R.id.ingame_question_title_tv)
+    @BindView(R2.id.ingame_question_title_tv)
     TextView mTitleTv;
-    @BindView(R.id.ingame_category_iv)
+    @BindView(R2.id.ingame_category_iv)
     ImageView mCategoryIv;
-    @BindView(R.id.ingame_question_text_tv)
+    @BindView(R2.id.ingame_question_text_tv)
     TextView mTextTv;
-    @BindView(R.id.ingame_question_code_tv)
+    @BindView(R2.id.ingame_question_code_tv)
     TextView mCodeTv;
-    @BindView(R.id.ingame_question_button_container)
+    @BindView(R2.id.ingame_question_button_container)
     GridLayout mAnswerButtonGrid;
-    @BindView(R.id.ingame_question_result_iv)
+    @BindView(R2.id.ingame_question_result_iv)
     ImageView mResultIndicator;
 
     private Context mContext;
@@ -65,7 +65,7 @@ public class IngameQuestionFragment extends Fragment implements QuizCategoryAwar
     }
 
     protected interface OnAnsweredListener {
-        public void onAnswered(QuizAnswer answer);
+        void onAnswered(QuizAnswer answer);
     }
 
     public static IngameQuestionFragment newInstance(QuizUser user, QuizQuestion question, int position) {
@@ -137,12 +137,7 @@ public class IngameQuestionFragment extends Fragment implements QuizCategoryAwar
         params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
         button.setLayoutParams(params);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAnsweredListener.onAnswered(answer);
-            }
-        });
+        button.setOnClickListener(view -> mAnsweredListener.onAnswered(answer));
 
         return button;
     }

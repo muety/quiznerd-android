@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 public class QuizUser implements Parcelable {
     private String id;
     private String authentication;
+    @Builder.Default
     private GenderType gender = GenderType.MALE;
 
     public static final Creator<QuizUser> CREATOR = new Creator<QuizUser>() {

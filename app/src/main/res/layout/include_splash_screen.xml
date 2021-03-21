@@ -54,7 +54,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/featuring" />
 
-    <android.support.v7.widget.GridLayout
+    <androidx.gridlayout.widget.GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:columnCount="3">
@@ -120,6 +120,6 @@
             android:contentDescription="@string/desc_swift"
             app:srcCompat="@drawable/ic_cat_swift" />
 
-    </android.support.v7.widget.GridLayout>
+    </androidx.gridlayout.widget.GridLayout>
 
 </LinearLayout>

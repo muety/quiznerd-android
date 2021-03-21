@@ -2,7 +2,8 @@ package com.github.n1try.quiznerd.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.github.n1try.quiznerd.utils.Constants;
 import com.google.common.collect.ImmutableMap;
@@ -94,7 +95,7 @@ public class QuizMatch implements Parcelable, Comparable<QuizMatch> {
 
         if (myAnswerCount < numQuestions) {
             if (r.hasPlayed((myPlayerIndex % 2) + 1)) return true;
-            if (myAnswerCount > opponentAnswerCount) return true;
+            return myAnswerCount > opponentAnswerCount;
         }
 
         return false;

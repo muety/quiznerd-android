@@ -24,7 +24,9 @@ public class QuizRound implements Parcelable {
 
     private int id;
     private List<QuizQuestion> questions;
+    @Builder.Default
     private List<Long> answers1 = new ArrayList<>();
+    @Builder.Default
     private List<Long> answers2 = new ArrayList<>();
 
     public static final Creator<QuizRound> CREATOR = new Creator<QuizRound>() {
@@ -77,8 +79,8 @@ public class QuizRound implements Parcelable {
 
     public void answerQuestionAt(int questionIdx, QuizAnswer answer, int playerIdx) {
         try {
-            if (playerIdx == 1) answers1.set(questionIdx, Long.valueOf(answer.getId()));
-            else if (playerIdx == 2) answers2.set(questionIdx, Long.valueOf(answer.getId()));
+            if (playerIdx == 1) answers1.set(questionIdx, (long) answer.getId());
+            else if (playerIdx == 2) answers2.set(questionIdx, (long) answer.getId());
         } catch (ArrayIndexOutOfBoundsException e) {
             // TODO
         }

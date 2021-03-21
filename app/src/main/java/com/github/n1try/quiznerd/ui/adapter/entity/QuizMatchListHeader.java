@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.github.n1try.quiznerd.R;
 
 public class QuizMatchListHeader implements ListItem {
-    private String text;
+    private final String text;
 
     public QuizMatchListHeader(String text) {
         this.text = text;

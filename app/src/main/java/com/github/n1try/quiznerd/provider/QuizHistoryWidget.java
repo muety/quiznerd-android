@@ -97,10 +97,10 @@ public class QuizHistoryWidget extends AppWidgetProvider implements QuizApiCallb
             Collections.sort(matches);
 
             for (int i = 0; i < 3; i++) {
-                int containerId = context.getResources().getIdentifier(String.format("match_container_%s", String.valueOf(i + 1)), "id", context.getPackageName());
-                int categoryIvId = context.getResources().getIdentifier(String.format("match_category_iv_%s", String.valueOf(i + 1)), "id", context.getPackageName());
-                int usernameTvId = context.getResources().getIdentifier(String.format("match_username_tv_%s", String.valueOf(i + 1)), "id", context.getPackageName());
-                int scoreTvId = context.getResources().getIdentifier(String.format("match_score_tv_%s", String.valueOf(i + 1)), "id", context.getPackageName());
+                int containerId = context.getResources().getIdentifier(String.format("match_container_%s", (i + 1)), "id", context.getPackageName());
+                int categoryIvId = context.getResources().getIdentifier(String.format("match_category_iv_%s", (i + 1)), "id", context.getPackageName());
+                int usernameTvId = context.getResources().getIdentifier(String.format("match_username_tv_%s", (i + 1)), "id", context.getPackageName());
+                int scoreTvId = context.getResources().getIdentifier(String.format("match_score_tv_%s", (i + 1)), "id", context.getPackageName());
 
                 if (matches.size() > i) {
                     QuizMatch m = matches.get(i);
@@ -109,7 +109,7 @@ public class QuizHistoryWidget extends AppWidgetProvider implements QuizApiCallb
                     views.setViewVisibility(containerId, View.VISIBLE);
                     views.setImageViewResource(categoryIvId, QuizUtils.getCategoryIconId(context, m.getCategory()));
                     views.setTextViewText(usernameTvId, m.getOpponent(me).getId());
-                    views.setTextViewText(scoreTvId, context.getString(R.string.score_short_template, scores[0], scores[1]));
+                    views.setTextViewText(scoreTvId, context.getString(R.string.score_short_template, String.valueOf(scores[0]), String.valueOf(scores[1])));
                 } else {
                     views.setViewVisibility(containerId, View.GONE);
                 }

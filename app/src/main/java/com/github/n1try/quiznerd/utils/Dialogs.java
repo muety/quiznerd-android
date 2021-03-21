@@ -3,19 +3,19 @@ package com.github.n1try.quiznerd.utils;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.github.n1try.quiznerd.R;
-import com.github.n1try.quiznerd.model.QuizMatch;
 import com.github.n1try.quiznerd.model.QuizQuestion;
 import com.github.n1try.quiznerd.model.QuizResult;
 
 public class Dialogs {
-    public static void showDeleteDialog(Context context, QuizMatch match, DialogInterface.OnClickListener onYes) {
+    public static void showDeleteDialog(Context context, DialogInterface.OnClickListener onYes) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setCancelable(false);
         dialog.setTitle(R.string.delete_match);
@@ -23,12 +23,7 @@ public class Dialogs {
 
         dialog.setPositiveButton(R.string.yes, onYes);
 
-        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        dialog.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
 
         dialog.create().show();
     }
@@ -41,12 +36,7 @@ public class Dialogs {
 
         dialog.setPositiveButton(R.string.quit, onYes);
 
-        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        dialog.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
 
         dialog.create().show();
     }
@@ -76,12 +66,7 @@ public class Dialogs {
                 break;
         }
 
-        dialog.setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        dialog.setPositiveButton(buttonText, (dialogInterface, i) -> dialogInterface.dismiss());
         dialog.create().show();
     }
 
