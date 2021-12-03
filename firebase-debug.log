@@ -1,0 +1,38 @@
+[debug] [2021-12-03T23:42:20.405Z] ----------------------------------------------------------------------
+[debug] [2021-12-03T23:42:20.407Z] Command:       /home/ferdinand/.nvm/versions/node/v16.9.1/bin/node /home/ferdinand/.nvm/versions/node/v16.9.1/bin/firebase emulators:start --only functions
+[debug] [2021-12-03T23:42:20.407Z] CLI Version:   9.23.0
+[debug] [2021-12-03T23:42:20.407Z] Platform:      linux
+[debug] [2021-12-03T23:42:20.407Z] Node Version:  v16.9.1
+[debug] [2021-12-03T23:42:20.408Z] Time:          Sat Dec 04 2021 00:42:20 GMT+0100 (Central European Standard Time)
+[debug] [2021-12-03T23:42:20.408Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-12-03T23:42:20.483Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-12-03T23:42:20.483Z] > authorizing via signed-in user (f.muetsch@googlemail.com)
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[debug] [2021-12-03T23:42:20.501Z] [hub] writing locator at /tmp/hub-quiznerd-49e4f.json
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: auth, firestore, database, hosting, pubsub, storage {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mauth, firestore, database, hosting, pubsub, storage\u001b[22m"}}
+[info] i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[debug] [2021-12-03T23:42:20.869Z] Error: Cannot find module '/home/ferdinand/dev/quiznerd/package.json'
+Require stack:
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/controller.js
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/commandUtils.js
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/commands/database-get.js
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/commands/index.js
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/index.js
+- /home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/bin/firebase.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:94:18)
+    at FunctionsEmulator.askInstallNodeVersion (/home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js:466:21)
+    at FunctionsEmulator.start (/home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js:178:32)
+    at Function.start (/home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/registry.js:16:24)
+    at startEmulator (/home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/controller.js:90:39)
+    at Object.startAll (/home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/emulator/controller.js:273:15)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async Command.actionFn (/home/ferdinand/.nvm/versions/node/v16.9.1/lib/node_modules/firebase-tools/lib/commands/emulators-start.js:26:9)
+[error] 
+[error] Error: An unexpected error has occurred.

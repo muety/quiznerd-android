@@ -1,0 +1,13 @@
+{
+    "functions": {
+        "source": "./",
+        "ignore": [
+            "README.md",
+            ".gitignore",
+            "quiznerd-*.json",
+            ".runtimeconfig.json",
+            "*.log",
+            "**/node_modules/**"
+        ]
+    }
+}

@@ -11,11 +11,7 @@
 // $ firebase emulators:start --only functions
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./quiznerd-49e4f-c474d2fe3a83.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://quiznerd-49e4f.firebaseio.com'
-});
+admin.initializeApp();
 
 // https://us-central1-quiznerd-49e4f.cloudfunctions.net/runBots
 exports.runBots = require('./runBots').fn;
