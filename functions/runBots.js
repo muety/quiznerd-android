@@ -9,7 +9,7 @@ const botdata = firestore.collection('botdata')
 
 const bots = require('./botConfig.json');
 
-const TOKEN = 'HXqNtpzTtcXu';
+const TOKEN = functions.config().quiznerd.token;
 
 let allMatches = {};
 let allPending = {};
