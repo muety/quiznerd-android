@@ -16,6 +16,9 @@ exports.runBots = require('./runBots').fn;
 // https://us-central1-quiznerd-49e4f.cloudfunctions.net/cleanBotdata
 exports.cleanBotdata = require('./cleanBotdata').fn;
 
+// https://us-central1-quiznerd-49e4f.cloudfunctions.net/cleanMatches
+exports.cleanMatches = require('./cleanMatches').fn;
+
 // https://us-central1-quiznerd-49e4f.cloudfunctions.net/poke
 exports.poke = require('./poke').fn;
 
