@@ -70,6 +70,7 @@ function schedule(bot) {
     promises = promises.concat(
         allMatches[bot.id]
             .filter(d => !allIds.includes(d.id))
+            .filter(d => d.data().round === 1) // only create new botdata entries for fresh, new matches
             .map(d => {
                 let timeOffset = randInt(bot.intervalMinutesMin, bot.intervalMinutesMax + 1);
 
