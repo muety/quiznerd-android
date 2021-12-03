@@ -24,11 +24,11 @@ function run(req, res) {
             .then(schedule)
             .then(play);
     }))
-    .then(() => res.status(200).end())
-    .catch((e) => {
-        console.error(e);
-        res.status(500).end();
-    })
+        .then(() => res.status(200).end())
+        .catch((e) => {
+            console.error(e);
+            res.status(500).end();
+        })
 }
 
 function fetchMatches(bot) {
@@ -44,9 +44,9 @@ function fetchMatches(bot) {
 }
 
 function fetchPending(bot) {
-    // TODO: At some point, this will be too much data. Records from botdata table should be deleted instead of inactived.
     return botdata
         .where('botid', '==', bot.id)
+        .where('active', '==', true)
         .get()
         .then(querySnapshot => {
             if (querySnapshot.empty) allPending[bot.id] = [];
@@ -58,12 +58,10 @@ function fetchPending(bot) {
 function schedule(bot) {
     let promises = [];
 
-    let allIds = allPending[bot.id]
-        .map(d => d.data().match.id);
+    let allIds = allPending[bot.id].map(d => d.data().match.id);
 
     playQueue[bot.id] = allPending[bot.id]
         .filter(d => d.data().nextExecution.toDate() <= new Date())
-        .filter(d => d.data().active)
         .filter(d => {
             let match = allMatches[bot.id].find(m => m.id === d.data().match.id);
             return !!match && isBotsTurn(match.data());
@@ -88,11 +86,17 @@ function schedule(bot) {
         allPending[bot.id]
             .filter(d => !!playQueue[bot.id].find(p => p.id === d.id))
             .map(d => {
-                let matchData = allMatches[bot.id].find(m => m.id === d.data().match.id).data();
+                let data = d.data()
+                let matchData = allMatches[bot.id].find(m => m.id === data.match.id).data();
                 let timeOffset = randInt(bot.intervalMinutesMin, bot.intervalMinutesMax + 1);
 
+                const stillActive = !((isBotsTurn(matchData) && matchData.round === 4) || (!isBotsTurn(matchData) && matchData.round === 3))
+                if (!stillActive) {
+                    console.log(`Match ${data.match.id} is done for bot ${bot.id}, deleting botdata ${d.id}`)
+                    return d.ref.delete()
+                }
+
                 return d.ref.update({
-                    active: !((isBotsTurn(matchData) && matchData.round === 4) || (!isBotsTurn && matchData.round === 3)),
                     nextExecution: addMinutes(new Date(), timeOffset)
                 })
             })
@@ -102,7 +106,10 @@ function schedule(bot) {
     promises = promises.concat(
         allPending[bot.id]
             .filter(d => !allMatches[bot.id].find(m => m.id === d.data().match.id))
-            .map(d => d.ref.update({ active: false }))
+            .map(d => {
+                console.log(`Match ${d.data().match.id} does not seem to exist anymore, deleting botdata ${d.id}`)
+                return d.ref.delete()
+            })
     );
 
     return Promise.all(promises).then(() => bot);

@@ -1,7 +1,14 @@
 'use strict';
 
-// https://firebase.google.com/docs/functions/firestore-events
-// firebase deploy --only functions
+// Events: https://firebase.google.com/docs/functions/firestore-events
+
+// Deploy:
+// $ firebase deploy --only functions
+
+// Emulator:
+// $ export GOOGLE_APPLICATION_CREDENTIALS="./quiznerd-49e4f-c474d2fe3a83.json"
+// $ firebase functions:config:get > .runtimeconfig.json
+// $ firebase emulators:start --only functions
 
 const admin = require('firebase-admin');
 const serviceAccount = require('./quiznerd-49e4f-c474d2fe3a83.json');

@@ -13,21 +13,20 @@ function run(req, res) {
 
     let totalCount = 0
 
-    const p1 = botdata.where('active', '==', false).get()
+    Promise.resolve()
+        .then(() => botdata.where('active', '==', false).get())
         .then(snapshot => {
             if (snapshot.empty) return
             totalCount += snapshot.docs.length
             return Promise.all(snapshot.docs.map(d => d.ref.delete()))
         })
-
-    const p2 = botdata.where('nextExecution', '<', new Date()).get()
+        // delete everything pending for longer than 24 hours, assuming that the bot script runs at least once every day
+        .then(() => botdata.where('nextExecution', '<', new Date(new Date().valueOf() - 24 * 60 * 60 * 1000)).get())
         .then(snapshot => {
             if (snapshot.empty) return
             totalCount += snapshot.docs.length
             return Promise.all(snapshot.docs.map(d => d.ref.delete()))
         })
-
-    Promise.all([p1, p2])
         .then(() => {
             console.log('Deleted ' + totalCount + ' documents.')
             return res.status(200).end()
